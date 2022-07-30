@@ -3,7 +3,7 @@ import { createEmptyApiSpec } from "@loopback/openapi-v3-types";
 import type { Har } from "har-format";
 import YAML from "js-yaml";
 import sortJson from "sort-json";
-import toOpenApiSchema from "@openapi-contrib/json-schema-to-openapi-schema";
+import toOpenApiSchema from "browser-json-schema-to-openapi-schema";
 import {
   addMethod,
   addPath,
@@ -45,12 +45,11 @@ const generateSpec = <T extends Har>(har: T, config?: Config) => {
       return;
     }
 
-    const path = spec.paths[filteredUrl] as PathItemObject;
-
     // create path
-    if (!path) {
+    if (!spec.paths[filteredUrl]) {
       addPath(filteredUrl, spec);
     }
+    const path = spec.paths[filteredUrl] as PathItemObject;
 
     // create method
     const method = item.request.method.toLowerCase();
@@ -71,14 +70,14 @@ const generateSpec = <T extends Har>(har: T, config?: Config) => {
     // merge request example
     const shouldUseRequestAndResponse = !ignoreBodiesForStatusCodes || !ignoreBodiesForStatusCodes.includes(status);
     if (item.request.bodySize > 0 && status < 400) {
-      if (shouldUseRequestAndResponse) {
+      if (shouldUseRequestAndResponse && item.request.postData) {
         mergeRequestExample(specMethod, item.request.postData);
       }
     }
 
     // merge response example
     if (item.response.bodySize > 0) {
-      if (shouldUseRequestAndResponse) {
+      if (shouldUseRequestAndResponse && item.response.content) {
         mergeResponseExample(specMethod, status.toString(), item.response.content);
       }
     }

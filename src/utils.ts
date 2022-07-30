@@ -252,7 +252,7 @@ export const addResponse = (status: number, method: string, specPath: OperationO
 };
 export const mergeRequestExample = (specMethod: OperationObject, postData: any) => {
   // if (postData.mimeType === null) { // data sent
-  if (postData.text) {
+  if (postData?.text) {
     // data sent
     try {
       const data = JSON.parse(

@@ -106,7 +106,7 @@
     tslib "^1.11.1"
     yargs "^17.0.1"
 
-"@stoplight/json-ref-resolver@^3.1.1":
+"@stoplight/json-ref-resolver@^3.1.1", "@stoplight/json-ref-resolver@^3.1.4":
   version "3.1.4"
   resolved "https://registry.npmjs.org/@stoplight/json-ref-resolver/-/json-ref-resolver-3.1.4.tgz#f54c00c44f0963d2c60233eeebf0d533cdfb5d8b"
   integrity sha512-842JVmMsi++qpDuIX+JpQvK7YY8FXEZZb+/z4xuRfStOAVEryJT/tbgGOWxniSdxEl9Eni5D/I2afMyy6BuiNw==
@@ -164,6 +164,11 @@
   resolved "https://registry.npmjs.org/@stoplight/yaml-ast-parser/-/yaml-ast-parser-0.0.45.tgz#672c0a1511d581843be5a9c55899ca95a30dcadb"
   integrity sha512-0MTEvgp3XMdeMUSTCGiNECuC+YlLbzytDEIOJVDHrrmzVZpIR3gGnHI6mmPI4P7saPxUiHxFF2uuoTuCNlKjrw==
 
+"@stoplight/yaml-ast-parser@0.0.48":
+  version "0.0.48"
+  resolved "https://registry.npmjs.org/@stoplight/yaml-ast-parser/-/yaml-ast-parser-0.0.48.tgz#442b21f419427acaa8a3106ebc5d73351c407002"
+  integrity sha512-sV+51I7WYnLJnKPn2EMWgS4EUfoP4iWEbrWwbXsj0MZCB/xOK8j6+C9fntIdOM50kpx45ZLC3s6kwKivWuqvyg==
+
 "@stoplight/yaml@^3.7.1":
   version "3.8.1"
   resolved "https://registry.npmjs.org/@stoplight/yaml/-/yaml-3.8.1.tgz#2a2accdb8b3b6df5c3f1ba93086ca9deb99be0e4"
@@ -173,6 +178,16 @@
     "@stoplight/types" "^11.1.1"
     "@stoplight/yaml-ast-parser" "0.0.45"
     lodash "^4.17.15"
+
+"@stoplight/yaml@^4.2.3":
+  version "4.2.3"
+  resolved "https://registry.npmjs.org/@stoplight/yaml/-/yaml-4.2.3.tgz#d177664fecd6b2fd0d4f264f1078550c30cfd8d1"
+  integrity sha512-Mx01wjRAR9C7yLMUyYFTfbUf5DimEpHMkRDQ1PKLe9dfNILbgdxyrncsOXM3vCpsQ1Hfj4bPiGl+u4u6e9Akqw==
+  dependencies:
+    "@stoplight/ordered-object-literal" "^1.0.1"
+    "@stoplight/types" "^13.0.0"
+    "@stoplight/yaml-ast-parser" "0.0.48"
+    tslib "^2.2.0"
 
 "@types/eslint@8.4.5":
   version "8.4.5"
@@ -474,6 +489,19 @@ brfs@^1.4.0:
     static-module "^2.2.0"
     through2 "^2.0.0"
 
+browser-json-schema-to-openapi-schema@^0.0.0-development:
+  version "0.0.0-development"
+  resolved "https://registry.npmjs.org/browser-json-schema-to-openapi-schema/-/browser-json-schema-to-openapi-schema-0.0.0-development.tgz#906c80d3a0250c8c7a4b0e94010164188f661bef"
+  integrity sha512-J//O2DpyR4QxsKRqmWAohhayPV4+vXnaiApBElt9NszmdGCTvYWpv/SwUPwP+ZObNe8BZ45Mv/sgIjDNE299bQ==
+  dependencies:
+    "@cloudflare/json-schema-walker" "^0.1.1"
+    "@stoplight/json-ref-resolver" "^3.1.4"
+    "@stoplight/yaml" "^4.2.3"
+    chalk "^5.0.1"
+    node-fetch "^2.6.0"
+    tslib "^2.4.0"
+    yargs "^17.5.1"
+
 browser-or-node@^1.2.1:
   version "1.3.0"
   resolved "https://registry.npmjs.org/browser-or-node/-/browser-or-node-1.3.0.tgz#f2a4e8568f60263050a6714b2cc236bb976647a7"
@@ -518,6 +546,11 @@ chalk@^4.0.0, chalk@^4.1.1:
   dependencies:
     ansi-styles "^4.1.0"
     supports-color "^7.1.0"
+
+chalk@^5.0.1:
+  version "5.0.1"
+  resolved "https://registry.npmjs.org/chalk/-/chalk-5.0.1.tgz#ca57d71e82bb534a296df63bbacc4a1c22b2a4b6"
+  integrity sha512-Fo07WOYGqMfCWHOzSXOt2CxDbC6skS/jO9ynEcmpANMoPrD+W1r1K6Vx7iNm+AQmETU1Xr2t+n8nzkV9t6xh3w==
 
 charenc@~0.0.1:
   version "0.0.2"
@@ -2441,7 +2474,7 @@ tslib@^1.11.1, tslib@^1.8.1:
   resolved "https://registry.npmjs.org/tslib/-/tslib-1.14.1.tgz#cf2d38bdc34a134bcaf1091c41f6619e2f672d00"
   integrity sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==
 
-tslib@^2.1.0, tslib@^2.3.1:
+tslib@^2.1.0, tslib@^2.2.0, tslib@^2.3.1, tslib@^2.4.0:
   version "2.4.0"
   resolved "https://registry.npmjs.org/tslib/-/tslib-2.4.0.tgz#7cecaa7f073ce680a05847aa77be941098f36dc3"
   integrity sha512-d6xOpEDfsi2CZVlPQzGeux8XMwLT9hssAsaPYExaQMuYskwb+x1x7J371tWlbBdWHroy99KnVB6qIkUbs5X3UQ==
@@ -2641,7 +2674,7 @@ yargs-parser@^21.0.0:
   resolved "https://registry.npmjs.org/yargs-parser/-/yargs-parser-21.0.1.tgz#0267f286c877a4f0f728fceb6f8a3e4cb95c6e35"
   integrity sha512-9BK1jFpLzJROCI5TzwZL/TU4gqjK5xiHV/RfWLOahrjAko/e4DJkRDZQXfvqAsiZzzYhgAzbgz6lg48jcm4GLg==
 
-yargs@^17.0.1:
+yargs@^17.0.1, yargs@^17.5.1:
   version "17.5.1"
   resolved "https://registry.npmjs.org/yargs/-/yargs-17.5.1.tgz#e109900cab6fcb7fd44b1d8249166feb0b36e58e"
   integrity sha512-t6YAJcxDkNX7NFYiVtKvWUz8l+PaKTLiL63mJYWR2GnHq2gjEWISzsLp9wg3aY36dY1j+gfIEL3pIF+XlJJfbA==
