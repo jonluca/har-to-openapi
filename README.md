@@ -22,14 +22,7 @@ npm i --save har-to-openapi
 
 # Usage
 
-`<Lottie>` component can be used in a declarative way:
-
 ```jsx
-import {generateSpec} from "har-to-openapi";
-
-
+import { generateSpec } from "har-to-openapi";
 const spec = generateSpec(har);
 ```
-
-
-## API
