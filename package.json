@@ -36,6 +36,8 @@
     "typecheck": "tsc --noEmit",
     "prettier": "prettier --write \"**/*.+(js|jsx|json|css|md)\"",
     "test": "vitest",
+    "test:update": "vitest -u",
+    "test:watch": "vitest -w",
     "coverage": "vitest run --coverage"
   },
   "dependencies": {

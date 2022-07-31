@@ -30,17 +30,13 @@ const hars = await readDirectory(path.join(__dirname, "data"));
 
 const validator = new OpenAPISchemaValidator({
   version: 3,
-  // optional
-  extensions: {
-    /* place any properties here to extend the schema. */
-  },
 });
 describe("har-to-openapi", () => {
   hars.map((har, index) => {
-    test.concurrent(`Sample API ${index + 1} matches snapshot`, async ({ expect }) => {
+    test(`Sample API ${index + 1} matches snapshot`, async ({ expect }) => {
       expect(await generateSpec(har)).toMatchSnapshot();
     });
-    test.concurrent(`Sample API ${index + 1} is valid schema`, async ({ expect }) => {
+    test(`Sample API ${index + 1} is valid schema`, async ({ expect }) => {
       const spec = await generateSpec(har);
       const result = validator.validate(spec.spec as any);
       expect(result.errors).toHaveLength(0);
