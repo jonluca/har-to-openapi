@@ -20,4 +20,5 @@ export interface Config {
     [search: string]: string;
   };
   tags?: string[][];
+  mimeTypes?: string[];
 }

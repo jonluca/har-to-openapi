@@ -29,8 +29,9 @@ const generateSpec = <T extends Har>(har: T, config?: Config) => {
   });
   // loop through har entries
   const spec = createEmptyApiSpec();
+  spec.info.title = "HarToOpenApi";
   const methodList: string[] = [];
-  const { ignoreBodiesForStatusCodes, apiBasePath } = config || {};
+  const { ignoreBodiesForStatusCodes, apiBasePath, mimeTypes } = config || {};
   har.log.entries.sort().forEach((item) => {
     // only care about urls that match target api
     if (apiBasePath && !item.request.url.includes(apiBasePath)) {
@@ -69,7 +70,8 @@ const generateSpec = <T extends Har>(har: T, config?: Config) => {
 
     // merge request example
     const shouldUseRequestAndResponse = !ignoreBodiesForStatusCodes || !ignoreBodiesForStatusCodes.includes(status);
-    if (item.request.bodySize > 0 && status < 400) {
+    const isValidMimetype = !mimeTypes || mimeTypes.includes(item.response?.content?.mimeType);
+    if (item.request.bodySize > 0) {
       if (shouldUseRequestAndResponse && item.request.postData) {
         mergeRequestExample(specMethod, item.request.postData);
       }
@@ -77,7 +79,7 @@ const generateSpec = <T extends Har>(har: T, config?: Config) => {
 
     // merge response example
     if (item.response.bodySize > 0) {
-      if (shouldUseRequestAndResponse && item.response.content) {
+      if (isValidMimetype && shouldUseRequestAndResponse && item.response.content) {
         mergeResponseExample(specMethod, status.toString(), item.response.content);
       }
     }

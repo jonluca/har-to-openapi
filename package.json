@@ -34,7 +34,9 @@
     "lint": "eslint src",
     "build": "rm -fr dist/* && tsc -p tsconfig-mjs.json && tsc -p tsconfig-cjs.json && node scripts/fixup.js",
     "typecheck": "tsc --noEmit",
-    "prettier": "prettier --write \"**/*.+(js|jsx|json|css|md)\""
+    "prettier": "prettier --write \"**/*.+(js|jsx|json|css|md)\"",
+    "test": "vitest",
+    "coverage": "vitest run --coverage"
   },
   "dependencies": {
     "@loopback/openapi-v3-types": "^1.2.1",
@@ -69,7 +71,8 @@
     "eslint-plugin-promise": "^6.0.0",
     "eslint-plugin-unused-imports": "^2.0.0",
     "lint-staged": "^13.0.3",
-    "prettier": "^2.7.1"
+    "prettier": "^2.7.1",
+    "vitest": "^0.19.1"
   },
   "lint-staged": {
     "**/*.{js,ts,jsx,tsx}": [

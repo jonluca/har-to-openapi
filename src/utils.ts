@@ -334,59 +334,44 @@ export const mergeResponseExample = (specMethod: OperationObject, statusString: 
     const str = content.text || "";
     const data = JSON.parse(isBase64 ? Buffer.from(str, "base64").toString() : str);
 
-    // remove data traceback if exists
-    delete data["traceback"];
-
-    if (data !== null && Object.keys(data).length > 1) {
-      // create response example if it doesn't exist
-      if (!specMethod.responses[statusString]["content"]) {
-        specMethod.responses[statusString]["content"] = {
-          "application/json": {
-            examples: {
-              "example-0001": {
-                value: {},
-              },
-            },
-            schema: {
-              properties: {},
-              type: "object",
+    // create response example if it doesn't exist
+    if (!specMethod.responses[statusString]["content"]) {
+      specMethod.responses[statusString]["content"] = {
+        "application/json": {
+          examples: {
+            "example-0001": {
+              value: {},
             },
           },
-        };
-      }
-
-      // const examples = specMethod.responses[statusString].content["application/json"].examples['example-1']
-      const examples = specMethod.responses[statusString].content["application/json"].examples;
-
-      // do not add example if it is duplicate of another example
-      const dataString = JSON.stringify(data);
-      for (const example in examples) {
-        const compare = JSON.stringify(examples[example]["value"]);
-        if (dataString === compare) {
-          return;
-        }
-      }
-
-      // merge current response into other response examples
-      examples["example-0001"]["value"] = merge(examples["example-0001"]["value"], data, {
-        arrayMerge: (a, b) => b,
-      });
-
-      // also add a new example
-      examples[`example-${pad(Object.keys(examples).length + 1, 4)}`] = {
-        value: data,
+          schema: {
+            properties: {},
+            type: "object",
+          },
+        },
       };
+    }
 
-      // set endpoint description from shoji description
-      if (data.description) {
-        specMethod.description = data.description;
-      }
+    // const examples = specMethod.responses[statusString].content["application/json"].examples['example-1']
+    const examples = specMethod.responses[statusString].content["application/json"].examples;
 
-      // capture metadata
-      if (data.element) {
-        specMethod.meta["element"] = data.element;
+    // do not add example if it is duplicate of another example
+    const dataString = JSON.stringify(data);
+    for (const example in examples) {
+      const compare = JSON.stringify(examples[example]["value"]);
+      if (dataString === compare) {
+        return;
       }
     }
+
+    // merge current response into other response examples
+    examples["example-0001"]["value"] = merge(examples["example-0001"]["value"], data, {
+      arrayMerge: (a, b) => b,
+    });
+
+    // also add a new example
+    examples[`example-${pad(Object.keys(examples).length + 1, 4)}`] = {
+      value: data,
+    };
   } catch (err) {
     console.error(err);
   }
