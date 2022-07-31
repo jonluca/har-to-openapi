@@ -32,7 +32,7 @@
   "homepage": "https://github.com/jonluca/har-to-openapi",
   "scripts": {
     "lint": "eslint src",
-    "build": "rm -fr dist/* && tsc -p tsconfig-mjs.json && tsc -p tsconfig-cjs.json && node scripts/fixup.js",
+    "build": "rm -fr dist/* && tsc -p tsconfig.json && tsc -p tsconfig-cjs.json && node scripts/fixup.js",
     "typecheck": "tsc --noEmit",
     "prettier": "prettier --write \"**/*.+(js|jsx|json|css|md)\"",
     "test": "vitest",
@@ -43,6 +43,7 @@
     "@openapi-contrib/json-schema-to-openapi-schema": "^2.1.1",
     "@types/har-format": "^1.2.8",
     "@types/js-yaml": "^4.0.5",
+    "@types/lodash-es": "^4.17.6",
     "@types/parse-json": "^4.0.0",
     "@types/pluralize": "^0.0.29",
     "@types/react": "^18.0.15",
@@ -50,6 +51,7 @@
     "browser-json-schema-to-openapi-schema": "^0.0.0-development",
     "js-yaml": "^4.1.0",
     "json-schema-deref-sync": "^0.14.0",
+    "lodash-es": "^4.17.21",
     "openapi3-ts": "^2.0.2",
     "parse-json": "^6.0.2",
     "pluralize": "^8.0.0",
@@ -71,6 +73,7 @@
     "eslint-plugin-promise": "^6.0.0",
     "eslint-plugin-unused-imports": "^2.0.0",
     "lint-staged": "^13.0.3",
+    "openapi-schema-validator": "^12.0.0",
     "prettier": "^2.7.1",
     "vitest": "^0.19.1"
   },

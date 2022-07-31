@@ -1,5 +1,8 @@
 {
   "compilerOptions": {
+    "module": "esnext",
+    "outDir": "dist/mjs",
+    "target": "es2020",
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
     "baseUrl": "src",

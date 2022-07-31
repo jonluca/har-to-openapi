@@ -1,25 +1,27 @@
 import type { OpenApiSpec, OperationObject } from "@loopback/openapi-v3-types";
 import { createEmptyApiSpec } from "@loopback/openapi-v3-types";
-import type { Har } from "har-format";
+import type { Entry, Har } from "har-format";
 import YAML from "js-yaml";
 import sortJson from "sort-json";
 import toOpenApiSchema from "browser-json-schema-to-openapi-schema";
 import {
   addMethod,
-  addPath,
+  getPathAndParamsFromUrl,
   addQueryStringParams,
   addResponse,
-  filterUrl,
   mergeRequestExample,
   mergeResponseExample,
   quicktypeJSON,
   validateExampleList,
   getExamples,
+  getSecurity,
 } from "./utils";
 import type { Config, ExampleFile } from "./types";
 import type { PathItemObject } from "openapi3-ts/src/model/OpenApi";
+import type { IGenerateSpecResponse } from "./types";
+import { groupBy } from "lodash-es";
 
-const generateSpec = <T extends Har>(har: T, config?: Config) => {
+const generateSpecs = <T extends Har>(har: T, config?: Config): IGenerateSpecResponse[] => {
   // decode base64 now before writing pretty har file
   har.log.entries.forEach((item, index) => {
     if (item.response.content.encoding === "base64") {
@@ -27,73 +29,93 @@ const generateSpec = <T extends Har>(har: T, config?: Config) => {
       delete har.log.entries[index].response.content.encoding;
     }
   });
-  // loop through har entries
-  const spec = createEmptyApiSpec();
-  spec.info.title = "HarToOpenApi";
-  const methodList: string[] = [];
-  const { ignoreBodiesForStatusCodes, apiBasePath, mimeTypes } = config || {};
-  har.log.entries.sort().forEach((item) => {
-    // only care about urls that match target api
-    if (apiBasePath && !item.request.url.includes(apiBasePath)) {
-      return;
-    }
 
-    // filter and collapse path urls
-    const filteredUrl = filterUrl(config, item.request.url);
-
-    // continue if url is blank
-    if (!filteredUrl) {
-      return;
-    }
-
-    // create path
-    if (!spec.paths[filteredUrl]) {
-      addPath(filteredUrl, spec);
-    }
-    const path = spec.paths[filteredUrl] as PathItemObject;
-
-    // create method
-    const method = item.request.method.toLowerCase();
-    if (!path[method]) {
-      addMethod(method, filteredUrl, item.request.url, methodList, spec, config);
-    }
-    const specMethod = path[method] as OperationObject;
-
-    // set original path to last request received
-    specMethod.meta.originalPath = item.request.url;
-    // generate response
-    const status = item.response.status;
-    addResponse(status, method, specMethod);
-
-    // add query string parameters
-    addQueryStringParams(specMethod, item.request.queryString);
-
-    // merge request example
-    const shouldUseRequestAndResponse = !ignoreBodiesForStatusCodes || !ignoreBodiesForStatusCodes.includes(status);
-    const isValidMimetype = !mimeTypes || mimeTypes.includes(item.response?.content?.mimeType);
-    if (item.request.bodySize > 0) {
-      if (shouldUseRequestAndResponse && item.request.postData) {
-        mergeRequestExample(specMethod, item.request.postData);
-      }
-    }
-
-    // merge response example
-    if (item.response.bodySize > 0) {
-      if (isValidMimetype && shouldUseRequestAndResponse && item.response.content) {
-        mergeResponseExample(specMethod, status.toString(), item.response.content);
-      }
+  const groupedByHostname = groupBy(har.log.entries, (entry: Entry) => {
+    try {
+      const url = new URL(entry.request.url);
+      return url.hostname;
+    } catch (e) {
+      console.error(`Error parsing url ${entry.request.url}`);
+      return undefined;
     }
   });
+  const specs: IGenerateSpecResponse[] = [];
 
-  // sort paths
-  spec.paths = sortJson(spec.paths, { depth: 200 });
+  for (const domain in groupedByHostname) {
+    // loop through har entries
+    const spec = createEmptyApiSpec();
+    spec.info.title = "HarToOpenApi";
+    const { ignoreBodiesForStatusCodes, apiBasePath, mimeTypes, securityHeaders } = config || {};
+    har.log.entries.forEach((item) => {
+      const url = item.request.url;
+      // if the config specified a base path, we'll only generate specs for urls that include it
+      if (apiBasePath && !url.includes(apiBasePath)) {
+        return;
+      }
 
-  const yamlSpec = YAML.dump(spec);
+      // filter and collapse path urls
+      const urlPath = new URL(url).pathname;
 
-  const { sortedExamples, yamlExamples } = getExamples(spec);
-  return { spec, yamlSpec, sortedExamples, yamlExamples };
+      // continue if url is blank
+      if (!urlPath) {
+        return;
+      }
+
+      // create path if it doesn't exist
+      spec.paths[urlPath] ??= getPathAndParamsFromUrl(urlPath);
+      const path = spec.paths[urlPath] as PathItemObject;
+
+      // create method
+      const method = item.request.method.toLowerCase();
+      path[method] ??= addMethod(method, urlPath, config);
+      const specMethod = path[method] as OperationObject;
+      // generate response
+      const status = item.response.status;
+      if (status) {
+        specMethod.responses[status] ??= addResponse(status, method);
+      }
+
+      if (securityHeaders) {
+        const security = getSecurity(item.request.headers, securityHeaders);
+        specMethod.security = [security];
+      }
+
+      // add query string parameters
+      addQueryStringParams(specMethod, item.request.queryString);
+
+      // merge request example
+      const shouldUseRequestAndResponse = !ignoreBodiesForStatusCodes || !ignoreBodiesForStatusCodes.includes(status);
+      const isValidMimetype = !mimeTypes || mimeTypes.includes(item.response?.content?.mimeType);
+      if (item.request.bodySize > 0) {
+        if (shouldUseRequestAndResponse && item.request.postData) {
+          mergeRequestExample(specMethod, item.request.postData);
+        }
+      }
+
+      // merge response example
+      if (item.response.bodySize > 0) {
+        if (isValidMimetype && shouldUseRequestAndResponse && item.response.content) {
+          mergeResponseExample(specMethod, status.toString(), item.response.content);
+        }
+      }
+    });
+
+    // If there were no valid paths, bail
+    if (Object.keys(spec.paths).length === 0) {
+      continue;
+    }
+    // sort paths
+    spec.paths = sortJson(spec.paths, { depth: 200 });
+    const yamlSpec = YAML.dump(spec);
+    const { sortedExamples, yamlExamples } = getExamples(spec);
+    specs.push({ spec, yamlSpec, sortedExamples, yamlExamples });
+  }
+
+  return specs;
 };
-
+const generateSpec = <T extends Har>(har: T, config?: Config): IGenerateSpecResponse => {
+  return generateSpecs(har, config)[0];
+};
 const generateSchema = async (oldSpec: OpenApiSpec, masterExamples: ExampleFile) => {
   const newSpec: OpenApiSpec = {
     openapi: oldSpec.openapi,
@@ -185,4 +207,4 @@ const generateSchema = async (oldSpec: OpenApiSpec, masterExamples: ExampleFile)
   return newSpec;
 };
 
-export { generateSpec, generateSchema };
+export { generateSpec, generateSchema, generateSpecs };

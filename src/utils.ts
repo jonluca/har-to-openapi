@@ -9,6 +9,10 @@ import deref from "json-schema-deref-sync";
 import sortJson from "sort-json";
 import YAML from "js-yaml";
 import merge from "deepmerge";
+import type { PathsObject } from "openapi3-ts/src/model/OpenApi";
+import type { ResponseObject } from "openapi3-ts/src/model/OpenApi";
+import type { Header } from "har-format";
+import type { SecurityRequirementObject } from "openapi3-ts/src/model/OpenApi";
 export const pad = (m: number, width: number, z = "0") => {
   const n = m.toString();
   return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
@@ -66,17 +70,7 @@ export const deriveTag = (path: string, config?: Config) => {
       return item.length > 1 ? item[1] : capitalize(item[0]);
     }
   }
-  return "Miscellaneous";
-};
-
-export const filterUrl = (config: Config | undefined, inputUrl: string): string => {
-  let filteredUrl = inputUrl;
-  const pathReplace = config?.pathReplace || {};
-  for (const key in pathReplace) {
-    const re = new RegExp(key, "g");
-    filteredUrl = filteredUrl.replace(re, pathReplace[key]);
-  }
-  return filteredUrl;
+  return "";
 };
 
 export async function quicktypeJSON(targetLanguage: string | TargetLanguage, typeName: string, sampleArray: any[]) {
@@ -102,40 +96,28 @@ export async function quicktypeJSON(targetLanguage: string | TargetLanguage, typ
   return deref(returnJSON); // this one does not contain references
 }
 
-export const addMethod = (
-  method: string,
-  filteredUrl: string,
-  originalPath: string,
-  methodList: string[],
-  spec: OpenApiSpec,
-  config?: Config,
-) => {
+export const addMethod = (method: string, path: string, config?: Config): OperationObject => {
   // generate operation id
-  let operationId = filteredUrl.replace(/(^\/|\/$|{|})/g, "").replace(/\//g, "-");
+  let operationId = path.replace(/(^\/|\/$|{|})/g, "").replace(/\//g, "-");
   operationId = `${method}-${operationId}`;
 
   // create method
-  const summary = deriveSummary(method, filteredUrl);
-  const tag = deriveTag(filteredUrl, config);
-  spec.paths[filteredUrl][method] = {
+  const summary = deriveSummary(method, path);
+  const tag = deriveTag(path, config);
+
+  return {
     operationId,
     summary,
     description: "",
     parameters: [],
     responses: {},
     tags: [tag],
-    meta: {
-      originalPath,
-      element: "",
-    },
-  };
-
-  methodList.push(`${tag}\t${filteredUrl}\t${method}\t${summary}`);
+  } as OperationObject;
 };
-export const addPath = (filteredUrl: string, spec: OpenApiSpec): void => {
+export const getPathAndParamsFromUrl = (filteredPath: string): PathsObject => {
   // identify what parameters this path has
   const parameters: (ParameterObject | ReferenceObject)[] = [];
-  const parameterList = filteredUrl.match(/{.*?}/g);
+  const parameterList = filteredPath.match(/{.*?}/g);
   if (parameterList) {
     parameterList.forEach((parameter) => {
       const variable = parameter.replace(/[{}]/g, "");
@@ -153,7 +135,7 @@ export const addPath = (filteredUrl: string, spec: OpenApiSpec): void => {
   }
 
   // create path with parameters
-  spec.paths[filteredUrl] = {
+  return {
     parameters,
   };
 };
@@ -181,77 +163,81 @@ export const addQueryStringParams = (specMethod: OperationObject, harParams: Que
     }
   });
 };
-export const addResponse = (status: number, method: string, specPath: OperationObject): void => {
+// Map some known parameters to their OpenAPI3 counterparts, otherwise just fallback
+export const addResponse = (status: number, method: string): ResponseObject => {
   switch (status) {
     case 200:
-      switch (method) {
-        case "get":
-          specPath.responses["200"] = { description: "Success" };
-          break;
-        case "delete":
-          specPath.responses["200"] = { description: "Item deleted" };
-          break;
-        case "patch":
-          specPath.responses["200"] = { description: "Item updated" };
-          break;
-        case "post":
-          specPath.responses["200"] = { description: "Item created" };
-          break;
-      }
-      break;
     case 201:
       switch (method) {
-        case "post":
-          specPath.responses["201"] = { description: "Item created" };
-          break;
-      }
-      break;
-    case 202:
-      switch (method) {
-        case "post":
-          specPath.responses["202"] = { description: "Item created" };
-          break;
-      }
-      break;
-    case 204:
-      switch (method) {
         case "get":
-          specPath.responses["204"] = { description: "Success" };
-          break;
+          return { description: "Success" };
         case "delete":
-          specPath.responses["204"] = { description: "Item deleted" };
-          break;
+          return { description: "Deleted" };
         case "patch":
-        case "put":
-          specPath.responses["204"] = { description: "Item updated" };
-          break;
+          return { description: "Updated" };
         case "post":
-          specPath.responses["202"] = { description: "Item created" };
-          break;
+          return { description: "Created" };
+        default:
+          return { description: "Success" };
       }
-      break;
+    case 304:
+      return { description: "Not modified" };
     case 400:
       switch (method) {
         case "delete":
-          specPath.responses["400"] = { description: "Deletion failed - item in use" };
-          break;
+          return { description: "Deletion failed" };
         default:
-          specPath.responses["400"] = { description: "Bad request" };
+          return { description: "Bad request" };
       }
-      break;
     case 401:
-      specPath.responses["401"] = { description: "Unauthorized" };
-      break;
+      return { description: "Unauthorized" };
     case 404:
-      specPath.responses["404"] = { description: "Item not found" };
-      break;
+      return { description: "Not found" };
     case 405:
-      specPath.responses["405"] = { description: "Not allowed" };
-      break;
+      return { description: "Not allowed" };
+    case 500:
+    case 501:
+    case 502:
+    case 503:
+      return { description: "Server error" };
+    default:
+      if (status > 200 && status < 300) {
+        switch (method) {
+          case "get":
+            return { description: "Success" };
+          case "delete":
+            return { description: "Deleted" };
+          case "patch":
+            return { description: "Updated" };
+          case "post":
+            return { description: "Created" };
+        }
+      } else if (status >= 300 && status < 400) {
+        return { description: "Redirect" };
+      } else if (status >= 400 && status < 500) {
+        return { description: "Client error" };
+      } else if (status >= 500 && status < 600) {
+        return { description: "Server error" };
+      }
   }
+  return { description: "Unknown" };
+};
+
+export const getSecurity = (headers: Header[], securityHeaders: string[]): SecurityRequirementObject => {
+  const security: SecurityRequirementObject = {};
+  headers.forEach(function (header) {
+    const headerName = header.name.trim();
+    if (headerName.toLocaleLowerCase() === "authorization") {
+      security["JWT"] = [];
+    }
+
+    if (securityHeaders.includes(headerName)) {
+      security[headerName] = [];
+    }
+  });
+  return security;
 };
 export const mergeRequestExample = (specMethod: OperationObject, postData: any) => {
-  // if (postData.mimeType === null) { // data sent
   if (postData?.text) {
     // data sent
     try {
@@ -260,23 +246,21 @@ export const mergeRequestExample = (specMethod: OperationObject, postData: any) 
       );
       // if (Object.keys(data).length < 1) return;
 
-      if (!specMethod["requestBody"]) {
-        specMethod["requestBody"] ??= {
-          content: {
-            "application/json": {
-              examples: {
-                "example-0001": {
-                  value: {},
-                },
-              },
-              schema: {
-                properties: {},
-                type: "object",
+      specMethod["requestBody"] ??= {
+        content: {
+          "application/json": {
+            examples: {
+              "example-0001": {
+                value: {},
               },
             },
+            schema: {
+              properties: {},
+              type: "object",
+            },
           },
-        };
-      }
+        },
+      };
       const requestBody = specMethod.requestBody as RequestBodyObject;
       const examples = requestBody!["content"]["application/json"].examples || {};
 
@@ -304,7 +288,7 @@ export const mergeRequestExample = (specMethod: OperationObject, postData: any) 
         value: data,
       };
     } catch (err) {
-      console.error(err);
+      // dont do anything on JSON parse errors
     }
   } else {
     // binary file sent
