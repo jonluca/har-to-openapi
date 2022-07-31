@@ -26,6 +26,4 @@ export interface Config {
 export interface IGenerateSpecResponse {
   spec: OpenApiSpec;
   yamlSpec: string;
-  yamlExamples: string;
-  sortedExamples: any;
 }

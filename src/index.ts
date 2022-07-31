@@ -6,22 +6,20 @@ import sortJson from "sort-json";
 import toOpenApiSchema from "browser-json-schema-to-openapi-schema";
 import {
   addMethod,
-  getPathAndParamsFromUrl,
   addQueryStringParams,
   addResponse,
-  mergeRequestExample,
-  mergeResponseExample,
+  getBody,
+  getPathAndParamsFromUrl,
+  getResponseBody,
+  getSecurity,
   quicktypeJSON,
   validateExampleList,
-  getExamples,
-  getSecurity,
 } from "./utils";
-import type { Config, ExampleFile } from "./types";
+import type { Config, ExampleFile, IGenerateSpecResponse } from "./types";
 import type { PathItemObject } from "openapi3-ts/src/model/OpenApi";
-import type { IGenerateSpecResponse } from "./types";
 import { groupBy } from "lodash-es";
 
-const generateSpecs = <T extends Har>(har: T, config?: Config): IGenerateSpecResponse[] => {
+const generateSpecs = async <T extends Har>(har: T, config?: Config): Promise<IGenerateSpecResponse[]> => {
   // decode base64 now before writing pretty har file
   har.log.entries.forEach((item, index) => {
     if (item.response.content.encoding === "base64") {
@@ -46,11 +44,11 @@ const generateSpecs = <T extends Har>(har: T, config?: Config): IGenerateSpecRes
     const spec = createEmptyApiSpec();
     spec.info.title = "HarToOpenApi";
     const { ignoreBodiesForStatusCodes, apiBasePath, mimeTypes, securityHeaders } = config || {};
-    har.log.entries.forEach((item) => {
+    for (const item of har.log.entries) {
       const url = item.request.url;
       // if the config specified a base path, we'll only generate specs for urls that include it
       if (apiBasePath && !url.includes(apiBasePath)) {
-        return;
+        continue;
       }
 
       // filter and collapse path urls
@@ -58,7 +56,7 @@ const generateSpecs = <T extends Har>(har: T, config?: Config): IGenerateSpecRes
 
       // continue if url is blank
       if (!urlPath) {
-        return;
+        continue;
       }
 
       // create path if it doesn't exist
@@ -86,19 +84,15 @@ const generateSpecs = <T extends Har>(har: T, config?: Config): IGenerateSpecRes
       // merge request example
       const shouldUseRequestAndResponse = !ignoreBodiesForStatusCodes || !ignoreBodiesForStatusCodes.includes(status);
       const isValidMimetype = !mimeTypes || mimeTypes.includes(item.response?.content?.mimeType);
-      if (item.request.bodySize > 0) {
-        if (shouldUseRequestAndResponse && item.request.postData) {
-          mergeRequestExample(specMethod, item.request.postData);
-        }
+      if (shouldUseRequestAndResponse && item.request.postData) {
+        specMethod.requestBody = await getBody(item.request.postData);
       }
 
       // merge response example
-      if (item.response.bodySize > 0) {
-        if (isValidMimetype && shouldUseRequestAndResponse && item.response.content) {
-          mergeResponseExample(specMethod, status.toString(), item.response.content);
-        }
+      if (status && isValidMimetype && shouldUseRequestAndResponse && item.response) {
+        specMethod.responses[status] = await getResponseBody(item.response);
       }
-    });
+    }
 
     // If there were no valid paths, bail
     if (Object.keys(spec.paths).length === 0) {
@@ -107,14 +101,14 @@ const generateSpecs = <T extends Har>(har: T, config?: Config): IGenerateSpecRes
     // sort paths
     spec.paths = sortJson(spec.paths, { depth: 200 });
     const yamlSpec = YAML.dump(spec);
-    const { sortedExamples, yamlExamples } = getExamples(spec);
-    specs.push({ spec, yamlSpec, sortedExamples, yamlExamples });
+    specs.push({ spec, yamlSpec });
   }
 
   return specs;
 };
-const generateSpec = <T extends Har>(har: T, config?: Config): IGenerateSpecResponse => {
-  return generateSpecs(har, config)[0];
+const generateSpec = async <T extends Har>(har: T, config?: Config): Promise<IGenerateSpecResponse> => {
+  const specs = await generateSpecs(har, config);
+  return specs[0];
 };
 const generateSchema = async (oldSpec: OpenApiSpec, masterExamples: ExampleFile) => {
   const newSpec: OpenApiSpec = {

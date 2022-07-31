@@ -4,5 +4,7 @@ export default defineConfig({
   test: {
     environment: "node",
     dir: "test",
+    update: true,
+    watch: false,
   },
 });

@@ -13,6 +13,12 @@ import type { PathsObject } from "openapi3-ts/src/model/OpenApi";
 import type { ResponseObject } from "openapi3-ts/src/model/OpenApi";
 import type { Header } from "har-format";
 import type { SecurityRequirementObject } from "openapi3-ts/src/model/OpenApi";
+import type { PostData } from "har-format";
+import type { SchemaObject } from "openapi3-ts/src/model/OpenApi";
+import toOpenApiSchema from "browser-json-schema-to-openapi-schema";
+import type { Response } from "har-format";
+import type { HeadersObject } from "openapi3-ts/src/model/OpenApi";
+
 export const pad = (m: number, width: number, z = "0") => {
   const n = m.toString();
   return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
@@ -73,12 +79,16 @@ export const deriveTag = (path: string, config?: Config) => {
   return "";
 };
 
-export async function quicktypeJSON(targetLanguage: string | TargetLanguage, typeName: string, sampleArray: any[]) {
+export async function quicktypeJSON(
+  targetLanguage: string | TargetLanguage,
+  typeName: string,
+  sampleArray: string | string[],
+) {
   const jsonInput = jsonInputForTargetLanguage(targetLanguage);
 
   await jsonInput.addSource({
     name: typeName,
-    samples: sampleArray,
+    samples: Array.isArray(sampleArray) ? sampleArray : [sampleArray],
   });
 
   const inputData = new InputData();
@@ -237,80 +247,163 @@ export const getSecurity = (headers: Header[], securityHeaders: string[]): Secur
   });
   return security;
 };
-export const mergeRequestExample = (specMethod: OperationObject, postData: any) => {
-  if (postData?.text) {
-    // data sent
-    try {
-      const data = JSON.parse(
-        postData.encoding == "base64" ? Buffer.from(postData.text, "base64").toString() : postData.text,
-      );
-      // if (Object.keys(data).length < 1) return;
 
-      specMethod["requestBody"] ??= {
-        content: {
-          "application/json": {
-            examples: {
-              "example-0001": {
-                value: {},
-              },
-            },
-            schema: {
-              properties: {},
-              type: "object",
-            },
-          },
-        },
+const getFormData = (postData: PostData | Content | undefined): SchemaObject => {
+  if (!postData) {
+    return {};
+  }
+  if ("params" in postData && postData?.params?.length && postData.params.length > 0) {
+    const properties: SchemaObject["properties"] = {};
+    const required: SchemaObject["required"] = postData.params.map((query) => {
+      if (query.value == "" || query.value == "(binary)") {
+        properties[query.name] = {
+          type: "string",
+          format: "binary",
+        };
+        return query.name;
+      }
+      properties[query.name] = {
+        type: "string",
       };
-      const requestBody = specMethod.requestBody as RequestBodyObject;
-      const examples = requestBody!["content"]["application/json"].examples || {};
+      return query.name;
+    });
+    return {
+      type: "object",
+      properties,
+      required,
+    };
+  }
+  return {};
+};
 
-      // do not add example if it is duplicate of another example
-      const dataString = JSON.stringify(data);
-      for (const example in examples) {
-        const example2 = examples[example] as RequestBodyObject;
-        const compare = JSON.stringify(example2["value"]);
-        if (dataString === compare) {
-          return;
+export const getBody = async (postData: PostData | Content | undefined): Promise<RequestBodyObject | undefined> => {
+  if (!postData || !postData.mimeType) {
+    return undefined;
+  }
+
+  const param: RequestBodyObject = {
+    required: true,
+    content: {},
+  };
+  const text = postData.text;
+
+  if (postData && text) {
+    const mimeTypeWithoutExtras = postData.mimeType.split(";")[0];
+    const string = mimeTypeWithoutExtras?.split("/");
+    const mime = string[1] || string[0];
+    switch (mime.toLocaleLowerCase()) {
+      // try and parse plain and text as json as well
+      case "plain":
+      case "text":
+      case "json":
+        try {
+          const isBase64Encoded = "encoding" in postData && (<any>postData).encoding == "base64";
+          const data = JSON.parse(isBase64Encoded ? Buffer.from(text, "base64").toString() : text);
+          try {
+            const jsonSchema = await quicktypeJSON("schema", "request", text);
+
+            param.content[postData.mimeType] = {
+              schema: await toOpenApiSchema(jsonSchema),
+              example: data,
+            };
+          } catch (err) {
+            console.error(err);
+          }
+        } catch (err) {
+          // do nothing on json parse failures
         }
-      }
-
-      // merge this object with other objects found
-      const example1 = examples?.["example-0001"] as RequestBodyObject;
-      if (example1) {
-        example1["value"] = merge(example1["value"], data, {
-          arrayMerge: (a, b) => b,
-        });
-      }
-
-      // also add a new example
-      const num = pad(Object.keys(examples).length + 1, 4);
-      examples[`example-${num}`] = {
-        value: data,
-      };
-    } catch (err) {
-      // dont do anything on JSON parse errors
+        break;
+      case "form-data":
+      case "x-www-form-urlencoded":
+        const formSchema = getFormData(postData);
+        param.content[mimeTypeWithoutExtras] = {
+          schema: await toOpenApiSchema(formSchema),
+        };
+        break;
+      default:
+        console.log(`MIME Type "${postData.mimeType}" not supported`);
     }
   } else {
     // binary file sent
-    if (!specMethod["requestBody"]) {
-      specMethod["requestBody"] = {
-        content: {
-          "multipart/form-data": {
-            schema: {
-              properties: {
-                filename: {
-                  description: "",
-                  format: "binary",
-                  type: "string",
-                },
-              },
-              type: "object",
+    param.content = {
+      "multipart/form-data": {
+        schema: {
+          properties: {
+            filename: {
+              description: "",
+              format: "binary",
+              type: "string",
             },
           },
+          type: "object",
+        },
+      },
+    };
+  }
+  return param;
+};
+
+const STANDARD_HEADERS = [
+  "A-IM",
+  "Accept",
+  "Accept-Charset",
+  "Accept-Encoding",
+  "Accept-Language",
+  "Accept-Datetime",
+  "Access-Control-Request-Method",
+  "Access-Control-Request-Headers",
+  "Authorization",
+  "Cache-Control",
+  "Connection",
+  "Content-Length",
+  "Content-Type",
+  "Cookie",
+  "Date",
+  "Expect",
+  "Forwarded",
+  "From",
+  "Host",
+  "If-Match",
+  "If-Modified-Since",
+  "If-None-Match",
+  "If-Range",
+  "If-Unmodified-Since",
+  "Max-Forwards",
+  "Origin",
+  "Pragma",
+  "Proxy-Authorization",
+  "Range",
+  "Referer",
+  "TE",
+  "User-Agent",
+  "Upgrade",
+  "Via",
+  "Warning",
+].map((header) => header.toLowerCase());
+
+export const getResponseBody = async (response: Response): Promise<ResponseObject> => {
+  // lets start with the request one because the code is the same
+  const body = await getBody(response.content);
+
+  const param: ResponseObject = {
+    content: body?.["content"] || {},
+    description: "",
+  };
+  const customHeaders = (response.headers || []).filter((header) => {
+    return !STANDARD_HEADERS.includes(header.name.toLowerCase());
+  });
+  if (customHeaders.length) {
+    param.headers = customHeaders.reduce<HeadersObject>((acc, header) => {
+      acc[header.name] = {
+        description: `Custom header ${header.name}`,
+        schema: {
+          type: "string",
         },
       };
-    }
+      return acc;
+    }, {} as HeadersObject);
   }
+  return param;
 };
 export const mergeResponseExample = (specMethod: OperationObject, statusString: string, content: Content) => {
   try {

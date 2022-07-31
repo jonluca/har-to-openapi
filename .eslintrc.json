@@ -20,6 +20,7 @@
   },
   "plugins": ["prettier", "unused-imports", "@typescript-eslint"],
   "rules": {
+    "no-case-declarations": "off",
     "curly": ["error", "all"],
     "@typescript-eslint/no-non-null-assertion": "off",
     "@typescript-eslint/consistent-type-definitions": ["error", "interface"],
