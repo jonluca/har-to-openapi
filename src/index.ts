@@ -10,7 +10,7 @@ import {
   getPathAndParamsFromUrl,
   getResponseBody,
   getSecurity,
-} from "./utils";
+} from "./helpers";
 import type { Config, IGenerateSpecResponse } from "./types";
 import type { PathItemObject } from "openapi3-ts/src/model/OpenApi";
 import { groupBy } from "lodash-es";

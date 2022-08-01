@@ -19,9 +19,9 @@
     "rootDir": "src",
     "skipLibCheck": true,
     "strict": true,
-    "typeRoots": ["node_modules/@types", "src"]
+    "typeRoots": ["node_modules/@types"]
   },
   "compileOnSave": false,
   "exclude": ["node_modules", "dist"],
-  "include": ["src", "node_modules/vitest/dist/index.d.ts"]
+  "include": ["src/**/*", "node_modules/vitest/dist/index.d.ts"]
 }
