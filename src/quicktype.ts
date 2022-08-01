@@ -63,7 +63,6 @@ export const quicktypeJSON = async (
 
   const returnJSON = JSON.parse(result.lines.join("\n"));
   const parser = new RefParser();
-  // const dereferenced = deref(returnJSON);
   const derefd = handleRootReference(cloneDeep(returnJSON));
   const dereferenced = await parser.dereference(derefd, { dereference: { circular: "ignore" } });
   // if we have circular references we're kinda screwed, i think
