@@ -550,15 +550,14 @@ brfs@^1.4.0:
     static-module "^2.2.0"
     through2 "^2.0.0"
 
-browser-json-schema-to-openapi-schema@^0.0.8:
-  version "0.0.8"
-  resolved "https://registry.npmjs.org/browser-json-schema-to-openapi-schema/-/browser-json-schema-to-openapi-schema-0.0.8.tgz#2312352543b607c7bfd210d8ac4638518d7b79ed"
-  integrity sha512-gD2UZ7xBESw1DPG+21gSa6muZIP4MFMIJ0vSVGxPsKRnbSd5wgoGRYmFETbuVvrmvWToy8hSv3D38svUXhUBLg==
+browser-json-schema-to-openapi-schema@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.npmjs.org/browser-json-schema-to-openapi-schema/-/browser-json-schema-to-openapi-schema-0.1.1.tgz#b978ec74b71c4d26187be94ab0c56f87682b3731"
+  integrity sha512-wC0yJ3brBVhcTwp9OkFo3Xjozt2J7bLxcMYpPNVGfAXIXE9BjDjtLiqP16ikWTefuErz9SweNnUJHVSuqnEIwg==
   dependencies:
     "@apidevtools/json-schema-ref-parser" "^9.0.9"
-    "@cloudflare/json-schema-walker" "^0.1.1"
     chalk "^5.0.1"
-    clone "^2.1.2"
+    json-schema-walker "^0.0.1"
     yargs "^17.5.1"
 
 browser-or-node@^1.2.1:
@@ -1855,6 +1854,14 @@ json-schema-traverse@^1.0.0:
   resolved "https://registry.npmjs.org/json-schema-traverse/-/json-schema-traverse-1.0.0.tgz#ae7bcb3656ab77a73ba5c49bf654f38e6b6860e2"
   integrity sha512-NM8/P9n3XjXhIZn1lLhkFaACTOURQXjWhV4BA/RnOv8xvgqtqpAX9IO4mRQxSx1Rlo4tqzeqb0sOlruaOy3dug==
 
+json-schema-walker@^0.0.1:
+  version "0.0.1"
+  resolved "https://registry.npmjs.org/json-schema-walker/-/json-schema-walker-0.0.1.tgz#3a80d8e473047f8b940cdf303c66303ec0d12af2"
+  integrity sha512-iijjLHu7kJKaU0azo99LTF/iuN/pfyAKvZH5AePLnJ6E01pdj6Het4H4zassnCLZU1IxtI9B0fjzZzN696+ALA==
+  dependencies:
+    "@apidevtools/json-schema-ref-parser" "^9.0.9"
+    clone "^2.1.2"
+
 json-stable-stringify-without-jsonify@^1.0.1:
   version "1.0.1"
   resolved "https://registry.npmjs.org/json-stable-stringify-without-jsonify/-/json-stable-stringify-without-jsonify-1.0.1.tgz#9db7b59496ad3f3cfef30a75142d2d930ad72651"
@@ -2934,6 +2941,11 @@ utility-types@^3.10.0:
   version "3.10.0"
   resolved "https://registry.npmjs.org/utility-types/-/utility-types-3.10.0.tgz#ea4148f9a741015f05ed74fd615e1d20e6bed82b"
   integrity sha512-O11mqxmi7wMKCo6HKFt5AhO4BwY3VV68YU07tgxfz8zJTIxr4BpsezN49Ffwy9j3ZpwwJp4fkRwjRzq3uWE6Rg==
+
+uuid@^8.3.2:
+  version "8.3.2"
+  resolved "https://registry.npmjs.org/uuid/-/uuid-8.3.2.tgz#80d5b5ced271bb9af6c445f21a1a04c606cefbe2"
+  integrity sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==
 
 v8-compile-cache@^2.0.3:
   version "2.3.0"

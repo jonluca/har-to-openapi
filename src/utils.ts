@@ -5,17 +5,17 @@ import type { Content, QueryString } from "har-format";
 import type { ParameterObject, ReferenceObject, RequestBodyObject } from "openapi3-ts/src/model/OpenApi";
 import type { TargetLanguage } from "quicktype-core/dist/TargetLanguage";
 import { InputData, jsonInputForTargetLanguage, quicktype } from "quicktype-core";
-import deref from "json-schema-deref-sync";
 import type { PathsObject } from "openapi3-ts/src/model/OpenApi";
 import type { ResponseObject } from "openapi3-ts/src/model/OpenApi";
 import type { Header } from "har-format";
 import type { SecurityRequirementObject } from "openapi3-ts/src/model/OpenApi";
 import type { PostData } from "har-format";
 import type { SchemaObject } from "openapi3-ts/src/model/OpenApi";
-import toOpenApiSchema from "browser-json-schema-to-openapi-schema";
 import type { Response } from "har-format";
 import type { HeadersObject } from "openapi3-ts/src/model/OpenApi";
-import type { Options } from "browser-json-schema-to-openapi-schema/dist/mjs/types";
+import RefParser from "@apidevtools/json-schema-ref-parser";
+import toOpenApiSchema from "browser-json-schema-to-openapi-schema";
+import type { Options } from "@openapi-contrib/json-schema-to-openapi-schema";
 
 export const pad = (m: number, width: number, z = "0") => {
   const n = m.toString();
@@ -103,7 +103,7 @@ export async function quicktypeJSON(
   });
 
   const returnJSON = JSON.parse(result.lines.join("\n"));
-  return deref(returnJSON); // this one does not contain references
+  return returnJSON; // this one does not contain references
 }
 
 export const addMethod = (method: string, path: string, config?: Config): OperationObject => {
@@ -276,7 +276,11 @@ const getFormData = (postData: PostData | Content | undefined): SchemaObject => 
   return {};
 };
 
-export const getBody = async (postData: PostData | Content | undefined): Promise<RequestBodyObject | undefined> => {
+export const getBody = async (
+  postData: PostData | Content | undefined,
+  urlPath: string,
+  method: string,
+): Promise<RequestBodyObject | undefined> => {
   if (!postData || !postData.mimeType) {
     return undefined;
   }
@@ -299,6 +303,8 @@ export const getBody = async (postData: PostData | Content | undefined): Promise
     const mimeTypeWithoutExtras = postData.mimeType.split(";")[0];
     const string = mimeTypeWithoutExtras?.split("/");
     const mime = string[1] || string[0];
+    const parser = new RefParser();
+    // We run the risk of circular references here
     switch (mime.toLocaleLowerCase()) {
       // try and parse plain and text as json as well
       case "plain":
@@ -309,12 +315,14 @@ export const getBody = async (postData: PostData | Content | undefined): Promise
           const data = JSON.parse(isBase64Encoded ? Buffer.from(text, "base64").toString() : text);
 
           try {
-            const jsonSchema = await quicktypeJSON("schema", "request", text);
+            const jsonSchema = await quicktypeJSON("schema", [urlPath, method, "request"].join("-"), text);
             try {
               const schema = await toOpenApiSchema(jsonSchema, options);
+              const res = await parser.dereference(schema, { dereference: { circular: "ignore" } });
+
               param.content[postData.mimeType] = {
                 // @ts-ignore
-                schema,
+                schema: res,
                 example: data,
               };
             } catch (err) {
@@ -396,9 +404,9 @@ const STANDARD_HEADERS = [
   "X-XSS-Protection",
 ].map((header) => header.toLowerCase());
 
-export const getResponseBody = async (response: Response): Promise<ResponseObject> => {
+export const getResponseBody = async (response: Response, urlPath: string, method: string): Promise<ResponseObject> => {
   // lets start with the request one because the code is the same
-  const body = await getBody(response.content);
+  const body = await getBody(response.content, urlPath, method);
 
   const param: ResponseObject = {
     content: body?.["content"] || {},

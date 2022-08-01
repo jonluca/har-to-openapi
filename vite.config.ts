@@ -5,5 +5,6 @@ export default defineConfig({
     environment: "node",
     dir: "test",
     watch: false,
+    threads: false,
   },
 });

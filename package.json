@@ -50,7 +50,7 @@
     "@types/pluralize": "^0.0.29",
     "@types/react": "^18.0.15",
     "@types/sort-json": "^2.0.1",
-    "browser-json-schema-to-openapi-schema": "^0.0.8",
+    "browser-json-schema-to-openapi-schema": "^0.1.1",
     "js-yaml": "^4.1.0",
     "json-schema-deref-sync": "^0.14.0",
     "lodash-es": "^4.17.21",
@@ -59,7 +59,8 @@
     "pluralize": "^8.0.0",
     "quicktype-core": "^6.0.71",
     "sort-json": "^2.0.1",
-    "typescript": "4.7.4"
+    "typescript": "4.7.4",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@types/eslint": "8.4.5",

@@ -89,12 +89,12 @@ const generateSpecs = async <T extends Har>(har: T, config?: Config): Promise<IG
         const shouldUseRequestAndResponse = !ignoreBodiesForStatusCodes || !ignoreBodiesForStatusCodes.includes(status);
         const isValidMimetype = !mimeTypes || mimeTypes.includes(item.response?.content?.mimeType);
         if (shouldUseRequestAndResponse && item.request.postData) {
-          specMethod.requestBody = await getBody(item.request.postData);
+          specMethod.requestBody = await getBody(item.request.postData, urlPath, method);
         }
 
         // merge response example
         if (status && isValidMimetype && shouldUseRequestAndResponse && item.response) {
-          specMethod.responses[status] = await getResponseBody(item.response);
+          specMethod.responses[status] = await getResponseBody(item.response, urlPath, method);
         }
       }
 
