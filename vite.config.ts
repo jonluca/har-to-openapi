@@ -6,5 +6,8 @@ export default defineConfig({
     dir: "test",
     watch: false,
     threads: false,
+    testTimeout: 5000,
+    isolate: true,
+    passWithNoTests: true,
   },
 });

@@ -1,21 +1,21 @@
 import pluralize from "pluralize";
 import type { Config } from "./types";
 import type { OperationObject } from "@loopback/openapi-v3-types";
-import type { Content, QueryString } from "har-format";
-import type { ParameterObject, ReferenceObject, RequestBodyObject } from "openapi3-ts/src/model/OpenApi";
-import type { TargetLanguage } from "quicktype-core/dist/TargetLanguage";
-import { InputData, jsonInputForTargetLanguage, quicktype } from "quicktype-core";
-import type { PathsObject } from "openapi3-ts/src/model/OpenApi";
-import type { ResponseObject } from "openapi3-ts/src/model/OpenApi";
-import type { Header } from "har-format";
-import type { SecurityRequirementObject } from "openapi3-ts/src/model/OpenApi";
-import type { PostData } from "har-format";
-import type { SchemaObject } from "openapi3-ts/src/model/OpenApi";
-import type { Response } from "har-format";
-import type { HeadersObject } from "openapi3-ts/src/model/OpenApi";
-import RefParser from "@apidevtools/json-schema-ref-parser";
+import type { Content, Header, PostData, QueryString, Response } from "har-format";
+import type {
+  HeadersObject,
+  ParameterObject,
+  PathsObject,
+  ReferenceObject,
+  RequestBodyObject,
+  ResponseObject,
+  SchemaObject,
+  SecurityRequirementObject,
+} from "openapi3-ts/src/model/OpenApi";
 import toOpenApiSchema from "browser-json-schema-to-openapi-schema";
 import type { Options } from "@openapi-contrib/json-schema-to-openapi-schema";
+import { quicktypeJSON } from "./quicktype";
+import { cloneDeep } from "lodash-es";
 
 export const pad = (m: number, width: number, z = "0") => {
   const n = m.toString();
@@ -78,33 +78,6 @@ export const deriveTag = (path: string, config?: Config) => {
   }
   return "";
 };
-
-export async function quicktypeJSON(
-  targetLanguage: string | TargetLanguage,
-  typeName: string,
-  sampleArray: string | string[],
-) {
-  const jsonInput = jsonInputForTargetLanguage(targetLanguage);
-
-  await jsonInput.addSource({
-    name: typeName,
-    samples: Array.isArray(sampleArray) ? sampleArray : [sampleArray],
-  });
-
-  const inputData = new InputData();
-  inputData.addInput(jsonInput);
-
-  const result = await quicktype({
-    inputData,
-    lang: targetLanguage,
-    alphabetizeProperties: true,
-    allPropertiesOptional: true,
-    ignoreJsonRefs: true,
-  });
-
-  const returnJSON = JSON.parse(result.lines.join("\n"));
-  return returnJSON; // this one does not contain references
-}
 
 export const addMethod = (method: string, path: string, config?: Config): OperationObject => {
   // generate operation id
@@ -292,7 +265,7 @@ export const getBody = async (
   const text = postData.text;
   const options = {
     cloneSchema: true,
-    dereference: false,
+    dereference: true,
     dereferenceOptions: {
       dereference: {
         circular: "ignore",
@@ -303,7 +276,6 @@ export const getBody = async (
     const mimeTypeWithoutExtras = postData.mimeType.split(";")[0];
     const string = mimeTypeWithoutExtras?.split("/");
     const mime = string[1] || string[0];
-    const parser = new RefParser();
     // We run the risk of circular references here
     switch (mime.toLocaleLowerCase()) {
       // try and parse plain and text as json as well
@@ -317,12 +289,11 @@ export const getBody = async (
           try {
             const jsonSchema = await quicktypeJSON("schema", [urlPath, method, "request"].join("-"), text);
             try {
-              const schema = await toOpenApiSchema(jsonSchema, options);
-              const res = await parser.dereference(schema, { dereference: { circular: "ignore" } });
+              const schema = await toOpenApiSchema(cloneDeep(jsonSchema), options);
 
-              param.content[postData.mimeType] = {
+              param.content[mimeTypeWithoutExtras] = {
                 // @ts-ignore
-                schema: res,
+                schema,
                 example: data,
               };
             } catch (err) {

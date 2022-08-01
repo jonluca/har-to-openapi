@@ -19,6 +19,7 @@
     "rootDir": "src",
     "skipLibCheck": true,
     "strict": true,
+    "types": ["vitest/globals"],
     "typeRoots": ["node_modules/@types", "src"]
   },
   "compileOnSave": false,

@@ -12,12 +12,12 @@ import {
   getPathAndParamsFromUrl,
   getResponseBody,
   getSecurity,
-  quicktypeJSON,
   validateExampleList,
 } from "./utils";
 import type { Config, ExampleFile, IGenerateSpecResponse } from "./types";
 import type { PathItemObject } from "openapi3-ts/src/model/OpenApi";
 import { groupBy } from "lodash-es";
+import { quicktypeJSON } from "./quicktype";
 
 const generateSpecs = async <T extends Har>(har: T, config?: Config): Promise<IGenerateSpecResponse[]> => {
   if (!har?.log?.entries?.length) {

@@ -36,7 +36,7 @@ const validator = new OpenAPISchemaValidator({
 });
 
 describe("har-to-openapi", () => {
-  hars.map((entry) => {
+  for (const entry of hars) {
     const { file, har } = entry;
     test(`Sample API ${file} matches snapshot`, async ({ expect }) => {
       expect(await generateSpec(har)).toMatchSnapshot();
@@ -46,5 +46,5 @@ describe("har-to-openapi", () => {
       const result = validator.validate(spec.spec as any);
       expect(result.errors).toHaveLength(0);
     });
-  });
+  }
 });
