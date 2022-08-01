@@ -24,5 +24,5 @@ npm i --save har-to-openapi
 
 ```jsx
 import { generateSpec } from "har-to-openapi";
-const spec = generateSpec(har);
+const spec = await generateSpec(har);
 ```
