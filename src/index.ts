@@ -6,7 +6,6 @@ import sortJson from "sort-json";
 import {
   addMethod,
   addQueryStringParams,
-  addResponse,
   getBody,
   getPathAndParamsFromUrl,
   getResponseBody,
@@ -15,6 +14,7 @@ import {
 import type { Config, IGenerateSpecResponse } from "./types";
 import type { PathItemObject } from "openapi3-ts/src/model/OpenApi";
 import { groupBy } from "lodash-es";
+import { addResponse } from "./utils/baseResponse";
 
 const generateSpecs = async <T extends Har>(har: T, config?: Config): Promise<IGenerateSpecResponse[]> => {
   if (!har?.log?.entries?.length) {
@@ -39,23 +39,27 @@ const generateSpecs = async <T extends Har>(har: T, config?: Config): Promise<IG
     }
   });
   const specs: IGenerateSpecResponse[] = [];
-
+  const {
+    ignoreBodiesForStatusCodes,
+    apiBasePath,
+    mimeTypes,
+    securityHeaders,
+    filterStandardHeaders = true,
+  } = config || {};
   for (const domain in groupedByHostname) {
     try {
       // loop through har entries
       const spec = createEmptyApiSpec();
       spec.info.title = "HarToOpenApi";
-      const {
-        ignoreBodiesForStatusCodes,
-        apiBasePath,
-        mimeTypes,
-        securityHeaders,
-        filterStandardHeaders = true,
-      } = config || {};
+
       for (const item of har.log.entries) {
         const url = item.request.url;
         // if the config specified a base path, we'll only generate specs for urls that include it
         if (apiBasePath && !url.includes(apiBasePath)) {
+          continue;
+        }
+        const isValidMimetype = !mimeTypes || mimeTypes.includes(item.response?.content?.mimeType);
+        if (!isValidMimetype) {
           continue;
         }
 
@@ -93,7 +97,6 @@ const generateSpecs = async <T extends Har>(har: T, config?: Config): Promise<IG
 
         // merge request example
         const shouldUseRequestAndResponse = !ignoreBodiesForStatusCodes || !ignoreBodiesForStatusCodes.includes(status);
-        const isValidMimetype = !mimeTypes || mimeTypes.includes(item.response?.content?.mimeType);
         if (shouldUseRequestAndResponse && item.request.postData) {
           specMethod.requestBody = await getBody(item.request.postData, urlPath, method);
         }
@@ -121,7 +124,12 @@ const generateSpecs = async <T extends Har>(har: T, config?: Config): Promise<IG
 };
 const generateSpec = async <T extends Har>(har: T, config?: Config): Promise<IGenerateSpecResponse> => {
   const specs = await generateSpecs(har, config);
-  return specs[0];
+  if (specs.length) {
+    return specs[0];
+  }
+  const spec = createEmptyApiSpec();
+  spec.info.title = "HarToOpenApi - no valid specs found";
+  return { spec, yamlSpec: YAML.dump(spec) };
 };
 
 export { generateSpec, generateSpecs };

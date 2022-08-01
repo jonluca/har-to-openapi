@@ -71617,20 +71617,7 @@ exports[`har-to-openapi > Sample API www.ozon.ru.har matches snapshot 1`] = `
           },
           "responses": {
             "200": {
-              "content": {
-                "multipart/form-data": {
-                  "schema": {
-                    "properties": {
-                      "filename": {
-                        "description": "",
-                        "format": "binary",
-                        "type": "string",
-                      },
-                    },
-                    "type": "object",
-                  },
-                },
-              },
+              "content": {},
               "description": "",
               "headers": {
                 "access-control-allow-credentials": {
@@ -76144,20 +76131,7 @@ function getEventProperties(action, interactive) {
           ],
           "responses": {
             "200": {
-              "content": {
-                "multipart/form-data": {
-                  "schema": {
-                    "properties": {
-                      "filename": {
-                        "description": "",
-                        "format": "binary",
-                        "type": "string",
-                      },
-                    },
-                    "type": "object",
-                  },
-                },
-              },
+              "content": {},
               "description": "",
               "headers": {
                 "alt-svc": {
@@ -80712,15 +80686,7 @@ paths:
         required: true
       responses:
         '200':
-          content:
-            multipart/form-data:
-              schema:
-                properties:
-                  filename:
-                    description: ''
-                    format: binary
-                    type: string
-                type: object
+          content: {}
           description: ''
           headers:
             access-control-allow-credentials:
@@ -83746,15 +83712,7 @@ paths:
             type: string
       responses:
         '200':
-          content:
-            multipart/form-data:
-              schema:
-                properties:
-                  filename:
-                    description: ''
-                    format: binary
-                    type: string
-                type: object
+          content: {}
           description: ''
           headers:
             alt-svc:
