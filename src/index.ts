@@ -16,6 +16,18 @@ import type { PathItemObject } from "openapi3-ts/src/model/OpenApi";
 import { groupBy } from "lodash-es";
 import { addResponse } from "./utils/baseResponse";
 
+const checkPathFromFilter = async (urlPath: string, filter: Config["urlFilter"]) => {
+  if (!filter) {
+    return true;
+  }
+  if (typeof filter === "string") {
+    return urlPath.includes(filter);
+  }
+  if (filter instanceof RegExp) {
+    return filter.test(urlPath);
+  }
+  return filter(urlPath);
+};
 const generateSpecs = async <T extends Har>(har: T, config?: Config): Promise<IGenerateSpecResponse[]> => {
   if (!har?.log?.entries?.length) {
     return [];
@@ -45,6 +57,7 @@ const generateSpecs = async <T extends Har>(har: T, config?: Config): Promise<IG
     mimeTypes,
     securityHeaders,
     filterStandardHeaders = true,
+    urlFilter,
   } = config || {};
   for (const domain in groupedByHostname) {
     try {
@@ -69,6 +82,13 @@ const generateSpecs = async <T extends Har>(har: T, config?: Config): Promise<IG
         // continue if url is blank
         if (!urlPath) {
           continue;
+        }
+
+        if (urlFilter) {
+          const isValid = await checkPathFromFilter(urlPath, urlFilter);
+          if (!isValid) {
+            continue;
+          }
         }
 
         // create path if it doesn't exist

@@ -22,6 +22,7 @@ export interface Config {
   mimeTypes?: string[];
   securityHeaders?: string[];
   filterStandardHeaders?: boolean;
+  urlFilter?: string | RegExp | ((url: string) => boolean | Promise<boolean>);
 }
 
 export interface IGenerateSpecResponse {
