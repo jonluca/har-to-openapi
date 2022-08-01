@@ -5,6 +5,8 @@ import { fileURLToPath } from "url";
 import * as path from "path";
 import { dirname } from "path";
 import fs from "fs/promises";
+import type { Har } from "har-format";
+import jsonic from "jsonic";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -12,17 +14,18 @@ const __dirname = dirname(__filename);
 const readDirectory = async (dir: string) => {
   const files = await fs.readdir(dir);
 
-  const values = files.flatMap(async (file) => {
-    const filePath = path.join(dir, file);
-    const stat = await fs.stat(filePath);
-    if (stat.isDirectory()) {
-      return;
+  const values = files.map(async (file) => {
+    try {
+      const filePath = path.join(dir, file);
+      const contents = await fs.readFile(filePath);
+      return { file, har: jsonic(contents.toString()) };
+    } catch (e) {
+      console.error(`Failed to parse ${file}: ${e}`);
+      return {};
     }
-    return fs.readFile(filePath);
-  }) as Array<Promise<Buffer>>;
+  }) as Array<Promise<{ file: string; har: Har }>>;
 
-  const buffers = await Promise.all(values);
-  const contents = buffers.filter(Boolean).map((l) => JSON.parse(l.toString()));
+  const contents = await Promise.all(values);
   return contents;
 };
 
@@ -31,12 +34,14 @@ const hars = await readDirectory(path.join(__dirname, "data"));
 const validator = new OpenAPISchemaValidator({
   version: 3,
 });
+
 describe("har-to-openapi", () => {
-  hars.map((har, index) => {
-    test(`Sample API ${index + 1} matches snapshot`, async ({ expect }) => {
+  hars.map((entry) => {
+    const { file, har } = entry;
+    test(`Sample API ${file} matches snapshot`, async ({ expect }) => {
       expect(await generateSpec(har)).toMatchSnapshot();
     });
-    test(`Sample API ${index + 1} is valid schema`, async ({ expect }) => {
+    test(`Sample API ${file} is valid schema`, async ({ expect }) => {
       const spec = await generateSpec(har);
       const result = validator.validate(spec.spec as any);
       expect(result.errors).toHaveLength(0);

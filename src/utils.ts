@@ -1,14 +1,11 @@
 import pluralize from "pluralize";
 import type { Config } from "./types";
-import type { OpenApiSpec, OperationObject } from "@loopback/openapi-v3-types";
+import type { OperationObject } from "@loopback/openapi-v3-types";
 import type { Content, QueryString } from "har-format";
 import type { ParameterObject, ReferenceObject, RequestBodyObject } from "openapi3-ts/src/model/OpenApi";
 import type { TargetLanguage } from "quicktype-core/dist/TargetLanguage";
 import { InputData, jsonInputForTargetLanguage, quicktype } from "quicktype-core";
 import deref from "json-schema-deref-sync";
-import sortJson from "sort-json";
-import YAML from "js-yaml";
-import merge from "deepmerge";
 import type { PathsObject } from "openapi3-ts/src/model/OpenApi";
 import type { ResponseObject } from "openapi3-ts/src/model/OpenApi";
 import type { Header } from "har-format";
@@ -18,17 +15,20 @@ import type { SchemaObject } from "openapi3-ts/src/model/OpenApi";
 import toOpenApiSchema from "browser-json-schema-to-openapi-schema";
 import type { Response } from "har-format";
 import type { HeadersObject } from "openapi3-ts/src/model/OpenApi";
+import type { Options } from "browser-json-schema-to-openapi-schema/dist/mjs/types";
 
 export const pad = (m: number, width: number, z = "0") => {
   const n = m.toString();
   return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
 };
+
 export const capitalize = (s: unknown): string => {
   if (typeof s !== "string") {
     return "";
   }
   return s.charAt(0).toUpperCase() + s.slice(1);
 };
+
 export const deriveSummary = (method: string, path: string) => {
   const pathParts = path.split("/");
   const lastParam = pathParts.length > 1 ? pathParts[pathParts.length - 2] : "";
@@ -286,7 +286,15 @@ export const getBody = async (postData: PostData | Content | undefined): Promise
     content: {},
   };
   const text = postData.text;
-
+  const options = {
+    cloneSchema: true,
+    dereference: false,
+    dereferenceOptions: {
+      dereference: {
+        circular: "ignore",
+      },
+    },
+  } as Options;
   if (postData && text) {
     const mimeTypeWithoutExtras = postData.mimeType.split(";")[0];
     const string = mimeTypeWithoutExtras?.split("/");
@@ -299,13 +307,19 @@ export const getBody = async (postData: PostData | Content | undefined): Promise
         try {
           const isBase64Encoded = "encoding" in postData && (<any>postData).encoding == "base64";
           const data = JSON.parse(isBase64Encoded ? Buffer.from(text, "base64").toString() : text);
+
           try {
             const jsonSchema = await quicktypeJSON("schema", "request", text);
-
-            param.content[postData.mimeType] = {
-              schema: await toOpenApiSchema(jsonSchema),
-              example: data,
-            };
+            try {
+              const schema = await toOpenApiSchema(jsonSchema, options);
+              param.content[postData.mimeType] = {
+                // @ts-ignore
+                schema,
+                example: data,
+              };
+            } catch (err) {
+              console.error(err);
+            }
           } catch (err) {
             console.error(err);
           }
@@ -317,11 +331,10 @@ export const getBody = async (postData: PostData | Content | undefined): Promise
       case "x-www-form-urlencoded":
         const formSchema = getFormData(postData);
         param.content[mimeTypeWithoutExtras] = {
-          schema: await toOpenApiSchema(formSchema),
+          // @ts-ignore
+          schema: await toOpenApiSchema(formSchema, options),
         };
         break;
-      default:
-        console.log(`MIME Type "${postData.mimeType}" not supported`);
     }
   } else {
     // binary file sent
@@ -379,6 +392,8 @@ const STANDARD_HEADERS = [
   "Upgrade",
   "Via",
   "Warning",
+  "X-Frame-Options",
+  "X-XSS-Protection",
 ].map((header) => header.toLowerCase());
 
 export const getResponseBody = async (response: Response): Promise<ResponseObject> => {
@@ -405,110 +420,7 @@ export const getResponseBody = async (response: Response): Promise<ResponseObjec
   }
   return param;
 };
-export const mergeResponseExample = (specMethod: OperationObject, statusString: string, content: Content) => {
-  try {
-    const isBase64 = content.encoding == "base64";
-    const str = content.text || "";
-    const data = JSON.parse(isBase64 ? Buffer.from(str, "base64").toString() : str);
 
-    // create response example if it doesn't exist
-    if (!specMethod.responses[statusString]["content"]) {
-      specMethod.responses[statusString]["content"] = {
-        "application/json": {
-          examples: {
-            "example-0001": {
-              value: {},
-            },
-          },
-          schema: {
-            properties: {},
-            type: "object",
-          },
-        },
-      };
-    }
-
-    // const examples = specMethod.responses[statusString].content["application/json"].examples['example-1']
-    const examples = specMethod.responses[statusString].content["application/json"].examples;
-
-    // do not add example if it is duplicate of another example
-    const dataString = JSON.stringify(data);
-    for (const example in examples) {
-      const compare = JSON.stringify(examples[example]["value"]);
-      if (dataString === compare) {
-        return;
-      }
-    }
-
-    // merge current response into other response examples
-    examples["example-0001"]["value"] = merge(examples["example-0001"]["value"], data, {
-      arrayMerge: (a, b) => b,
-    });
-
-    // also add a new example
-    examples[`example-${pad(Object.keys(examples).length + 1, 4)}`] = {
-      value: data,
-    };
-  } catch (err) {
-    console.error(err);
-  }
-};
-export const getExamples = (spec: OpenApiSpec) => {
-  const specExamples: any = {};
-  Object.keys(spec.paths).forEach((path) => {
-    specExamples[path] = {};
-    Object.keys(spec.paths[path]).forEach((lMethod) => {
-      if (lMethod === "parameters") {
-        return;
-      }
-      if (lMethod === "options") {
-        return;
-      }
-      specExamples[path][lMethod] = {
-        request: {},
-        response: {},
-      };
-      const method = spec.paths[path][lMethod];
-
-      // find request examples
-      let examples = method.requestBody?.content?.["application/json"]?.examples;
-      if (examples) {
-        // add examples to list
-        const exampleCount = Object.keys(examples).length;
-        let exampleNum = 0;
-        for (const example in examples) {
-          exampleNum++;
-          if (exampleNum < 2 || exampleCount != 2) {
-            specExamples[path][lMethod]["request"][example] = examples[example]["value"];
-          }
-        }
-      }
-
-      // look at responses
-      for (const status in method.responses) {
-        examples = method.responses?.[status]?.content?.["application/json"]?.examples;
-        if (examples) {
-          specExamples[path][lMethod]["response"][status] = {};
-          const exampleCount = Object.keys(examples).length;
-          let exampleNum = 0;
-          for (const example in examples) {
-            exampleNum++;
-            if (exampleNum < 2 || exampleCount != 2) {
-              specExamples[path][lMethod]["response"][status][example] = examples[example]["value"];
-            }
-          }
-        }
-      }
-    });
-  });
-
-  // sort examples
-  const sortedExamples = sortJson(specExamples, { depth: 200 });
-  // dump as yaml
-  const yamlExamples = YAML.dump(sortedExamples);
-
-  return { sortedExamples, yamlExamples };
-};
 export const validateExampleList = (exampleObject: any, exampleObjectName: string) => {
   const exampleCount = Object.keys(exampleObject).length;
   let gexampleCount = 0;

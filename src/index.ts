@@ -165,10 +165,13 @@ const generateSchema = async (oldSpec: OpenApiSpec, masterExamples: ExampleFile)
             },
           };
         }
-        methodObject.requestBody.content["application/json"].schema = await toOpenApiSchema(jsonSchema).catch((err) => {
+        let schema = jsonSchema;
+        try {
+          schema = await toOpenApiSchema(jsonSchema);
+        } catch (err) {
           console.log("ERROR CONVERTING TO OPENAPI SCHEMA, USING JSON SCHEMA");
-          methodObject.requestBody.content["application/json"].schema = jsonSchema;
-        });
+        }
+        methodObject.requestBody.content["application/json"].schema = schema;
         methodObject.requestBody.content["application/json"].examples = exampleStats.publishExamples;
       }
 
