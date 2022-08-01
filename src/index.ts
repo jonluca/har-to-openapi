@@ -25,8 +25,9 @@ const generateSpecs = async <T extends Har>(har: T, config?: Config): Promise<IG
   }
   // decode base64 now before writing pretty har file
   har.log.entries.forEach((item, index) => {
-    if (item.response.content.encoding === "base64") {
-      har.log.entries[index].response.content.text = Buffer.from(item.response.content.text || "", "base64").toString();
+    const response = item.response;
+    if (response && response.content.encoding === "base64") {
+      har.log.entries[index].response.content.text = Buffer.from(response.content.text || "", "base64").toString();
       delete har.log.entries[index].response.content.encoding;
     }
   });
@@ -72,7 +73,7 @@ const generateSpecs = async <T extends Har>(har: T, config?: Config): Promise<IG
         path[method] ??= addMethod(method, urlPath, config);
         const specMethod = path[method] as OperationObject;
         // generate response
-        const status = item.response.status;
+        const status = item.response?.status;
         if (status) {
           specMethod.responses[status] ??= addResponse(status, method);
         }
@@ -83,7 +84,9 @@ const generateSpecs = async <T extends Har>(har: T, config?: Config): Promise<IG
         }
 
         // add query string parameters
-        addQueryStringParams(specMethod, item.request.queryString);
+        if (item.request.queryString) {
+          addQueryStringParams(specMethod, item.request.queryString);
+        }
 
         // merge request example
         const shouldUseRequestAndResponse = !ignoreBodiesForStatusCodes || !ignoreBodiesForStatusCodes.includes(status);

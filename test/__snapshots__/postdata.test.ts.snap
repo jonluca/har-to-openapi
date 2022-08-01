@@ -1,0 +1,95 @@
+// Vitest Snapshot v1
+
+exports[`har-to-openapi > HAR with request postdata matches snapshot 1`] = `
+{
+  "spec": {
+    "info": {
+      "title": "HarToOpenApi",
+      "version": "1.0.0",
+    },
+    "openapi": "3.0.0",
+    "paths": {
+      "/login": {
+        "parameters": [],
+        "post": {
+          "description": "",
+          "operationId": "post-login",
+          "parameters": [],
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "password": "123",
+                  "user": "admin",
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "password": {
+                      "format": "integer",
+                      "type": "string",
+                    },
+                    "user": {
+                      "type": "string",
+                    },
+                  },
+                  "required": [],
+                  "title": "LoginPostRequest",
+                  "type": "object",
+                },
+              },
+            },
+            "required": true,
+          },
+          "responses": {},
+          "summary": "Create ",
+          "tags": [
+            "",
+          ],
+        },
+      },
+    },
+    "servers": [
+      {
+        "url": "/",
+      },
+    ],
+  },
+  "yamlSpec": "openapi: 3.0.0
+info:
+  title: HarToOpenApi
+  version: 1.0.0
+paths:
+  /login:
+    parameters: []
+    post:
+      description: ''
+      operationId: post-login
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            example:
+              password: '123'
+              user: admin
+            schema:
+              additionalProperties: false
+              properties:
+                password:
+                  format: integer
+                  type: string
+                user:
+                  type: string
+              required: []
+              title: LoginPostRequest
+              type: object
+        required: true
+      responses: {}
+      summary: 'Create '
+      tags:
+        - ''
+servers:
+  - url: /
+",
+}
+`;

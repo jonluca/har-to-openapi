@@ -130,7 +130,7 @@ export const addQueryStringParams = (specMethod: OperationObject, harParams: Que
       methodQueryParameters.push(param.name);
     }
   });
-  harParams.forEach((param) => {
+  harParams?.forEach((param) => {
     if (!methodQueryParameters.includes(param.name)) {
       // add query parameter
       parameters.push({
