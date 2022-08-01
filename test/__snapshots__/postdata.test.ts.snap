@@ -1,6 +1,6 @@
 // Vitest Snapshot v1
 
-exports[`har-to-openapi > HAR with request with postdata matches snapshot 1`] = `
+exports[`har-to-openapi: Post data > HAR with request with postdata matches snapshot 1`] = `
 {
   "spec": {
     "info": {
@@ -94,7 +94,7 @@ servers:
 }
 `;
 
-exports[`har-to-openapi > HAR with request with postdata with a mismatch matches snapshot 1`] = `
+exports[`har-to-openapi: Post data > HAR with request with postdata with a mismatch matches snapshot 1`] = `
 {
   "spec": {
     "info": {

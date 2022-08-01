@@ -209,10 +209,19 @@ export const getBody = async (
     const mime = string[1] || string[0];
     // We run the risk of circular references here
     switch (mime.toLocaleLowerCase()) {
-      // try and parse plain and text as json as well
+      case "form-data":
+      case "x-www-form-urlencoded":
+        const formSchema = getFormData(postData);
+        param.content[mimeTypeWithoutExtras] = {
+          // @ts-ignore
+          schema: await toOpenApiSchema(formSchema, options),
+        };
+        break;
+        // try and parse plain and text as json as well
       case "plain":
       case "text":
       case "json":
+      default:
         try {
           const isBase64Encoded = "encoding" in postData && (<any>postData).encoding == "base64";
           const data = JSON.parse(isBase64Encoded ? Buffer.from(text, "base64").toString() : text);
@@ -236,14 +245,6 @@ export const getBody = async (
         } catch (err) {
           // do nothing on json parse failures
         }
-        break;
-      case "form-data":
-      case "x-www-form-urlencoded":
-        const formSchema = getFormData(postData);
-        param.content[mimeTypeWithoutExtras] = {
-          // @ts-ignore
-          schema: await toOpenApiSchema(formSchema, options),
-        };
         break;
     }
   } else {

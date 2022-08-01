@@ -67,7 +67,7 @@ const postDataConflict = {
     ],
   },
 } as unknown as Har;
-describe("har-to-openapi", async () => {
+describe("har-to-openapi: Post data", async () => {
   const [postDataSpec, postDataSpecWithConflict] = await Promise.all([
     generateSpec(har),
     generateSpec(postDataConflict),

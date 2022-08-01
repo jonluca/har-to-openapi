@@ -8,7 +8,7 @@ import fs from "fs";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-describe("har-to-openapi", async () => {
+describe("Snapshots and validity", async () => {
   const readDirectory = (dir: string) => {
     const files = fs.readdirSync(dir);
     const all = [];
@@ -34,7 +34,6 @@ describe("har-to-openapi", async () => {
       });
       test(`Sample API ${file} is valid schema`, async ({ expect }) => {
         const result = validator.validate(spec.spec as any);
-
         expect(result.errors).toHaveLength(0);
       });
     }),

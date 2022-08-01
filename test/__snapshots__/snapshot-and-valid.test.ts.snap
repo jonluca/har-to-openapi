@@ -1,6 +1,6 @@
 // Vitest Snapshot v1
 
-exports[`har-to-openapi > Sample API ServerService-GetNavigationMenu2-ff.har matches snapshot 1`] = `
+exports[`Snapshots and validity > Sample API ServerService-GetNavigationMenu2-ff.har matches snapshot 1`] = `
 {
   "spec": {
     "info": {
@@ -4804,7 +4804,7 @@ servers:
 }
 `;
 
-exports[`har-to-openapi > Sample API ServerService-GetNavigationMenu2-fiddler.har matches snapshot 1`] = `
+exports[`Snapshots and validity > Sample API ServerService-GetNavigationMenu2-fiddler.har matches snapshot 1`] = `
 {
   "spec": {
     "info": {
@@ -9608,7 +9608,7 @@ servers:
 }
 `;
 
-exports[`har-to-openapi > Sample API add.har matches snapshot 1`] = `
+exports[`Snapshots and validity > Sample API add.har matches snapshot 1`] = `
 {
   "spec": {
     "info": {
@@ -9873,7 +9873,7 @@ servers:
 }
 `;
 
-exports[`har-to-openapi > Sample API ericduran.github.io.har matches snapshot 1`] = `
+exports[`Snapshots and validity > Sample API ericduran.github.io.har matches snapshot 1`] = `
 {
   "spec": {
     "info": {
@@ -16272,7 +16272,7 @@ servers:
 }
 `;
 
-exports[`har-to-openapi > Sample API full.har matches snapshot 1`] = `
+exports[`Snapshots and validity > Sample API full.har matches snapshot 1`] = `
 {
   "spec": {
     "info": {
@@ -16476,7 +16476,7 @@ servers:
 }
 `;
 
-exports[`har-to-openapi > Sample API onePostJsonCookie.har matches snapshot 1`] = `
+exports[`Snapshots and validity > Sample API onePostJsonCookie.har matches snapshot 1`] = `
 {
   "spec": {
     "info": {
@@ -16697,7 +16697,7 @@ servers:
 }
 `;
 
-exports[`har-to-openapi > Sample API sample.har matches snapshot 1`] = `
+exports[`Snapshots and validity > Sample API sample.har matches snapshot 1`] = `
 {
   "spec": {
     "info": {
@@ -66650,7 +66650,7 @@ servers:
 }
 `;
 
-exports[`har-to-openapi > Sample API urlfull.har matches snapshot 1`] = `
+exports[`Snapshots and validity > Sample API urlfull.har matches snapshot 1`] = `
 {
   "spec": {
     "info": {
@@ -66877,7 +66877,7 @@ servers:
 }
 `;
 
-exports[`har-to-openapi > Sample API www.ozon.ru.har matches snapshot 1`] = `
+exports[`Snapshots and validity > Sample API www.ozon.ru.har matches snapshot 1`] = `
 {
   "spec": {
     "info": {
