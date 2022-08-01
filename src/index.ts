@@ -1,9 +1,8 @@
-import type { OpenApiSpec, OperationObject } from "@loopback/openapi-v3-types";
+import type { OperationObject } from "@loopback/openapi-v3-types";
 import { createEmptyApiSpec } from "@loopback/openapi-v3-types";
 import type { Entry, Har } from "har-format";
 import YAML from "js-yaml";
 import sortJson from "sort-json";
-import toOpenApiSchema from "browser-json-schema-to-openapi-schema";
 import {
   addMethod,
   addQueryStringParams,
@@ -12,12 +11,10 @@ import {
   getPathAndParamsFromUrl,
   getResponseBody,
   getSecurity,
-  validateExampleList,
 } from "./utils";
-import type { Config, ExampleFile, IGenerateSpecResponse } from "./types";
+import type { Config, IGenerateSpecResponse } from "./types";
 import type { PathItemObject } from "openapi3-ts/src/model/OpenApi";
 import { groupBy } from "lodash-es";
-import { quicktypeJSON } from "./quicktype";
 
 const generateSpecs = async <T extends Har>(har: T, config?: Config): Promise<IGenerateSpecResponse[]> => {
   if (!har?.log?.entries?.length) {
@@ -48,7 +45,13 @@ const generateSpecs = async <T extends Har>(har: T, config?: Config): Promise<IG
       // loop through har entries
       const spec = createEmptyApiSpec();
       spec.info.title = "HarToOpenApi";
-      const { ignoreBodiesForStatusCodes, apiBasePath, mimeTypes, securityHeaders } = config || {};
+      const {
+        ignoreBodiesForStatusCodes,
+        apiBasePath,
+        mimeTypes,
+        securityHeaders,
+        filterStandardHeaders = true,
+      } = config || {};
       for (const item of har.log.entries) {
         const url = item.request.url;
         // if the config specified a base path, we'll only generate specs for urls that include it
@@ -97,7 +100,7 @@ const generateSpecs = async <T extends Har>(har: T, config?: Config): Promise<IG
 
         // merge response example
         if (status && isValidMimetype && shouldUseRequestAndResponse && item.response) {
-          specMethod.responses[status] = await getResponseBody(item.response, urlPath, method);
+          specMethod.responses[status] = await getResponseBody(item.response, urlPath, method, filterStandardHeaders);
         }
       }
 
@@ -120,98 +123,5 @@ const generateSpec = async <T extends Har>(har: T, config?: Config): Promise<IGe
   const specs = await generateSpecs(har, config);
   return specs[0];
 };
-const generateSchema = async (oldSpec: OpenApiSpec, masterExamples: ExampleFile) => {
-  const newSpec: OpenApiSpec = {
-    openapi: oldSpec.openapi,
-    info: oldSpec.info,
-    servers: oldSpec.servers,
-    paths: {},
-  };
-  for (const path in masterExamples) {
-    // start with path object from examples spec
-    if (oldSpec.paths[path]) {
-      newSpec.paths[path] = oldSpec.paths[path];
-    } else {
-      newSpec.paths[path] = {};
-    }
 
-    for (const method in masterExamples[path]) {
-      // create a spec if none exists. i.e. we added an example where there was no unit test
-      if (!newSpec.paths[path][method]) {
-        let operationId = path.replace(/(^\/|\/$|{|})/g, "").replace(/\//g, "-");
-        operationId = `${method}-${operationId}`;
-        newSpec.paths[path][method] = {
-          operationId,
-          summary: operationId,
-          description: "",
-          parameters: [],
-          responses: {},
-          tags: ["UNKNOWN"],
-          meta: {
-            originalPath: `https://app.crunch.io/api${path}`,
-          },
-        };
-      }
-
-      const methodObject = newSpec.paths[path][method];
-
-      const numExamples = Object.keys(masterExamples[path][method].request).length;
-      console.log(path, method, "request", numExamples);
-      if (numExamples) {
-        const exampleStats = validateExampleList(masterExamples[path][method].request, `${path} ${method} requests`);
-        const jsonSchema = await quicktypeJSON("schema", [path, method, "request"].join("-"), exampleStats.allExamples);
-
-        if (!methodObject.requestBody) {
-          methodObject.requestBody = {
-            content: {
-              "application/json": {},
-            },
-          };
-        }
-        let schema = jsonSchema;
-        try {
-          schema = await toOpenApiSchema(jsonSchema);
-        } catch (err) {
-          console.log("ERROR CONVERTING TO OPENAPI SCHEMA, USING JSON SCHEMA");
-        }
-        methodObject.requestBody.content["application/json"].schema = schema;
-        methodObject.requestBody.content["application/json"].examples = exampleStats.publishExamples;
-      }
-
-      for (const statusCode in masterExamples[path][method].response) {
-        const numExamples = Object.keys(masterExamples[path][method].response[statusCode]).length;
-        console.log(path, method, statusCode, numExamples);
-        if (numExamples) {
-          const exampleStats = validateExampleList(
-            masterExamples[path][method].response[statusCode],
-            `${path} ${method} requests`,
-          );
-          const jsonSchema = await quicktypeJSON(
-            "schema",
-            [path, method, "request"].join("-"),
-            exampleStats.allExamples,
-          );
-
-          if (!methodObject.responses[statusCode]) {
-            methodObject.responses[statusCode] = {
-              content: {
-                "application/json": {},
-              },
-            };
-          }
-          try {
-            methodObject.responses[statusCode].content["application/json"].schema = await toOpenApiSchema(jsonSchema);
-          } catch (err) {
-            console.log("ERROR CONVERTING TO OPENAPI SCHEMA, USING JSON SCHEMA");
-            methodObject.responses[statusCode].content["application/json"].schema = jsonSchema;
-          }
-          methodObject.responses[statusCode].content["application/json"].examples = exampleStats.publishExamples;
-        }
-      }
-    }
-  }
-
-  return newSpec;
-};
-
-export { generateSpec, generateSchema, generateSpecs };
+export { generateSpec, generateSpecs };

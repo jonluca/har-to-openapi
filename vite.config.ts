@@ -7,7 +7,8 @@ export default defineConfig({
     watch: false,
     threads: false,
     testTimeout: 5000,
-    isolate: true,
+    isolate: false,
     passWithNoTests: true,
+    reporters: ["verbose"],
   },
 });

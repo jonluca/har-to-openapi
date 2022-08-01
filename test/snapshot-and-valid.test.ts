@@ -4,47 +4,39 @@ import { generateSpec } from "../src";
 import { fileURLToPath } from "url";
 import * as path from "path";
 import { dirname } from "path";
-import fs from "fs/promises";
-import type { Har } from "har-format";
-import jsonic from "jsonic";
-
+import fs from "fs";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const readDirectory = async (dir: string) => {
-  const files = await fs.readdir(dir);
-
-  const values = files.map(async (file) => {
-    try {
+describe("har-to-openapi", async () => {
+  const readDirectory = (dir: string) => {
+    const files = fs.readdirSync(dir);
+    const all = [];
+    for (const file of files) {
       const filePath = path.join(dir, file);
-      const contents = await fs.readFile(filePath);
-      return { file, har: jsonic(contents.toString()) };
-    } catch (e) {
-      console.error(`Failed to parse ${file}: ${e}`);
-      return {};
+      const contents = JSON.parse(fs.readFileSync(filePath, { encoding: "utf8" }));
+      all.push({ file, har: contents });
     }
-  }) as Array<Promise<{ file: string; har: Har }>>;
+    return all;
+  };
 
-  const contents = await Promise.all(values);
-  return contents;
-};
+  const hars = readDirectory(path.join(__dirname, "data"));
 
-const hars = await readDirectory(path.join(__dirname, "data"));
-
-const validator = new OpenAPISchemaValidator({
-  version: 3,
-});
-
-describe("har-to-openapi", () => {
-  for (const entry of hars) {
-    const { file, har } = entry;
-    test(`Sample API ${file} matches snapshot`, async ({ expect }) => {
-      expect(await generateSpec(har)).toMatchSnapshot();
-    });
-    test(`Sample API ${file} is valid schema`, async ({ expect }) => {
+  const validator = new OpenAPISchemaValidator({
+    version: 3,
+  });
+  await Promise.all(
+    hars.map(async (entry) => {
+      const { file, har } = entry;
       const spec = await generateSpec(har);
-      const result = validator.validate(spec.spec as any);
-      expect(result.errors).toHaveLength(0);
-    });
-  }
+      test(`Sample API ${file} matches snapshot`, async ({ expect }) => {
+        expect(spec).toMatchSnapshot();
+      });
+      test(`Sample API ${file} is valid schema`, async ({ expect }) => {
+        const result = validator.validate(spec.spec as any);
+
+        expect(result.errors).toHaveLength(0);
+      });
+    }),
+  );
 });

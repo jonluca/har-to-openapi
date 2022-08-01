@@ -16,18 +16,8 @@ import toOpenApiSchema from "browser-json-schema-to-openapi-schema";
 import type { Options } from "@openapi-contrib/json-schema-to-openapi-schema";
 import { quicktypeJSON } from "./quicktype";
 import { cloneDeep } from "lodash-es";
-
-export const pad = (m: number, width: number, z = "0") => {
-  const n = m.toString();
-  return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
-};
-
-export const capitalize = (s: unknown): string => {
-  if (typeof s !== "string") {
-    return "";
-  }
-  return s.charAt(0).toUpperCase() + s.slice(1);
-};
+import { STANDARD_HEADERS } from "./utils/headers";
+import { capitalize, pad } from "./utils/string";
 
 export const deriveSummary = (method: string, path: string) => {
   const pathParts = path.split("/");
@@ -136,8 +126,8 @@ export const addQueryStringParams = (specMethod: OperationObject, harParams: Que
       parameters.push({
         schema: {
           type: "string",
-          default: param.value,
-          example: param.value,
+          default: decodeURIComponent(param.value),
+          example: decodeURIComponent(param.value),
         },
         in: "query",
         name: param.name,
@@ -335,47 +325,12 @@ export const getBody = async (
   return param;
 };
 
-const STANDARD_HEADERS = [
-  "A-IM",
-  "Accept",
-  "Accept-Charset",
-  "Accept-Encoding",
-  "Accept-Language",
-  "Accept-Datetime",
-  "Access-Control-Request-Method",
-  "Access-Control-Request-Headers",
-  "Authorization",
-  "Cache-Control",
-  "Connection",
-  "Content-Length",
-  "Content-Type",
-  "Cookie",
-  "Date",
-  "Expect",
-  "Forwarded",
-  "From",
-  "Host",
-  "If-Match",
-  "If-Modified-Since",
-  "If-None-Match",
-  "If-Range",
-  "If-Unmodified-Since",
-  "Max-Forwards",
-  "Origin",
-  "Pragma",
-  "Proxy-Authorization",
-  "Range",
-  "Referer",
-  "TE",
-  "User-Agent",
-  "Upgrade",
-  "Via",
-  "Warning",
-  "X-Frame-Options",
-  "X-XSS-Protection",
-].map((header) => header.toLowerCase());
-
-export const getResponseBody = async (response: Response, urlPath: string, method: string): Promise<ResponseObject> => {
+export const getResponseBody = async (
+  response: Response,
+  urlPath: string,
+  method: string,
+  filterStandardHeaders?: boolean,
+): Promise<ResponseObject> => {
   // lets start with the request one because the code is the same
   const body = await getBody(response.content, urlPath, method);
 
@@ -383,9 +338,12 @@ export const getResponseBody = async (response: Response, urlPath: string, metho
     content: body?.["content"] || {},
     description: "",
   };
-  const customHeaders = (response.headers || []).filter((header) => {
-    return !STANDARD_HEADERS.includes(header.name.toLowerCase());
-  });
+  const headers = response.headers || [];
+  const customHeaders = filterStandardHeaders
+    ? headers.filter((header) => {
+        return !STANDARD_HEADERS.includes(header.name.toLowerCase());
+      })
+    : headers;
   if (customHeaders.length) {
     param.headers = customHeaders.reduce<HeadersObject>((acc, header) => {
       acc[header.name] = {

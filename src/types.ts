@@ -21,6 +21,7 @@ export interface Config {
   tags?: string[][];
   mimeTypes?: string[];
   securityHeaders?: string[];
+  filterStandardHeaders?: boolean;
 }
 
 export interface IGenerateSpecResponse {
