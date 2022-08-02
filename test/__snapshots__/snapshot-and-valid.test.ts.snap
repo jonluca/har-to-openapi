@@ -14,7 +14,18 @@ exports[`Snapshots and validity > Sample API ServerService-GetNavigationMenu2-ff
         "post": {
           "description": "",
           "operationId": "post-agility.server.web-Services-SDK-ServerService.svc-json-GetNavigationMenu2",
-          "parameters": [],
+          "parameters": [
+            {
+              "description": "CSRFDesignerToken",
+              "in": "header",
+              "name": "CSRFDesignerToken",
+              "schema": {
+                "default": "A544AC9566974D92A17F703769CEC2E6",
+                "example": "A544AC9566974D92A17F703769CEC2E6",
+                "type": "string",
+              },
+            },
+          ],
           "requestBody": {
             "content": {
               "application/json": {
@@ -2623,7 +2634,14 @@ paths:
       description: ''
       operationId: >-
         post-agility.server.web-Services-SDK-ServerService.svc-json-GetNavigationMenu2
-      parameters: []
+      parameters:
+        - description: CSRFDesignerToken
+          in: header
+          name: CSRFDesignerToken
+          schema:
+            default: A544AC9566974D92A17F703769CEC2E6
+            example: A544AC9566974D92A17F703769CEC2E6
+            type: string
       requestBody:
         content:
           application/json:
@@ -4818,7 +4836,18 @@ exports[`Snapshots and validity > Sample API ServerService-GetNavigationMenu2-fi
         "post": {
           "description": "",
           "operationId": "post-agility.server.web-Services-SDK-ServerService.svc-json-GetNavigationMenu2",
-          "parameters": [],
+          "parameters": [
+            {
+              "description": "CSRFDesignerToken",
+              "in": "header",
+              "name": "CSRFDesignerToken",
+              "schema": {
+                "default": "D965082D0E7E46E7B78506D33ADB2BA2",
+                "example": "D965082D0E7E46E7B78506D33ADB2BA2",
+                "type": "string",
+              },
+            },
+          ],
           "requestBody": {
             "content": {
               "application/json": {
@@ -7427,7 +7456,14 @@ paths:
       description: ''
       operationId: >-
         post-agility.server.web-Services-SDK-ServerService.svc-json-GetNavigationMenu2
-      parameters: []
+      parameters:
+        - description: CSRFDesignerToken
+          in: header
+          name: CSRFDesignerToken
+          schema:
+            default: D965082D0E7E46E7B78506D33ADB2BA2
+            example: D965082D0E7E46E7B78506D33ADB2BA2
+            type: string
       requestBody:
         content:
           application/json:
@@ -9633,6 +9669,16 @@ exports[`Snapshots and validity > Sample API add.har matches snapshot 1`] = `
                 "type": "string",
               },
             },
+            {
+              "description": "X-SVN-Rev",
+              "in": "header",
+              "name": "X-SVN-Rev",
+              "schema": {
+                "default": "548314",
+                "example": "548314",
+                "type": "string",
+              },
+            },
           ],
           "requestBody": {
             "content": {
@@ -9783,6 +9829,13 @@ paths:
           schema:
             default: '1'
             example: '1'
+            type: string
+        - description: X-SVN-Rev
+          in: header
+          name: X-SVN-Rev
+          schema:
+            default: '548314'
+            example: '548314'
             type: string
       requestBody:
         content:
@@ -16285,7 +16338,38 @@ exports[`Snapshots and validity > Sample API full.har matches snapshot 1`] = `
         "get": {
           "description": "",
           "operationId": "get-get",
-          "parameters": [],
+          "parameters": [
+            {
+              "description": "page",
+              "in": "query",
+              "name": "page",
+              "schema": {
+                "default": "Home",
+                "example": "Home",
+                "type": "string",
+              },
+            },
+            {
+              "description": "Authorization",
+              "in": "header",
+              "name": "Authorization",
+              "schema": {
+                "default": "Bearer \${token}",
+                "example": "Bearer \${token}",
+                "type": "string",
+              },
+            },
+            {
+              "description": "latest",
+              "in": "query",
+              "name": "latest",
+              "schema": {
+                "default": "874",
+                "example": "874",
+                "type": "string",
+              },
+            },
+          ],
           "responses": {},
           "summary": "List ",
           "tags": [
@@ -16341,22 +16425,12 @@ exports[`Snapshots and validity > Sample API full.har matches snapshot 1`] = `
               },
             },
             {
-              "description": "search",
-              "in": "query",
-              "name": "search",
+              "description": "Authorization",
+              "in": "header",
+              "name": "Authorization",
               "schema": {
-                "default": "puppy",
-                "example": "puppy",
-                "type": "string",
-              },
-            },
-            {
-              "description": "search",
-              "in": "query",
-              "name": "search",
-              "schema": {
-                "default": "quokka",
-                "example": "quokka",
+                "default": "Bearer \${token}",
+                "example": "Bearer \${token}",
                 "type": "string",
               },
             },
@@ -16401,7 +16475,28 @@ paths:
     get:
       description: ''
       operationId: get-get
-      parameters: []
+      parameters:
+        - description: page
+          in: query
+          name: page
+          schema:
+            default: Home
+            example: Home
+            type: string
+        - description: Authorization
+          in: header
+          name: Authorization
+          schema:
+            default: Bearer \${token}
+            example: Bearer \${token}
+            type: string
+        - description: latest
+          in: query
+          name: latest
+          schema:
+            default: '874'
+            example: '874'
+            type: string
       responses: {}
       summary: 'List '
       tags:
@@ -16441,19 +16536,12 @@ paths:
             default: kitten
             example: kitten
             type: string
-        - description: search
-          in: query
-          name: search
+        - description: Authorization
+          in: header
+          name: Authorization
           schema:
-            default: puppy
-            example: puppy
-            type: string
-        - description: search
-          in: query
-          name: search
-          schema:
-            default: quokka
-            example: quokka
+            default: Bearer \${token}
+            example: Bearer \${token}
             type: string
       requestBody:
         content:
@@ -16490,7 +16578,18 @@ exports[`Snapshots and validity > Sample API onePostJsonCookie.har matches snaps
         "post": {
           "description": "",
           "operationId": "post-api-users-queries-getCurrentUser",
-          "parameters": [],
+          "parameters": [
+            {
+              "description": "anti-csrf",
+              "in": "header",
+              "name": "anti-csrf",
+              "schema": {
+                "default": "bMBNEsvnocdYBmF8YVzA9-tCXHyvHhpq",
+                "example": "bMBNEsvnocdYBmF8YVzA9-tCXHyvHhpq",
+                "type": "string",
+              },
+            },
+          ],
           "requestBody": {
             "content": {
               "application/json": {
@@ -16616,7 +16715,14 @@ paths:
     post:
       description: ''
       operationId: post-api-users-queries-getCurrentUser
-      parameters: []
+      parameters:
+        - description: anti-csrf
+          in: header
+          name: anti-csrf
+          schema:
+            default: bMBNEsvnocdYBmF8YVzA9-tCXHyvHhpq
+            example: bMBNEsvnocdYBmF8YVzA9-tCXHyvHhpq
+            type: string
       requestBody:
         content:
           application/json:
@@ -16919,7 +17025,18 @@ exports[`Snapshots and validity > Sample API sample.har matches snapshot 1`] = `
         "post": {
           "description": "",
           "operationId": "post-api-check-header",
-          "parameters": [],
+          "parameters": [
+            {
+              "description": "x-custom-auth",
+              "in": "header",
+              "name": "x-custom-auth",
+              "schema": {
+                "default": "true",
+                "example": "true",
+                "type": "string",
+              },
+            },
+          ],
           "responses": {
             "200": {
               "content": {
@@ -46832,7 +46949,14 @@ paths:
     post:
       description: ''
       operationId: post-api-check-header
-      parameters: []
+      parameters:
+        - description: x-custom-auth
+          in: header
+          name: x-custom-auth
+          schema:
+            default: 'true'
+            example: 'true'
+            type: string
       responses:
         '200':
           content:
@@ -67100,7 +67224,28 @@ exports[`Snapshots and validity > Sample API www.ozon.ru.har matches snapshot 1`
         "get": {
           "description": "",
           "operationId": "get-api-composer-api.bx-_action-summary",
-          "parameters": [],
+          "parameters": [
+            {
+              "description": "x-o3-app-name",
+              "in": "header",
+              "name": "x-o3-app-name",
+              "schema": {
+                "default": "dweb_client",
+                "example": "dweb_client",
+                "type": "string",
+              },
+            },
+            {
+              "description": "x-o3-app-version",
+              "in": "header",
+              "name": "x-o3-app-version",
+              "schema": {
+                "default": "release_22-6'-'2022_5ad85802",
+                "example": "release_22-6'-'2022_5ad85802",
+                "type": "string",
+              },
+            },
+          ],
           "responses": {
             "200": {
               "content": {
@@ -67208,6 +67353,26 @@ exports[`Snapshots and validity > Sample API www.ozon.ru.har matches snapshot 1`
               "schema": {
                 "default": "/searchSuggestions/?text=&url=/search/?text={value}&from_global=true",
                 "example": "/searchSuggestions/?text=&url=/search/?text={value}&from_global=true",
+                "type": "string",
+              },
+            },
+            {
+              "description": "x-o3-app-name",
+              "in": "header",
+              "name": "x-o3-app-name",
+              "schema": {
+                "default": "dweb_client",
+                "example": "dweb_client",
+                "type": "string",
+              },
+            },
+            {
+              "description": "x-o3-app-version",
+              "in": "header",
+              "name": "x-o3-app-version",
+              "schema": {
+                "default": "release_22-6'-'2022_5ad85802",
+                "example": "release_22-6'-'2022_5ad85802",
                 "type": "string",
               },
             },
@@ -67683,7 +67848,28 @@ exports[`Snapshots and validity > Sample API www.ozon.ru.har matches snapshot 1`
         "post": {
           "description": "",
           "operationId": "post-api-composer-api.bx-widget-json-v2",
-          "parameters": [],
+          "parameters": [
+            {
+              "description": "x-o3-app-name",
+              "in": "header",
+              "name": "x-o3-app-name",
+              "schema": {
+                "default": "dweb_client",
+                "example": "dweb_client",
+                "type": "string",
+              },
+            },
+            {
+              "description": "x-o3-app-version",
+              "in": "header",
+              "name": "x-o3-app-version",
+              "schema": {
+                "default": "release_22-6'-'2022_5ad85802",
+                "example": "release_22-6'-'2022_5ad85802",
+                "type": "string",
+              },
+            },
+          ],
           "requestBody": {
             "content": {
               "application/json": {
@@ -72610,6 +72796,16 @@ function getEventProperties(action, interactive) {
               "schema": {
                 "default": "",
                 "example": "",
+                "type": "string",
+              },
+            },
+            {
+              "description": "x-client-data",
+              "in": "header",
+              "name": "x-client-data",
+              "schema": {
+                "default": "CKu1yQEIlrbJAQimtskBCMG2yQEIqZ3KAQiSocsBCJq8zAEIpb3MAQizwcwBCMXBzAEI1sHMAQ==",
+                "example": "CKu1yQEIlrbJAQimtskBCMG2yQEIqZ3KAQiSocsBCJq8zAEIpb3MAQizwcwBCMXBzAEI1sHMAQ==",
                 "type": "string",
               },
             },
@@ -77584,7 +77780,21 @@ paths:
     get:
       description: ''
       operationId: get-api-composer-api.bx-_action-summary
-      parameters: []
+      parameters:
+        - description: x-o3-app-name
+          in: header
+          name: x-o3-app-name
+          schema:
+            default: dweb_client
+            example: dweb_client
+            type: string
+        - description: x-o3-app-version
+          in: header
+          name: x-o3-app-version
+          schema:
+            default: release_22-6'-'2022_5ad85802
+            example: release_22-6'-'2022_5ad85802
+            type: string
       responses:
         '200':
           content:
@@ -77660,6 +77870,20 @@ paths:
               /searchSuggestions/?text=&url=/search/?text={value}&from_global=true
             example: >-
               /searchSuggestions/?text=&url=/search/?text={value}&from_global=true
+            type: string
+        - description: x-o3-app-name
+          in: header
+          name: x-o3-app-name
+          schema:
+            default: dweb_client
+            example: dweb_client
+            type: string
+        - description: x-o3-app-version
+          in: header
+          name: x-o3-app-version
+          schema:
+            default: release_22-6'-'2022_5ad85802
+            example: release_22-6'-'2022_5ad85802
             type: string
       responses:
         '200':
@@ -78019,7 +78243,21 @@ paths:
     post:
       description: ''
       operationId: post-api-composer-api.bx-widget-json-v2
-      parameters: []
+      parameters:
+        - description: x-o3-app-name
+          in: header
+          name: x-o3-app-name
+          schema:
+            default: dweb_client
+            example: dweb_client
+            type: string
+        - description: x-o3-app-version
+          in: header
+          name: x-o3-app-version
+          schema:
+            default: release_22-6'-'2022_5ad85802
+            example: release_22-6'-'2022_5ad85802
+            type: string
       requestBody:
         content:
           application/json:
@@ -81327,6 +81565,15 @@ paths:
           schema:
             default: ''
             example: ''
+            type: string
+        - description: x-client-data
+          in: header
+          name: x-client-data
+          schema:
+            default: >-
+              CKu1yQEIlrbJAQimtskBCMG2yQEIqZ3KAQiSocsBCJq8zAEIpb3MAQizwcwBCMXBzAEI1sHMAQ==
+            example: >-
+              CKu1yQEIlrbJAQimtskBCMG2yQEIqZ3KAQiSocsBCJq8zAEIpb3MAQizwcwBCMXBzAEI1sHMAQ==
             type: string
       responses:
         '302':

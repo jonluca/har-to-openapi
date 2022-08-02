@@ -20,6 +20,7 @@
   },
   "plugins": ["prettier", "unused-imports", "@typescript-eslint"],
   "rules": {
+    "prefer-const": "error",
     "no-case-declarations": "off",
     "curly": ["error", "all"],
     "@typescript-eslint/no-non-null-assertion": "off",
@@ -31,7 +32,6 @@
       }
     ],
     "@typescript-eslint/ban-ts-comment": "off",
-
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/no-use-before-define": ["warn"],
     "object-shorthand": "error",

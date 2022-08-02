@@ -15,9 +15,9 @@ import type {
 import toOpenApiSchema from "browser-json-schema-to-openapi-schema";
 import type { Options } from "browser-json-schema-to-openapi-schema/dist/mjs/src/types";
 import { quicktypeJSON } from "./quicktype";
-import { cloneDeep } from "lodash-es";
+import { cloneDeep, uniqBy } from "lodash-es";
 import { STANDARD_HEADERS } from "./utils/headers";
-import { capitalize, pad } from "./utils/string";
+import { capitalize } from "./utils/string";
 
 export const deriveSummary = (method: string, path: string) => {
   const pathParts = path.split("/");
@@ -87,6 +87,32 @@ export const addMethod = (method: string, path: string, config?: Config): Operat
     tags: [tag],
   } as OperationObject;
 };
+
+export const addRequestHeaders = (specMethod: OperationObject, headers: Header[], filterStandardHeaders?: boolean) => {
+  const parameters = (specMethod.parameters ??= []);
+
+  const customHeaders = filterStandardHeaders
+    ? headers.filter((header) => {
+        return !STANDARD_HEADERS.includes(header.name.toLowerCase());
+      })
+    : headers;
+  customHeaders.forEach((header) => {
+    parameters.push({
+      schema: {
+        type: "string",
+        default: header.value,
+        example: header.value,
+      },
+      in: "header",
+      name: header.name,
+      description: header.name,
+    } as ParameterObject);
+  });
+  specMethod.parameters = uniqBy(parameters, (elem: any) => {
+    return `${elem.name}:${elem.in}:${elem.$ref}`;
+  });
+};
+
 export const getPathAndParamsFromUrl = (filteredPath: string): PathsObject => {
   // identify what parameters this path has
   const parameters: (ParameterObject | ReferenceObject)[] = [];
@@ -217,7 +243,7 @@ export const getBody = async (
           schema: await toOpenApiSchema(formSchema, options),
         };
         break;
-        // try and parse plain and text as json as well
+      // try and parse plain and text as json as well
       case "plain":
       case "text":
       case "json":
@@ -298,38 +324,4 @@ export const getResponseBody = async (
     }, {} as HeadersObject);
   }
   return param;
-};
-
-export const validateExampleList = (exampleObject: any, exampleObjectName: string) => {
-  const exampleCount = Object.keys(exampleObject).length;
-  let gexampleCount = 0;
-  const allExamples: string[] = [];
-  const publishExamplesArray: string[] = [];
-  for (const exampleName in exampleObject) {
-    allExamples.push(JSON.stringify(exampleObject[exampleName]));
-    if (exampleName.includes("gexample")) {
-      gexampleCount += 1;
-      publishExamplesArray.push(exampleObject[exampleName]);
-    }
-  }
-  if (exampleCount && !gexampleCount) {
-    console.log(`${exampleObjectName} has ${exampleCount} examples with no gexamples`);
-  }
-  // renumber examples
-  const padWidth = Math.floor(publishExamplesArray.length / 10) + 1;
-  const publishExamples: Record<string, { value: any }> = {};
-  let firstExample: any;
-  for (let i = 0; i < publishExamplesArray.length; i++) {
-    const exampleName = `example-${pad(i + 1, padWidth)}`;
-    if (!firstExample) {
-      firstExample = publishExamplesArray[i];
-    }
-    publishExamples[exampleName] = { value: publishExamplesArray[i] };
-  }
-
-  return {
-    allExamples,
-    publishExamples,
-    firstExample,
-  };
 };

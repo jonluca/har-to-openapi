@@ -1,11 +1,12 @@
 import type { OperationObject } from "@loopback/openapi-v3-types";
 import { createEmptyApiSpec } from "@loopback/openapi-v3-types";
-import type { Entry, Har } from "har-format";
+import type { Entry, Har, QueryString } from "har-format";
 import YAML from "js-yaml";
 import sortJson from "sort-json";
 import {
   addMethod,
   addQueryStringParams,
+  addRequestHeaders,
   getBody,
   getPathAndParamsFromUrl,
   getResponseBody,
@@ -71,14 +72,17 @@ const generateSpecs = async <T extends Har>(har: T, config?: Config): Promise<IG
         if (apiBasePath && !url.includes(apiBasePath)) {
           continue;
         }
-        const isValidMimetype = !mimeTypes || mimeTypes.includes(item.response?.content?.mimeType);
+        const mimeType = item.response?.content?.mimeType;
+        const isValidMimetype = !mimeTypes || (mimeType && mimeTypes.includes(mimeType));
         if (!isValidMimetype) {
           continue;
         }
 
         // filter and collapse path urls
-        const urlPath = new URL(url).pathname;
+        const urlObj = new URL(url);
+        const urlPath = urlObj.pathname;
 
+        const queryParams = urlObj.search;
         // continue if url is blank
         if (!urlPath) {
           continue;
@@ -105,14 +109,26 @@ const generateSpecs = async <T extends Har>(har: T, config?: Config): Promise<IG
           specMethod.responses[status] ??= addResponse(status, method);
         }
 
-        if (securityHeaders) {
-          const security = getSecurity(item.request.headers, securityHeaders);
+        const requestHeaders = item.request.headers;
+        if (securityHeaders && requestHeaders) {
+          const security = getSecurity(requestHeaders, securityHeaders);
           specMethod.security = [security];
         }
 
         // add query string parameters
         if (item.request.queryString) {
           addQueryStringParams(specMethod, item.request.queryString);
+        }
+        if (queryParams) {
+          // try and parse from the url if the har is malformed
+          const queryStrings: QueryString[] = [];
+          for (const entry of urlObj.searchParams.entries()) {
+            queryStrings.push({ name: entry[0], value: entry[1] });
+          }
+          addQueryStringParams(specMethod, queryStrings);
+        }
+        if (requestHeaders?.length) {
+          addRequestHeaders(specMethod, requestHeaders, filterStandardHeaders);
         }
 
         // merge request example
