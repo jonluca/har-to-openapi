@@ -416,10 +416,10 @@ brfs@^1.4.0:
     static-module "^2.2.0"
     through2 "^2.0.0"
 
-browser-json-schema-to-openapi-schema@^0.1.3:
-  version "0.1.3"
-  resolved "https://registry.npmjs.org/browser-json-schema-to-openapi-schema/-/browser-json-schema-to-openapi-schema-0.1.3.tgz#f489be1012eabdd5a6777703a8f0d6679a0006f7"
-  integrity sha512-FYAqu7dyGdhBlXWPRB685TTK6JGLCRZVKjGyKDO4OHCPDGpmkjmGB/0Ex802yae6tCm9LsUSgcraxdPrIiM9aQ==
+browser-json-schema-to-openapi-schema@^0.1.4:
+  version "0.1.4"
+  resolved "https://registry.npmjs.org/browser-json-schema-to-openapi-schema/-/browser-json-schema-to-openapi-schema-0.1.4.tgz#b081eb80d3c4098a6bf325d30ddc591d9e6c7f17"
+  integrity sha512-0LvY3vPyUM4RQj1UnPl5Hyaj5jqwGS4Z6a80Nm14wm0ikJn3QgljJMNNzKJ2fqfLiU7TM/4AKc6aHKsIgbumtQ==
   dependencies:
     "@apidevtools/json-schema-ref-parser" "^9.0.9"
     chalk "^5.0.1"
