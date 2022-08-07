@@ -9,8 +9,7 @@ import type {
   SchemaObject,
   SecurityRequirementObject,
 } from "openapi3-ts/src/model/OpenApi";
-import toOpenApiSchema from "browser-json-schema-to-openapi-schema";
-import type { Options } from "browser-json-schema-to-openapi-schema/dist/mjs/src/types";
+import toOpenApiSchema from "@openapi-contrib/json-schema-to-openapi-schema";
 import { quicktypeJSON } from "./quicktype";
 import { cloneDeep, uniqBy } from "lodash-es";
 import { isStandardHeader } from "./utils/headers";
@@ -172,7 +171,7 @@ export const getBody = async (
         circular: "ignore",
       },
     },
-  } as Options;
+  } as Parameters<typeof toOpenApiSchema>[1];
   if (postData && text !== undefined) {
     const mimeTypeWithoutExtras = postData.mimeType.split(";")[0];
     const string = mimeTypeWithoutExtras?.split("/").filter(Boolean);
@@ -184,10 +183,13 @@ export const getBody = async (
       case "x-www-form-urlencoded":
         const formSchema = getFormData(postData);
         if (formSchema) {
-          param.content[mimeTypeWithoutExtras] = {
+          const schema = await toOpenApiSchema(formSchema, options);
+          if (schema) {
             // @ts-ignore
-            schema: await toOpenApiSchema(formSchema, options),
-          };
+            param.content[mimeTypeWithoutExtras] = {
+              schema,
+            };
+          }
         }
         break;
       // try and parse plain and text as json as well
