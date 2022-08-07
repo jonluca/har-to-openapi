@@ -42,10 +42,6 @@ exports[`har-to-openapi: Post data > HAR with request with postdata matches snap
             "required": true,
           },
           "responses": {},
-          "summary": "Create ",
-          "tags": [
-            "",
-          ],
         },
       },
     },
@@ -85,9 +81,6 @@ paths:
               type: object
         required: true
       responses: {}
-      summary: 'Create '
-      tags:
-        - ''
 servers:
   - url: /
 ",
@@ -136,10 +129,6 @@ exports[`har-to-openapi: Post data > HAR with request with postdata with a misma
             "required": true,
           },
           "responses": {},
-          "summary": "Create ",
-          "tags": [
-            "",
-          ],
         },
       },
     },
@@ -178,9 +167,6 @@ paths:
               type: object
         required: true
       responses: {}
-      summary: 'Create '
-      tags:
-        - ''
 servers:
   - url: /
 ",

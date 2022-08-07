@@ -1,12 +1,9 @@
-import pluralize from "pluralize";
-import type { Config } from "./types";
+import type { Config, InternalConfig } from "./types";
 import type { OperationObject } from "@loopback/openapi-v3-types";
-import type { Content, Header, PostData, QueryString, Response } from "har-format";
+import type { Content, Header, PostData, PostDataParams, QueryString, Response } from "har-format";
 import type {
   HeadersObject,
   ParameterObject,
-  PathsObject,
-  ReferenceObject,
   RequestBodyObject,
   ResponseObject,
   SchemaObject,
@@ -16,76 +13,40 @@ import toOpenApiSchema from "browser-json-schema-to-openapi-schema";
 import type { Options } from "browser-json-schema-to-openapi-schema/dist/mjs/src/types";
 import { quicktypeJSON } from "./quicktype";
 import { cloneDeep, uniqBy } from "lodash-es";
-import { STANDARD_HEADERS } from "./utils/headers";
-import { capitalize } from "./utils/string";
-
-export const deriveSummary = (method: string, path: string) => {
-  const pathParts = path.split("/");
-  const lastParam = pathParts.length > 1 ? pathParts[pathParts.length - 2] : "";
-  const lastLastParam = pathParts.length > 3 ? pathParts[pathParts.length - 4] : "";
-  const obj = lastParam.includes("_id") ? lastParam.replace(/[{}]|_id/g, "") : "";
-  switch (lastParam) {
-    case "login":
-      return "Log in";
-    case "logout":
-      return "Log out";
-  }
-  if (obj) {
-    switch (method) {
-      case "get":
-        return `${capitalize(obj)} details`;
-      case "post":
-        return `Create ${obj}`;
-      case "patch":
-      case "put":
-        return `Update ${obj}`;
-      case "delete":
-        return `Delete ${obj}`;
-    }
-  }
-  const param = pluralize(lastLastParam, 1);
-  const spacer = lastLastParam ? " " : "";
-  switch (method) {
-    case "get":
-      return `List ${param}${spacer}${pluralize(lastParam)}`;
-    case "post":
-      return `Create ${param}${spacer}${pluralize(lastParam, 1)}`;
-    case "put":
-    case "patch":
-      return `Update ${param}${spacer}${pluralize(lastParam)}`;
-    case "delete":
-      return `Delete ${param}${spacer}${pluralize(lastParam)}`;
-  }
-  return "SUMMARY";
-};
-
-export const deriveTag = (path: string, config?: Config) => {
-  const newVar = config?.tags || [];
-  for (const item of newVar) {
-    if (path.includes(item[0])) {
-      return item.length > 1 ? item[1] : capitalize(item[0]);
-    }
-  }
-  return "";
-};
+import { isStandardHeader } from "./utils/headers";
+import { URLSearchParams } from "url";
 
 export const addMethod = (method: string, path: string, config?: Config): OperationObject => {
   // generate operation id
-  let operationId = path.replace(/(^\/|\/$|{|})/g, "").replace(/\//g, "-");
-  operationId = `${method}-${operationId}`;
+  const pathId = path.replace(/(^\/|\/$|{|})/g, "").replace(/\//g, "-");
+  const operationId = `${method}-${pathId}`;
+  const tags = config?.tags || [];
+  let pathTags: string[] = [];
+  if (typeof tags === "function") {
+    const userDefinedTags = tags(path);
+    pathTags = [userDefinedTags || []].flat();
+  } else {
+    for (const tag of tags) {
+      const isTagArray = Array.isArray(tag);
+      const comparison = isTagArray ? tag[0] : tag;
+      if (path.includes(comparison)) {
+        const tagToApply: string = isTagArray ? (tag.length === 2 ? tag[1] : tag[0]) : tag;
+        pathTags.push(tagToApply);
+      }
+    }
+  }
 
-  // create method
-  const summary = deriveSummary(method, path);
-  const tag = deriveTag(path, config);
-
-  return {
+  const operationsObject = {
     operationId,
-    summary,
     description: "",
     parameters: [],
     responses: {},
-    tags: [tag],
   } as OperationObject;
+
+  if (pathTags?.length) {
+    operationsObject.tags = pathTags;
+  }
+  return operationsObject;
 };
 
 export const addRequestHeaders = (specMethod: OperationObject, headers: Header[], filterStandardHeaders?: boolean) => {
@@ -93,7 +54,7 @@ export const addRequestHeaders = (specMethod: OperationObject, headers: Header[]
 
   const customHeaders = filterStandardHeaders
     ? headers.filter((header) => {
-        return !STANDARD_HEADERS.includes(header.name.toLowerCase());
+        return !isStandardHeader(header.name);
       })
     : headers;
   customHeaders.forEach((header) => {
@@ -113,31 +74,6 @@ export const addRequestHeaders = (specMethod: OperationObject, headers: Header[]
   });
 };
 
-export const getPathAndParamsFromUrl = (filteredPath: string): PathsObject => {
-  // identify what parameters this path has
-  const parameters: (ParameterObject | ReferenceObject)[] = [];
-  const parameterList = filteredPath.match(/{.*?}/g);
-  if (parameterList) {
-    parameterList.forEach((parameter) => {
-      const variable = parameter.replace(/[{}]/g, "");
-      const variableType = variable.replace(/_id/, "");
-      parameters.push({
-        description: `Unique ID of the ${variableType} you are working with`,
-        in: "path",
-        name: variable,
-        required: true,
-        schema: {
-          type: "string",
-        },
-      });
-    });
-  }
-
-  // create path with parameters
-  return {
-    parameters,
-  };
-};
 export const addQueryStringParams = (specMethod: OperationObject, harParams: QueryString[]) => {
   const methodQueryParameters: string[] = [];
   const parameters = (specMethod.parameters ??= []);
@@ -163,57 +99,65 @@ export const addQueryStringParams = (specMethod: OperationObject, harParams: Que
   });
 };
 
-export const getSecurity = (headers: Header[], securityHeaders: string[]): SecurityRequirementObject => {
+export const getSecurity = (headers: Header[], securityHeaders: string[]): SecurityRequirementObject | undefined => {
   const security: SecurityRequirementObject = {};
   headers.forEach(function (header) {
-    const headerName = header.name.trim();
-    if (headerName.toLocaleLowerCase() === "authorization") {
-      security["JWT"] = [];
-    }
-
+    const headerName = header.name.trim().toLowerCase();
     if (securityHeaders.includes(headerName)) {
-      security[headerName] = [];
+      security[header.name] = [];
     }
   });
+  if (Object.keys(security).length === 0) {
+    return undefined;
+  }
   return security;
 };
 
-const getFormData = (postData: PostData | Content | undefined): SchemaObject => {
-  if (!postData) {
-    return {};
-  }
-  if ("params" in postData && postData?.params?.length && postData.params.length > 0) {
-    const properties: SchemaObject["properties"] = {};
-    const required: SchemaObject["required"] = postData.params.map((query) => {
-      if (query.value == "" || query.value == "(binary)") {
-        properties[query.name] = {
-          type: "string",
-          format: "binary",
-        };
-        return query.name;
-      }
+const mapParams = (params: PostDataParams["params"]): SchemaObject => {
+  const properties: SchemaObject["properties"] = {};
+  const required: SchemaObject["required"] = params.map((query) => {
+    if (query.value == "" || query.value == "(binary)") {
       properties[query.name] = {
         type: "string",
+        format: "binary",
       };
       return query.name;
-    });
-    return {
-      type: "object",
-      properties,
-      required,
+    }
+    properties[query.name] = {
+      type: "string",
     };
+    return query.name;
+  });
+  return {
+    type: "object",
+    properties,
+    required,
+  };
+};
+const getFormData = (postData: PostData | Content): SchemaObject | undefined => {
+  if (postData && "params" in postData && postData?.params?.length && postData.params.length > 0) {
+    return mapParams(postData.params);
   }
-  return {};
+  if (postData && "text" in postData) {
+    const searchParams = new URLSearchParams(postData.text);
+    const params: PostDataParams["params"] = [];
+    searchParams.forEach((value, key) => {
+      params.push({ value, name: key });
+    });
+    return mapParams(params);
+  }
 };
 
 export const getBody = async (
   postData: PostData | Content | undefined,
-  urlPath: string,
-  method: string,
+  details: { urlPath: string; method: string; examples: any[] },
+  config: InternalConfig,
 ): Promise<RequestBodyObject | undefined> => {
   if (!postData || !postData.mimeType) {
     return undefined;
   }
+
+  const { urlPath, method, examples } = details;
 
   const param: RequestBodyObject = {
     required: true,
@@ -231,85 +175,85 @@ export const getBody = async (
   } as Options;
   if (postData && text !== undefined) {
     const mimeTypeWithoutExtras = postData.mimeType.split(";")[0];
-    const string = mimeTypeWithoutExtras?.split("/");
-    const mime = string[1] || string[0];
+    const string = mimeTypeWithoutExtras?.split("/").filter(Boolean);
+    const mime = string.pop();
     // We run the risk of circular references here
-    switch (mime.toLocaleLowerCase()) {
+    const mimeLower = mime!.toLocaleLowerCase();
+    switch (mimeLower) {
       case "form-data":
       case "x-www-form-urlencoded":
         const formSchema = getFormData(postData);
-        param.content[mimeTypeWithoutExtras] = {
-          // @ts-ignore
-          schema: await toOpenApiSchema(formSchema, options),
-        };
+        if (formSchema) {
+          param.content[mimeTypeWithoutExtras] = {
+            // @ts-ignore
+            schema: await toOpenApiSchema(formSchema, options),
+          };
+        }
         break;
       // try and parse plain and text as json as well
       case "plain":
       case "text":
       case "json":
       default:
-        try {
-          const isBase64Encoded = "encoding" in postData && (<any>postData).encoding == "base64";
-          const data = JSON.parse(isBase64Encoded ? Buffer.from(text, "base64").toString() : text);
-
+        if (mimeLower === "json" || config?.relaxedContentTypeJsonParse) {
           try {
-            const jsonSchema = await quicktypeJSON("schema", [urlPath, method, "request"].join("-"), text);
-            try {
-              const schema = await toOpenApiSchema(cloneDeep(jsonSchema), options);
-
-              param.content[mimeTypeWithoutExtras] = {
-                // @ts-ignore
-                schema,
-                example: data,
-              };
-            } catch (err) {
-              console.error(err);
-            }
+            const isBase64Encoded = "encoding" in postData && (<any>postData).encoding == "base64";
+            const data = JSON.parse(isBase64Encoded ? Buffer.from(text, "base64").toString() : text);
+            examples.push(JSON.stringify(data));
+            const jsonSchema = await quicktypeJSON("schema", [urlPath, method, "request"].join("-"), examples);
+            const schema = await toOpenApiSchema(cloneDeep(jsonSchema), options);
+            param.content[mimeTypeWithoutExtras] = {
+              // @ts-ignore
+              schema,
+              example: data,
+            };
           } catch (err) {
-            console.error(err);
+            // do nothing on json parse failures
           }
-        } catch (err) {
-          // do nothing on json parse failures
         }
         break;
     }
   } else {
-    // binary file sent
-    param.content = {
-      "multipart/form-data": {
-        schema: {
-          properties: {
-            filename: {
-              description: "",
-              format: "binary",
-              type: "string",
+    const multipartMimeType = "multipart/form-data";
+    // Don't apply the fallback to if there is a filter and it doesn't include it
+    if (!config.mimeTypes || config.mimeTypes.includes(multipartMimeType)) {
+      param.content = {
+        [multipartMimeType]: {
+          schema: {
+            properties: {
+              filename: {
+                description: "",
+                format: "binary",
+                type: "string",
+              },
             },
+            type: "object",
           },
-          type: "object",
         },
-      },
-    };
+      };
+    }
   }
   return param;
 };
 
 export const getResponseBody = async (
   response: Response,
-  urlPath: string,
-  method: string,
-  filterStandardHeaders?: boolean,
-): Promise<ResponseObject> => {
-  // lets start with the request one because the code is the same
-  const body = await getBody(response.content, urlPath, method);
+  details: { urlPath: string; method: string; examples: any[] },
+  config: InternalConfig,
+): Promise<ResponseObject | undefined> => {
+  const body = await getBody(response.content, details, config);
 
   const param: ResponseObject = {
-    content: body?.["content"] || {},
     description: "",
   };
+  if (body?.content) {
+    param.content = body.content;
+  }
+
   const headers = response.headers || [];
-  const customHeaders = filterStandardHeaders
+  const customHeaders = config?.filterStandardHeaders
     ? headers.filter((header) => {
-        return !STANDARD_HEADERS.includes(header.name.toLowerCase());
+        return !isStandardHeader(header.name);
       })
     : headers;
   if (customHeaders.length) {
@@ -323,5 +267,7 @@ export const getResponseBody = async (
       return acc;
     }, {} as HeadersObject);
   }
-  return param;
+  if (param.headers || param.content) {
+    return param;
+  }
 };

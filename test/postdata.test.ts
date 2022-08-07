@@ -1,76 +1,16 @@
 import { describe, test } from "vitest";
 import OpenAPISchemaValidator from "openapi-schema-validator";
 import { generateSpec } from "../src";
-import type { Har } from "har-format";
+import { loadImpact, postDataConflict } from "./test-utils";
 
 const validator = new OpenAPISchemaValidator({
   version: 3,
 });
-const har = {
-  log: {
-    entries: [
-      {
-        index: 0,
-        request: {
-          method: "POST",
-          url: "http://test.loadimpact.com/login",
-          headers: [
-            {
-              name: "Content-Type",
-              value: "application/json",
-            },
-          ],
-          postData: {
-            mimeType: "application/json",
-            text: '{"user":"admin","password":"123"}',
-          },
-        },
-      },
-    ],
-  },
-} as unknown as Har;
 
-const postDataConflict = {
-  log: {
-    entries: [
-      {
-        index: 0,
-        request: {
-          method: "POST",
-          url: "http://test.loadimpact.com/login",
-          headers: [
-            {
-              name: "Content-Type",
-              value: "application/x-www-form-urlencoded",
-            },
-          ],
-          postData: {
-            mimeType: "application/x-www-form-urlencoded",
-            text: "foo0=bar0&foo1=bar1",
-            params: [
-              {
-                name: "foo0",
-                value: "bar0",
-              },
-              {
-                name: "foo3",
-                value: "bar3",
-              },
-              {
-                name: "foo1",
-                value: "bar1",
-              },
-            ],
-          },
-        },
-      },
-    ],
-  },
-} as unknown as Har;
 describe("har-to-openapi: Post data", async () => {
   const [postDataSpec, postDataSpecWithConflict] = await Promise.all([
-    generateSpec(har),
-    generateSpec(postDataConflict),
+    generateSpec(loadImpact()),
+    generateSpec(postDataConflict()),
   ]);
   test(`HAR with request with postdata matches snapshot`, async ({ expect }) => {
     expect(postDataSpec).toMatchSnapshot();

@@ -10,5 +10,6 @@ export default defineConfig({
     isolate: false,
     passWithNoTests: true,
     reporters: ["verbose"],
+    coverage: { reporter: ["lcov", "html", "text"] },
   },
 });

@@ -2,6 +2,7 @@ import type { TargetLanguage } from "quicktype-core/dist/TargetLanguage";
 import { InputData, jsonInputForTargetLanguage, quicktype } from "quicktype-core";
 import { cloneDeep } from "lodash-es";
 import RefParser from "@apidevtools/json-schema-ref-parser";
+
 /**
  * This is a hotfix and really only a partial solution as it does not cover all cases.
  *
@@ -30,8 +31,6 @@ const handleRootReference = (input: Record<string, any>): Record<string, any> =>
         }
       }
     }
-    //All other unhandled cases, means we cannot handle this input
-    throw new Error("Cannot handle input, because it has a root `$ref`, please manually resolve the first reference.");
   }
   return input;
 };
@@ -45,7 +44,7 @@ export const quicktypeJSON = async (
 
   await jsonInput.addSource({
     name: typeName,
-    samples: Array.isArray(sampleArray) ? sampleArray : [sampleArray],
+    samples: [sampleArray].flat(),
   });
 
   const inputData = new InputData();
