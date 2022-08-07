@@ -43,6 +43,7 @@
     "test:watch": "vitest -w"
   },
   "dependencies": {
+    "@loopback/openapi-v3-types": "^1.2.1",
     "@openapi-contrib/json-schema-to-openapi-schema": "^2.2.2",
     "js-yaml": "^4.1.0",
     "lodash-es": "^4.17.21",
@@ -52,7 +53,6 @@
   },
   "devDependencies": {
     "openapi3-ts": "^2.0.2",
-    "@loopback/openapi-v3-types": "^1.2.1",
     "@types/har-format": "^1.2.8",
     "@types/js-yaml": "^4.0.5",
     "@types/lodash-es": "^4.17.6",
