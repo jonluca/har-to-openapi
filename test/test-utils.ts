@@ -5,6 +5,7 @@ import type { Har } from "har-format";
 import { vi } from "vitest";
 
 const date = new Date(2022, 8, 1);
+date.setUTCHours(0, 0, 0, 0);
 vi.useFakeTimers();
 vi.setSystemTime(date);
 
