@@ -3,15 +3,7 @@ import { createEmptyApiSpec } from "@loopback/openapi-v3-types";
 import type { Cookie, Entry, Har, QueryString } from "har-format";
 import YAML from "js-yaml";
 import sortJson from "sort-json";
-import {
-  addMethod,
-  addQueryStringParams,
-  addRequestHeaders,
-  getBody,
-  getResponseBody,
-  getSecurity,
-  uniqueHeaders,
-} from "./helpers";
+import { addMethod, addQueryStringParams, addRequestHeaders, getBody, getResponseBody, getSecurity } from "./helpers";
 import type { Config, IGenerateSpecResponse, InternalConfig } from "./types";
 import type {
   PathItemObject,
@@ -23,7 +15,7 @@ import type {
 import { cloneDeep, groupBy } from "lodash-es";
 import { addResponse } from "./utils/baseResponse";
 import { isStandardMethod } from "./utils/methods";
-import { DEFAULT_AUTH_HEADERS, isStandardHeader } from "./utils/headers";
+import { DEFAULT_AUTH_HEADERS } from "./utils/headers";
 import { getCookieSecurityName } from "./utils/string";
 
 const checkPathFromFilter = async (urlPath: string, filter: Config["urlFilter"]) => {
@@ -47,14 +39,15 @@ const getConfig = (config?: Config): InternalConfig => {
   internalConfig.forceAllRequestsInSameSpec ??= false;
   internalConfig.relaxedMethods ??= false;
   internalConfig.logErrors ??= false;
-  if (internalConfig.securityHeaders) {
-    internalConfig.securityHeaders = internalConfig.securityHeaders.map((l) => l.toLowerCase());
-  }
 
   if (internalConfig.guessAuthenticationHeaders) {
     internalConfig.securityHeaders ??= [];
     internalConfig.securityHeaders.push(...DEFAULT_AUTH_HEADERS);
   }
+  if (internalConfig.securityHeaders) {
+    internalConfig.securityHeaders = Array.from(new Set(internalConfig.securityHeaders.map((l) => l.toLowerCase())));
+  }
+
   return internalConfig;
 };
 
@@ -90,7 +83,6 @@ const generateSpecs = async <T extends Har>(har: T, config?: Config): Promise<IG
     ignoreBodiesForStatusCodes,
     mimeTypes,
     securityHeaders,
-    filterStandardHeaders,
     forceAllRequestsInSameSpec,
     urlFilter,
     relaxedMethods,
@@ -153,7 +145,7 @@ const generateSpecs = async <T extends Har>(har: T, config?: Config): Promise<IG
           spec.paths[urlPath] ??= { parameters: [] } as PathsObject;
           const path = spec.paths[urlPath] as PathItemObject;
 
-          path[method] ??= addMethod(method, urlObj, config);
+          path[method] ??= addMethod(method, urlObj, internalConfig);
           const specMethod = path[method] as OperationObject;
           // generate response
           const status = item.response?.status;
@@ -186,7 +178,7 @@ const generateSpecs = async <T extends Har>(har: T, config?: Config): Promise<IG
             addQueryStringParams(specMethod, queryStrings);
           }
           if (requestHeaders?.length) {
-            addRequestHeaders(specMethod, requestHeaders, filterStandardHeaders);
+            addRequestHeaders(specMethod, requestHeaders, internalConfig);
           }
 
           const shouldUseRequestAndResponse =
@@ -272,7 +264,6 @@ const generateSpecs = async <T extends Har>(har: T, config?: Config): Promise<IG
     }
   }
 
-  console.log(Array.from(uniqueHeaders).filter((l) => !isStandardHeader(l)));
   return specs;
 };
 const generateSpec = async <T extends Har>(har: T, config?: Config): Promise<IGenerateSpecResponse> => {

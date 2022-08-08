@@ -14,7 +14,7 @@ exports[`Spec generator > Returns one spec for a har with two domains and a call
         "/login": {
           "get": {
             "description": "",
-            "operationId": "get-login",
+            "operationId": "getLogin",
             "parameters": [],
             "requestBody": {
               "content": {
@@ -61,7 +61,7 @@ paths:
   /login:
     get:
       description: ''
-      operationId: get-login
+      operationId: getLogin
       parameters: []
       requestBody:
         content:
@@ -103,7 +103,7 @@ exports[`Spec generator > Returns one spec for a har with two domains and a rege
         "/login": {
           "get": {
             "description": "",
-            "operationId": "get-login",
+            "operationId": "getLogin",
             "parameters": [],
             "requestBody": {
               "content": {
@@ -150,7 +150,7 @@ paths:
   /login:
     get:
       description: ''
-      operationId: get-login
+      operationId: getLogin
       parameters: []
       requestBody:
         content:
@@ -192,7 +192,7 @@ exports[`Spec generator > Returns one spec for a har with two domains and a stri
         "/login": {
           "get": {
             "description": "",
-            "operationId": "get-login",
+            "operationId": "getLogin",
             "parameters": [],
             "requestBody": {
               "content": {
@@ -239,7 +239,7 @@ paths:
   /login:
     get:
       description: ''
-      operationId: get-login
+      operationId: getLogin
       parameters: []
       requestBody:
         content:
@@ -281,7 +281,7 @@ exports[`Spec generator > Returns one spec for a har with two domains and an asy
         "/login": {
           "get": {
             "description": "",
-            "operationId": "get-login",
+            "operationId": "getLogin",
             "parameters": [],
             "requestBody": {
               "content": {
@@ -328,7 +328,7 @@ paths:
   /login:
     get:
       description: ''
-      operationId: get-login
+      operationId: getLogin
       parameters: []
       requestBody:
         content:
@@ -370,7 +370,7 @@ exports[`Spec generator > Returns one spec for a har with two domains and forceA
         "/login": {
           "get": {
             "description": "",
-            "operationId": "get-login",
+            "operationId": "getLogin",
             "parameters": [],
             "requestBody": {
               "content": {
@@ -417,7 +417,7 @@ paths:
   /login:
     get:
       description: ''
-      operationId: get-login
+      operationId: getLogin
       parameters: []
       requestBody:
         content:
@@ -459,7 +459,7 @@ exports[`Spec generator > Returns one spec for a har with two domains and forceA
         "/login": {
           "get": {
             "description": "",
-            "operationId": "get-login",
+            "operationId": "getLogin",
             "parameters": [],
             "requestBody": {
               "content": {
@@ -511,7 +511,7 @@ paths:
   /login:
     get:
       description: ''
-      operationId: get-login
+      operationId: getLogin
       parameters: []
       requestBody:
         content:
@@ -555,7 +555,7 @@ exports[`Spec generator > Returns two specs for a har with two domains 1`] = `
         "/login": {
           "get": {
             "description": "",
-            "operationId": "get-login",
+            "operationId": "getLogin",
             "parameters": [],
             "requestBody": {
               "content": {
@@ -602,7 +602,7 @@ paths:
   /login:
     get:
       description: ''
-      operationId: get-login
+      operationId: getLogin
       parameters: []
       requestBody:
         content:
@@ -639,7 +639,7 @@ servers:
         "/login": {
           "get": {
             "description": "",
-            "operationId": "get-login",
+            "operationId": "getLogin",
             "parameters": [],
             "requestBody": {
               "content": {
@@ -686,7 +686,7 @@ paths:
   /login:
     get:
       description: ''
-      operationId: get-login
+      operationId: getLogin
       parameters: []
       requestBody:
         content:
@@ -728,7 +728,7 @@ exports[`Spec generator > Returns two specs for a har with two domains and force
         "/login": {
           "get": {
             "description": "",
-            "operationId": "get-login",
+            "operationId": "getLogin",
             "parameters": [],
             "requestBody": {
               "content": {
@@ -780,7 +780,7 @@ paths:
   /login:
     get:
       description: ''
-      operationId: get-login
+      operationId: getLogin
       parameters: []
       requestBody:
         content:
@@ -819,7 +819,7 @@ servers:
         "/login": {
           "get": {
             "description": "",
-            "operationId": "get-login",
+            "operationId": "getLogin",
             "parameters": [],
             "requestBody": {
               "content": {
@@ -871,7 +871,7 @@ paths:
   /login:
     get:
       description: ''
-      operationId: get-login
+      operationId: getLogin
       parameters: []
       requestBody:
         content:

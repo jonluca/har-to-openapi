@@ -1,4 +1,4 @@
-import type { Config, InternalConfig } from "./types";
+import type { InternalConfig } from "./types";
 import type { OperationObject } from "@loopback/openapi-v3-types";
 import type { Content, Cookie, Header, PostData, PostDataParams, QueryString, Response } from "har-format";
 import type {
@@ -11,16 +11,15 @@ import type {
 } from "openapi3-ts/src/model/OpenApi";
 import toOpenApiSchema from "@openapi-contrib/json-schema-to-openapi-schema";
 import { quicktypeJSON } from "./quicktype";
-import { cloneDeep, uniqBy } from "lodash-es";
-import { isStandardHeader } from "./utils/headers";
+import { camelCase, cloneDeep, uniqBy } from "lodash-es";
+import { shouldFilterHeader } from "./utils/headers";
 import { URLSearchParams } from "url";
 import { getCookieSecurityName, getTypenameFromPath } from "./utils/string";
 
-export const addMethod = (method: string, url: URL, config?: Config): OperationObject => {
+export const addMethod = (method: string, url: URL, config: InternalConfig): OperationObject => {
   const path = url.pathname;
   // generate operation id
-  const pathId = path.replace(/(^\/|\/$|{|})/g, "").replace(/\//g, "-");
-  const operationId = `${method}-${pathId}`;
+  const operationId = camelCase(`${method} ${getTypenameFromPath(path)}`);
   const tags = config?.tags || [];
   let pathTags: string[] = [];
   if (typeof tags === "function") {
@@ -55,12 +54,12 @@ export const addMethod = (method: string, url: URL, config?: Config): OperationO
   return operationsObject;
 };
 
-export const addRequestHeaders = (specMethod: OperationObject, headers: Header[], filterStandardHeaders?: boolean) => {
+export const addRequestHeaders = (specMethod: OperationObject, headers: Header[], config: InternalConfig) => {
   const parameters = (specMethod.parameters ??= []);
-
+  const { filterStandardHeaders, securityHeaders = [] } = config;
   const customHeaders = filterStandardHeaders
     ? headers.filter((header) => {
-        return !isStandardHeader(header.name);
+        return !shouldFilterHeader(header.name, securityHeaders);
       })
     : headers;
   customHeaders.forEach((header) => {
@@ -220,7 +219,7 @@ export const getBody = async (
             const isBase64Encoded = "encoding" in postData && (<any>postData).encoding == "base64";
             const data = JSON.parse(isBase64Encoded ? Buffer.from(text, "base64").toString() : text);
             examples.push(JSON.stringify(data));
-            const typeName = [getTypenameFromPath(urlPath), method, "request"].join("-");
+            const typeName = camelCase([getTypenameFromPath(urlPath), method, "request"].join(" "));
             const jsonSchema = await quicktypeJSON("schema", typeName, examples);
             const schema = await toOpenApiSchema(cloneDeep(jsonSchema), options);
             param.content[mimeTypeWithoutExtras] = {
@@ -257,7 +256,6 @@ export const getBody = async (
   return param;
 };
 
-export const uniqueHeaders = new Set<string>();
 export const getResponseBody = async (
   response: Response,
   details: { urlPath: string; method: string; examples: any[] },
@@ -265,6 +263,7 @@ export const getResponseBody = async (
 ): Promise<ResponseObject | undefined> => {
   const body = await getBody(response.content, details, config);
 
+  const { filterStandardHeaders, securityHeaders } = config;
   const param: ResponseObject = {
     description: "",
   };
@@ -273,14 +272,13 @@ export const getResponseBody = async (
   }
 
   const headers = response.headers || [];
-  const customHeaders = config?.filterStandardHeaders
+  const customHeaders = filterStandardHeaders
     ? headers.filter((header) => {
-        return !isStandardHeader(header.name);
+        return !shouldFilterHeader(header.name, securityHeaders);
       })
     : headers;
   if (customHeaders.length) {
     param.headers = customHeaders.reduce<HeadersObject>((acc, header) => {
-      uniqueHeaders.add(header.name);
       acc[header.name] = {
         description: `Custom header ${header.name}`,
         schema: {
