@@ -1,5 +1,6 @@
 import type { Cookie } from "har-format";
 import { camelCase, uniq } from "lodash-es";
+import type { ParameterObject } from "openapi3-ts/src/model/OpenApi";
 
 const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
@@ -30,6 +31,43 @@ export const getTypenameFromPath = (path: string, noFilter?: boolean) => {
   }
   // kind of heuristics, but we want to filter out things that are like uuids or just numbers
   return camelCase(uniq(partsToKeep).join(" "));
+};
+export const parameterizeUrl = (path: string) => {
+  const parts = path.split(/[/|${|-}]/g);
+  const parameterizedParts = [];
+  const parameters: ParameterObject[] = [];
+  const addParameter = (id: string) => {
+    const prefix = id;
+    const count = parameters.filter((p) => p.name.startsWith(prefix)).length;
+    const suffix = count > 0 ? `${count}` : "";
+    const name = `${prefix}${suffix}`;
+    parameters.push({ in: "path", name, required: true } as ParameterObject);
+    parameterizedParts.push(`{${name}}`);
+  };
+  for (const part of parts) {
+    // if its blank, skip
+    if (!part.length) {
+      continue;
+    }
+    // if its a UUID, skip it
+    if (uuidRegex.test(part)) {
+      addParameter("uuid");
+
+      continue;
+    }
+    if (dateRegex.test(part)) {
+      addParameter("date");
+      continue;
+    }
+    // if its a number and greater than 3 digits, probably safe to skip?
+    if (part.length > 3 && !isNaN(Number(part))) {
+      addParameter("id");
+      continue;
+    }
+    parameterizedParts.push(part);
+  }
+  // kind of heuristics, but we want to filter out things that are like uuids or just numbers
+  return { path: "/" + parameterizedParts.join("/"), parameters };
 };
 
 export const getCookieSecurityName = (cookie: Cookie) => {

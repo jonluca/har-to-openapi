@@ -25,6 +25,7 @@ export const sampleHar = () => readHar("request-generator-all-status-and-method.
 export const postDataConflict = () => readHar("post-data-conflict.har");
 export const loadImpact = () => readHar("load-impact.har");
 export const invalidUrl = () => readHar("invalid-url.har");
+export const parameterizedUrlHar = () => readHar("url.har");
 export const formDataHar = () => readHar("formdata.har");
 export const securityHar = () => readHar("security.har");
 export const basePath = () => readHar("base-path.har");

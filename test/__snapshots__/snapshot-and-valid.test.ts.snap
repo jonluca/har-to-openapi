@@ -109769,6 +109769,112 @@ exports[`Snapshots and validity > Sample API url.har matches snapshot 1`] = `
     },
     "openapi": "3.0.0",
     "paths": {
+      "/login/date/2022-02-02": {
+        "parameters": [],
+        "post": {
+          "description": "",
+          "operationId": "postLoginDate20220202",
+          "parameters": [],
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "meta": {},
+                  "params": {
+                    "test": "true",
+                  },
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "meta": {
+                      "additionalProperties": false,
+                      "title": "Meta",
+                      "type": "object",
+                    },
+                    "params": {
+                      "additionalProperties": false,
+                      "properties": {
+                        "test": {
+                          "format": "boolean",
+                          "type": "string",
+                        },
+                      },
+                      "required": [],
+                      "title": "Params",
+                      "type": "object",
+                    },
+                  },
+                  "required": [],
+                  "title": "LoginDatePostRequest",
+                  "type": "object",
+                },
+              },
+            },
+            "required": true,
+          },
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "example": {
+                    "error": null,
+                    "meta": {},
+                    "result": {
+                      "email": "luis.tejeda@company.com",
+                      "id": 1,
+                      "name": "Luis Tejeda Sanchez",
+                      "role": "USER",
+                      "test": "true",
+                    },
+                  },
+                  "schema": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "error": {
+                        "nullable": true,
+                      },
+                      "meta": {
+                        "additionalProperties": false,
+                        "title": "Meta",
+                        "type": "object",
+                      },
+                      "result": {
+                        "additionalProperties": false,
+                        "properties": {
+                          "email": {
+                            "type": "string",
+                          },
+                          "id": {
+                            "type": "integer",
+                          },
+                          "name": {
+                            "type": "string",
+                          },
+                          "role": {
+                            "type": "string",
+                          },
+                          "test": {
+                            "format": "boolean",
+                            "type": "string",
+                          },
+                        },
+                        "required": [],
+                        "title": "Result",
+                        "type": "object",
+                      },
+                    },
+                    "required": [],
+                    "title": "LoginDatePostRequest",
+                    "type": "object",
+                  },
+                },
+              },
+              "description": "",
+            },
+          },
+        },
+      },
       "/login/date/2022-02-02/id/12345/uuid/123e4567-e89b-12d3-a456-426655440000": {
         "parameters": [],
         "post": {
@@ -109875,6 +109981,324 @@ exports[`Snapshots and validity > Sample API url.har matches snapshot 1`] = `
           },
         },
       },
+      "/login/id/1234567": {
+        "parameters": [],
+        "post": {
+          "description": "",
+          "operationId": "postLoginId1234567",
+          "parameters": [],
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "meta": {},
+                  "params": {
+                    "test": "true",
+                  },
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "meta": {
+                      "additionalProperties": false,
+                      "title": "Meta",
+                      "type": "object",
+                    },
+                    "params": {
+                      "additionalProperties": false,
+                      "properties": {
+                        "test": {
+                          "format": "boolean",
+                          "type": "string",
+                        },
+                      },
+                      "required": [],
+                      "title": "Params",
+                      "type": "object",
+                    },
+                  },
+                  "required": [],
+                  "title": "LoginIDPostRequest",
+                  "type": "object",
+                },
+              },
+            },
+            "required": true,
+          },
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "example": {
+                    "error": null,
+                    "meta": {},
+                    "result": {
+                      "email": "luis.tejeda@company.com",
+                      "id": 1,
+                      "name": "Luis Tejeda Sanchez",
+                      "role": "USER",
+                      "test": "true",
+                    },
+                  },
+                  "schema": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "error": {
+                        "nullable": true,
+                      },
+                      "meta": {
+                        "additionalProperties": false,
+                        "title": "Meta",
+                        "type": "object",
+                      },
+                      "result": {
+                        "additionalProperties": false,
+                        "properties": {
+                          "email": {
+                            "type": "string",
+                          },
+                          "id": {
+                            "type": "integer",
+                          },
+                          "name": {
+                            "type": "string",
+                          },
+                          "role": {
+                            "type": "string",
+                          },
+                          "test": {
+                            "format": "boolean",
+                            "type": "string",
+                          },
+                        },
+                        "required": [],
+                        "title": "Result",
+                        "type": "object",
+                      },
+                    },
+                    "required": [],
+                    "title": "LoginIDPostRequest",
+                    "type": "object",
+                  },
+                },
+              },
+              "description": "",
+            },
+          },
+        },
+      },
+      "/login/id/1234567/idTwo/1234567": {
+        "parameters": [],
+        "post": {
+          "description": "",
+          "operationId": "postLoginId1234567IdTwo",
+          "parameters": [],
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "meta": {},
+                  "params": {
+                    "test": "true",
+                  },
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "meta": {
+                      "additionalProperties": false,
+                      "title": "Meta",
+                      "type": "object",
+                    },
+                    "params": {
+                      "additionalProperties": false,
+                      "properties": {
+                        "test": {
+                          "format": "boolean",
+                          "type": "string",
+                        },
+                      },
+                      "required": [],
+                      "title": "Params",
+                      "type": "object",
+                    },
+                  },
+                  "required": [],
+                  "title": "LoginIDIDTwoPostRequest",
+                  "type": "object",
+                },
+              },
+            },
+            "required": true,
+          },
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "example": {
+                    "error": null,
+                    "meta": {},
+                    "result": {
+                      "email": "luis.tejeda@company.com",
+                      "id": 1,
+                      "name": "Luis Tejeda Sanchez",
+                      "role": "USER",
+                      "test": "true",
+                    },
+                  },
+                  "schema": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "error": {
+                        "nullable": true,
+                      },
+                      "meta": {
+                        "additionalProperties": false,
+                        "title": "Meta",
+                        "type": "object",
+                      },
+                      "result": {
+                        "additionalProperties": false,
+                        "properties": {
+                          "email": {
+                            "type": "string",
+                          },
+                          "id": {
+                            "type": "integer",
+                          },
+                          "name": {
+                            "type": "string",
+                          },
+                          "role": {
+                            "type": "string",
+                          },
+                          "test": {
+                            "format": "boolean",
+                            "type": "string",
+                          },
+                        },
+                        "required": [],
+                        "title": "Result",
+                        "type": "object",
+                      },
+                    },
+                    "required": [],
+                    "title": "LoginIDIDTwoPostRequest",
+                    "type": "object",
+                  },
+                },
+              },
+              "description": "",
+            },
+          },
+        },
+      },
+      "/login/uuid/123e4567-e89b-12d3-a456-426655440000": {
+        "parameters": [],
+        "post": {
+          "description": "",
+          "operationId": "postLoginUuid123E4567E89B12D3A456426655440000",
+          "parameters": [],
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "meta": {},
+                  "params": {
+                    "test": "true",
+                  },
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "meta": {
+                      "additionalProperties": false,
+                      "title": "Meta",
+                      "type": "object",
+                    },
+                    "params": {
+                      "additionalProperties": false,
+                      "properties": {
+                        "test": {
+                          "format": "boolean",
+                          "type": "string",
+                        },
+                      },
+                      "required": [],
+                      "title": "Params",
+                      "type": "object",
+                    },
+                  },
+                  "required": [],
+                  "title": "LoginUUIDPostRequest",
+                  "type": "object",
+                },
+              },
+            },
+            "required": true,
+          },
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "example": {
+                    "error": null,
+                    "meta": {},
+                    "result": {
+                      "email": "luis.tejeda@company.com",
+                      "id": 1,
+                      "name": "Luis Tejeda Sanchez",
+                      "role": "USER",
+                      "test": "true",
+                    },
+                  },
+                  "schema": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "error": {
+                        "nullable": true,
+                      },
+                      "meta": {
+                        "additionalProperties": false,
+                        "title": "Meta",
+                        "type": "object",
+                      },
+                      "result": {
+                        "additionalProperties": false,
+                        "properties": {
+                          "email": {
+                            "type": "string",
+                          },
+                          "id": {
+                            "type": "integer",
+                          },
+                          "name": {
+                            "type": "string",
+                          },
+                          "role": {
+                            "type": "string",
+                          },
+                          "test": {
+                            "format": "boolean",
+                            "type": "string",
+                          },
+                        },
+                        "required": [],
+                        "title": "Result",
+                        "type": "object",
+                      },
+                    },
+                    "required": [],
+                    "title": "LoginUUIDPostRequest",
+                    "type": "object",
+                  },
+                },
+              },
+              "description": "",
+            },
+          },
+        },
+      },
     },
     "servers": [
       {
@@ -109887,6 +110311,82 @@ info:
   title: HarToOpenApi
   version: 1.0.0
 paths:
+  /login/date/2022-02-02:
+    parameters: []
+    post:
+      description: ''
+      operationId: postLoginDate20220202
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            example:
+              meta: {}
+              params:
+                test: 'true'
+            schema:
+              additionalProperties: false
+              properties:
+                meta:
+                  additionalProperties: false
+                  title: Meta
+                  type: object
+                params:
+                  additionalProperties: false
+                  properties:
+                    test:
+                      format: boolean
+                      type: string
+                  required: []
+                  title: Params
+                  type: object
+              required: []
+              title: LoginDatePostRequest
+              type: object
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              example:
+                error: null
+                meta: {}
+                result:
+                  email: luis.tejeda@company.com
+                  id: 1
+                  name: Luis Tejeda Sanchez
+                  role: USER
+                  test: 'true'
+              schema:
+                additionalProperties: false
+                properties:
+                  error:
+                    nullable: true
+                  meta:
+                    additionalProperties: false
+                    title: Meta
+                    type: object
+                  result:
+                    additionalProperties: false
+                    properties:
+                      email:
+                        type: string
+                      id:
+                        type: integer
+                      name:
+                        type: string
+                      role:
+                        type: string
+                      test:
+                        format: boolean
+                        type: string
+                    required: []
+                    title: Result
+                    type: object
+                required: []
+                title: LoginDatePostRequest
+                type: object
+          description: ''
   /login/date/2022-02-02/id/12345/uuid/123e4567-e89b-12d3-a456-426655440000:
     parameters: []
     post:
@@ -109961,6 +110461,234 @@ paths:
                     type: object
                 required: []
                 title: LoginDateIDUUIDPostRequest
+                type: object
+          description: ''
+  /login/id/1234567:
+    parameters: []
+    post:
+      description: ''
+      operationId: postLoginId1234567
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            example:
+              meta: {}
+              params:
+                test: 'true'
+            schema:
+              additionalProperties: false
+              properties:
+                meta:
+                  additionalProperties: false
+                  title: Meta
+                  type: object
+                params:
+                  additionalProperties: false
+                  properties:
+                    test:
+                      format: boolean
+                      type: string
+                  required: []
+                  title: Params
+                  type: object
+              required: []
+              title: LoginIDPostRequest
+              type: object
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              example:
+                error: null
+                meta: {}
+                result:
+                  email: luis.tejeda@company.com
+                  id: 1
+                  name: Luis Tejeda Sanchez
+                  role: USER
+                  test: 'true'
+              schema:
+                additionalProperties: false
+                properties:
+                  error:
+                    nullable: true
+                  meta:
+                    additionalProperties: false
+                    title: Meta
+                    type: object
+                  result:
+                    additionalProperties: false
+                    properties:
+                      email:
+                        type: string
+                      id:
+                        type: integer
+                      name:
+                        type: string
+                      role:
+                        type: string
+                      test:
+                        format: boolean
+                        type: string
+                    required: []
+                    title: Result
+                    type: object
+                required: []
+                title: LoginIDPostRequest
+                type: object
+          description: ''
+  /login/id/1234567/idTwo/1234567:
+    parameters: []
+    post:
+      description: ''
+      operationId: postLoginId1234567IdTwo
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            example:
+              meta: {}
+              params:
+                test: 'true'
+            schema:
+              additionalProperties: false
+              properties:
+                meta:
+                  additionalProperties: false
+                  title: Meta
+                  type: object
+                params:
+                  additionalProperties: false
+                  properties:
+                    test:
+                      format: boolean
+                      type: string
+                  required: []
+                  title: Params
+                  type: object
+              required: []
+              title: LoginIDIDTwoPostRequest
+              type: object
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              example:
+                error: null
+                meta: {}
+                result:
+                  email: luis.tejeda@company.com
+                  id: 1
+                  name: Luis Tejeda Sanchez
+                  role: USER
+                  test: 'true'
+              schema:
+                additionalProperties: false
+                properties:
+                  error:
+                    nullable: true
+                  meta:
+                    additionalProperties: false
+                    title: Meta
+                    type: object
+                  result:
+                    additionalProperties: false
+                    properties:
+                      email:
+                        type: string
+                      id:
+                        type: integer
+                      name:
+                        type: string
+                      role:
+                        type: string
+                      test:
+                        format: boolean
+                        type: string
+                    required: []
+                    title: Result
+                    type: object
+                required: []
+                title: LoginIDIDTwoPostRequest
+                type: object
+          description: ''
+  /login/uuid/123e4567-e89b-12d3-a456-426655440000:
+    parameters: []
+    post:
+      description: ''
+      operationId: postLoginUuid123E4567E89B12D3A456426655440000
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            example:
+              meta: {}
+              params:
+                test: 'true'
+            schema:
+              additionalProperties: false
+              properties:
+                meta:
+                  additionalProperties: false
+                  title: Meta
+                  type: object
+                params:
+                  additionalProperties: false
+                  properties:
+                    test:
+                      format: boolean
+                      type: string
+                  required: []
+                  title: Params
+                  type: object
+              required: []
+              title: LoginUUIDPostRequest
+              type: object
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              example:
+                error: null
+                meta: {}
+                result:
+                  email: luis.tejeda@company.com
+                  id: 1
+                  name: Luis Tejeda Sanchez
+                  role: USER
+                  test: 'true'
+              schema:
+                additionalProperties: false
+                properties:
+                  error:
+                    nullable: true
+                  meta:
+                    additionalProperties: false
+                    title: Meta
+                    type: object
+                  result:
+                    additionalProperties: false
+                    properties:
+                      email:
+                        type: string
+                      id:
+                        type: integer
+                      name:
+                        type: string
+                      role:
+                        type: string
+                      test:
+                        format: boolean
+                        type: string
+                    required: []
+                    title: Result
+                    type: object
+                required: []
+                title: LoginUUIDPostRequest
                 type: object
           description: ''
 servers:

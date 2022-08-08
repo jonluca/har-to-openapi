@@ -12,11 +12,12 @@ import type {
   SecuritySchemeObject,
   ServerObject,
 } from "openapi3-ts/src/model/OpenApi";
+import type { ParameterObject } from "openapi3-ts/src/model/OpenApi";
 import { cloneDeep, groupBy } from "lodash-es";
 import { addResponse } from "./utils/baseResponse";
 import { isStandardMethod } from "./utils/methods";
 import { DEFAULT_AUTH_HEADERS } from "./utils/headers";
-import { getCookieSecurityName } from "./utils/string";
+import { getCookieSecurityName, parameterizeUrl } from "./utils/string";
 
 const checkPathFromFilter = async (urlPath: string, filter: Config["urlFilter"]) => {
   if (typeof filter === "string") {
@@ -37,6 +38,7 @@ const getConfig = (config?: Config): InternalConfig => {
   internalConfig.relaxedContentTypeJsonParse ??= true;
   internalConfig.guessAuthenticationHeaders ??= true;
   internalConfig.forceAllRequestsInSameSpec ??= false;
+  internalConfig.attemptToParameterizeUrl ??= false;
   internalConfig.relaxedMethods ??= false;
   internalConfig.logErrors ??= false;
 
@@ -87,6 +89,7 @@ const generateSpecs = async <T extends Har>(har: T, config?: Config): Promise<IG
     urlFilter,
     relaxedMethods,
     logErrors,
+    attemptToParameterizeUrl,
   } = internalConfig;
 
   const groupedByHostname = groupBy(har.log.entries, (entry: Entry) => {
@@ -120,7 +123,13 @@ const generateSpecs = async <T extends Har>(har: T, config?: Config): Promise<IG
           // filter and collapse path urls
           const urlObj = new URL(url);
 
-          const urlPath = urlObj.pathname.replace(/\/+$/, "");
+          let urlPath = urlObj.pathname.replace(/\/+$/, "");
+          let pathParams: ParameterObject[] = [];
+          if (attemptToParameterizeUrl) {
+            const { path, parameters } = parameterizeUrl(urlPath);
+            urlPath = path;
+            pathParams = parameters;
+          }
 
           const queryParams = urlObj.search;
 
@@ -143,7 +152,7 @@ const generateSpecs = async <T extends Har>(har: T, config?: Config): Promise<IG
             continue;
           }
           // create path if it doesn't exist
-          spec.paths[urlPath] ??= { parameters: [] } as PathsObject;
+          spec.paths[urlPath] ??= { parameters: pathParams } as PathsObject;
           const path = spec.paths[urlPath] as PathItemObject;
 
           path[method] ??= addMethod(method, urlObj, internalConfig);
