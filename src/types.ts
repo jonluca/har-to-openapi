@@ -1,6 +1,6 @@
 import type { OpenApiSpec } from "@loopback/openapi-v3-types";
 
-export interface Config {
+export interface HarToOpenAPIConfig {
   // if true, we'll treat every url as having the same domain, regardless of what its actual domain is
   // the first domain we see is the domain we'll use
   forceAllRequestsInSameSpec?: boolean;
@@ -38,7 +38,7 @@ type Required<T, K extends keyof T> = T & { [P in K]-?: T[P] };
 type WithRequired<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>> & Required<T, K>;
 
 export type InternalConfig = WithRequired<
-  Config,
+  HarToOpenAPIConfig,
   | "filterStandardHeaders"
   | "addServersToPaths"
   | "attemptToParameterizeUrl"
@@ -49,7 +49,7 @@ export type InternalConfig = WithRequired<
   | "forceAllRequestsInSameSpec"
 >;
 
-export interface IGenerateSpecResponse {
+export interface HarToOpenAPISpec {
   spec: OpenApiSpec;
   yamlSpec: string;
   domain: string | undefined;

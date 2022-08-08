@@ -4,7 +4,7 @@ import type { Cookie, Entry, Har, QueryString } from "har-format";
 import YAML from "js-yaml";
 import sortJson from "sort-json";
 import { addMethod, addQueryStringParams, addRequestHeaders, getBody, getResponseBody, getSecurity } from "./helpers";
-import type { Config, IGenerateSpecResponse, InternalConfig } from "./types";
+import type { HarToOpenAPIConfig, HarToOpenAPISpec, InternalConfig } from "./types";
 import type {
   ParameterObject,
   PathItemObject,
@@ -19,7 +19,7 @@ import { isStandardMethod } from "./utils/methods";
 import { DEFAULT_AUTH_HEADERS } from "./utils/headers";
 import { getCookieSecurityName, parameterizeUrl } from "./utils/string";
 
-const checkPathFromFilter = async (urlPath: string, filter: Config["urlFilter"]) => {
+const checkPathFromFilter = async (urlPath: string, filter: HarToOpenAPIConfig["urlFilter"]) => {
   if (typeof filter === "string") {
     return urlPath.includes(filter);
   }
@@ -31,7 +31,7 @@ const checkPathFromFilter = async (urlPath: string, filter: Config["urlFilter"])
   }
 };
 
-const getConfig = (config?: Config): InternalConfig => {
+const getConfig = (config?: HarToOpenAPIConfig): InternalConfig => {
   const internalConfig = cloneDeep(config || {}) as InternalConfig;
   // set up some defaults
   internalConfig.filterStandardHeaders ??= true;
@@ -68,7 +68,7 @@ function tryGetHostname(url: string, logErrors?: boolean, fallback?: string): st
   return fallback;
 }
 
-const generateSpecs = async <T extends Har>(har: T, config?: Config): Promise<IGenerateSpecResponse[]> => {
+const generateSpecs = async <T extends Har>(har: T, config?: HarToOpenAPIConfig): Promise<HarToOpenAPISpec[]> => {
   if (!har?.log?.entries?.length) {
     return [];
   }
@@ -101,7 +101,7 @@ const generateSpecs = async <T extends Har>(har: T, config?: Config): Promise<IG
     }
     return tryGetHostname(entry.request.url, logErrors);
   });
-  const specs: IGenerateSpecResponse[] = [];
+  const specs: HarToOpenAPISpec[] = [];
 
   for (const domain in groupedByHostname) {
     try {
@@ -299,7 +299,7 @@ const generateSpecs = async <T extends Har>(har: T, config?: Config): Promise<IG
 
   return specs;
 };
-const generateSpec = async <T extends Har>(har: T, config?: Config): Promise<IGenerateSpecResponse> => {
+const generateSpec = async <T extends Har>(har: T, config?: HarToOpenAPIConfig): Promise<HarToOpenAPISpec> => {
   const specs = await generateSpecs(har, config);
   if (specs.length) {
     return specs[0];
