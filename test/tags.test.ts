@@ -1,6 +1,6 @@
 import { describe, test } from "vitest";
 import { generateSpec } from "../src";
-import type { PathItemObject } from "openapi3-ts/src/model/OpenApi";
+import type { PathItemObject } from "@loopback/openapi-v3-types";
 import { loadImpact } from "./test-utils";
 import OpenAPISchemaValidator from "openapi-schema-validator";
 

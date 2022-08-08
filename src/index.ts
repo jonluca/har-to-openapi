@@ -1,18 +1,18 @@
-import type { OperationObject } from "@loopback/openapi-v3-types";
-import { createEmptyApiSpec } from "@loopback/openapi-v3-types";
-import type { Cookie, Entry, Har, QueryString } from "har-format";
-import YAML from "js-yaml";
-import sortJson from "sort-json";
-import { addMethod, addQueryStringParams, addRequestHeaders, getBody, getResponseBody, getSecurity } from "./helpers";
-import type { HarToOpenAPIConfig, HarToOpenAPISpec, InternalConfig } from "./types";
 import type {
+  OperationObject,
   ParameterObject,
   PathItemObject,
   PathsObject,
   SecurityRequirementObject,
   SecuritySchemeObject,
   ServerObject,
-} from "openapi3-ts/src/model/OpenApi";
+} from "@loopback/openapi-v3-types";
+import { createEmptyApiSpec } from "@loopback/openapi-v3-types";
+import type { Cookie, Entry, Har, QueryString } from "har-format";
+import YAML from "js-yaml";
+import sortJson from "sort-json";
+import { addMethod, addQueryStringParams, addRequestHeaders, getBody, getResponseBody, getSecurity } from "./helpers";
+import type { HarToOpenAPIConfig, HarToOpenAPISpec, InternalConfig } from "./types";
 import { cloneDeep, groupBy } from "lodash-es";
 import { addResponse } from "./utils/baseResponse";
 import { isStandardMethod } from "./utils/methods";

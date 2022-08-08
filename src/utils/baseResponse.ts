@@ -1,5 +1,5 @@
 // Map some known parameters to their OpenAPI3 counterparts, otherwise just fallback
-import type { ResponseObject } from "openapi3-ts/src/model/OpenApi";
+import type { ResponseObject } from "@loopback/openapi-v3-types";
 
 export const addResponse = (status: number, method: string): ResponseObject => {
   switch (status) {

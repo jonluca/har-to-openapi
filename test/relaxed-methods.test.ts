@@ -1,7 +1,6 @@
 import { describe, test } from "vitest";
 import { generateSpec } from "../src";
-import type { PathItemObject } from "openapi3-ts/src/model/OpenApi";
-import type { OpenApiSpec } from "@loopback/openapi-v3-types";
+import type { OpenApiSpec, PathItemObject } from "@loopback/openapi-v3-types";
 import { customMethod } from "./test-utils";
 import { isStandardMethod } from "../src/utils/methods";
 

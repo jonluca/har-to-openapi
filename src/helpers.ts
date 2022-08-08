@@ -1,14 +1,14 @@
 import type { InternalConfig } from "./types";
-import type { OperationObject } from "@loopback/openapi-v3-types";
-import type { Content, Cookie, Header, PostData, PostDataParams, QueryString, Response } from "har-format";
 import type {
   HeadersObject,
+  OperationObject,
   ParameterObject,
   RequestBodyObject,
   ResponseObject,
   SchemaObject,
   SecurityRequirementObject,
-} from "openapi3-ts/src/model/OpenApi";
+} from "@loopback/openapi-v3-types";
+import type { Content, Cookie, Header, PostData, PostDataParams, QueryString, Response } from "har-format";
 import toOpenApiSchema from "@openapi-contrib/json-schema-to-openapi-schema";
 import { quicktypeJSON } from "./quicktype";
 import { camelCase, cloneDeep, uniqBy } from "lodash-es";
