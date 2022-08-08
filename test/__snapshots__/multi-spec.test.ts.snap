@@ -6,6 +6,7 @@ exports[`Spec generator > Returns one spec for a har with two domains and a call
     "domain": "example.com",
     "spec": {
       "info": {
+        "description": "OpenAPI spec generated from HAR data for example.com on 2022-08-08T15:19:31.231Z",
         "title": "HarToOpenApi",
         "version": "1.0.0",
       },
@@ -43,6 +44,7 @@ exports[`Spec generator > Returns one spec for a har with two domains and a call
               "required": true,
             },
             "responses": {},
+            "summary": "",
           },
           "parameters": [],
         },
@@ -57,6 +59,9 @@ exports[`Spec generator > Returns one spec for a har with two domains and a call
 info:
   title: HarToOpenApi
   version: 1.0.0
+  description: >-
+    OpenAPI spec generated from HAR data for example.com on
+    2022-08-08T15:19:31.231Z
 paths:
   /login:
     get:
@@ -81,6 +86,7 @@ paths:
               type: object
         required: true
       responses: {}
+      summary: ''
     parameters: []
 servers:
   - url: /
@@ -95,6 +101,7 @@ exports[`Spec generator > Returns one spec for a har with two domains and a rege
     "domain": "example.com",
     "spec": {
       "info": {
+        "description": "OpenAPI spec generated from HAR data for example.com on 2022-08-08T15:19:31.231Z",
         "title": "HarToOpenApi",
         "version": "1.0.0",
       },
@@ -132,6 +139,7 @@ exports[`Spec generator > Returns one spec for a har with two domains and a rege
               "required": true,
             },
             "responses": {},
+            "summary": "",
           },
           "parameters": [],
         },
@@ -146,6 +154,9 @@ exports[`Spec generator > Returns one spec for a har with two domains and a rege
 info:
   title: HarToOpenApi
   version: 1.0.0
+  description: >-
+    OpenAPI spec generated from HAR data for example.com on
+    2022-08-08T15:19:31.231Z
 paths:
   /login:
     get:
@@ -170,6 +181,7 @@ paths:
               type: object
         required: true
       responses: {}
+      summary: ''
     parameters: []
 servers:
   - url: /
@@ -184,6 +196,7 @@ exports[`Spec generator > Returns one spec for a har with two domains and a stri
     "domain": "example.com",
     "spec": {
       "info": {
+        "description": "OpenAPI spec generated from HAR data for example.com on 2022-08-08T15:19:31.230Z",
         "title": "HarToOpenApi",
         "version": "1.0.0",
       },
@@ -221,6 +234,7 @@ exports[`Spec generator > Returns one spec for a har with two domains and a stri
               "required": true,
             },
             "responses": {},
+            "summary": "",
           },
           "parameters": [],
         },
@@ -235,6 +249,9 @@ exports[`Spec generator > Returns one spec for a har with two domains and a stri
 info:
   title: HarToOpenApi
   version: 1.0.0
+  description: >-
+    OpenAPI spec generated from HAR data for example.com on
+    2022-08-08T15:19:31.230Z
 paths:
   /login:
     get:
@@ -259,6 +276,7 @@ paths:
               type: object
         required: true
       responses: {}
+      summary: ''
     parameters: []
 servers:
   - url: /
@@ -273,6 +291,7 @@ exports[`Spec generator > Returns one spec for a har with two domains and an asy
     "domain": "example.com",
     "spec": {
       "info": {
+        "description": "OpenAPI spec generated from HAR data for example.com on 2022-08-08T15:19:31.232Z",
         "title": "HarToOpenApi",
         "version": "1.0.0",
       },
@@ -310,6 +329,7 @@ exports[`Spec generator > Returns one spec for a har with two domains and an asy
               "required": true,
             },
             "responses": {},
+            "summary": "",
           },
           "parameters": [],
         },
@@ -324,6 +344,9 @@ exports[`Spec generator > Returns one spec for a har with two domains and an asy
 info:
   title: HarToOpenApi
   version: 1.0.0
+  description: >-
+    OpenAPI spec generated from HAR data for example.com on
+    2022-08-08T15:19:31.232Z
 paths:
   /login:
     get:
@@ -348,6 +371,7 @@ paths:
               type: object
         required: true
       responses: {}
+      summary: ''
     parameters: []
 servers:
   - url: /
@@ -362,6 +386,7 @@ exports[`Spec generator > Returns one spec for a har with two domains and forceA
     "domain": "example.com",
     "spec": {
       "info": {
+        "description": "OpenAPI spec generated from HAR data for specs on 2022-08-08T15:19:31.232Z",
         "title": "HarToOpenApi",
         "version": "1.0.0",
       },
@@ -399,6 +424,7 @@ exports[`Spec generator > Returns one spec for a har with two domains and forceA
               "required": true,
             },
             "responses": {},
+            "summary": "",
           },
           "parameters": [],
         },
@@ -413,6 +439,7 @@ exports[`Spec generator > Returns one spec for a har with two domains and forceA
 info:
   title: HarToOpenApi
   version: 1.0.0
+  description: OpenAPI spec generated from HAR data for specs on 2022-08-08T15:19:31.232Z
 paths:
   /login:
     get:
@@ -437,6 +464,7 @@ paths:
               type: object
         required: true
       responses: {}
+      summary: ''
     parameters: []
 servers:
   - url: /
@@ -451,6 +479,7 @@ exports[`Spec generator > Returns one spec for a har with two domains and forceA
     "domain": "example.com",
     "spec": {
       "info": {
+        "description": "OpenAPI spec generated from HAR data for specs on 2022-08-08T15:19:31.233Z",
         "title": "HarToOpenApi",
         "version": "1.0.0",
       },
@@ -493,6 +522,7 @@ exports[`Spec generator > Returns one spec for a har with two domains and forceA
                 "url": "http://example.com",
               },
             ],
+            "summary": "",
           },
           "parameters": [],
         },
@@ -507,6 +537,7 @@ exports[`Spec generator > Returns one spec for a har with two domains and forceA
 info:
   title: HarToOpenApi
   version: 1.0.0
+  description: OpenAPI spec generated from HAR data for specs on 2022-08-08T15:19:31.233Z
 paths:
   /login:
     get:
@@ -533,6 +564,7 @@ paths:
       responses: {}
       servers:
         - url: http://example.com
+      summary: ''
     parameters: []
 servers:
   - url: /
@@ -547,6 +579,7 @@ exports[`Spec generator > Returns two specs for a har with two domains 1`] = `
     "domain": "example.com",
     "spec": {
       "info": {
+        "description": "OpenAPI spec generated from HAR data for example.com on 2022-08-08T15:19:31.229Z",
         "title": "HarToOpenApi",
         "version": "1.0.0",
       },
@@ -584,6 +617,7 @@ exports[`Spec generator > Returns two specs for a har with two domains 1`] = `
               "required": true,
             },
             "responses": {},
+            "summary": "",
           },
           "parameters": [],
         },
@@ -598,6 +632,9 @@ exports[`Spec generator > Returns two specs for a har with two domains 1`] = `
 info:
   title: HarToOpenApi
   version: 1.0.0
+  description: >-
+    OpenAPI spec generated from HAR data for example.com on
+    2022-08-08T15:19:31.229Z
 paths:
   /login:
     get:
@@ -622,6 +659,7 @@ paths:
               type: object
         required: true
       responses: {}
+      summary: ''
     parameters: []
 servers:
   - url: /
@@ -631,6 +669,7 @@ servers:
     "domain": "exampletwo.com",
     "spec": {
       "info": {
+        "description": "OpenAPI spec generated from HAR data for exampletwo.com on 2022-08-08T15:19:31.230Z",
         "title": "HarToOpenApi",
         "version": "1.0.0",
       },
@@ -668,6 +707,7 @@ servers:
               "required": true,
             },
             "responses": {},
+            "summary": "",
           },
           "parameters": [],
         },
@@ -682,6 +722,9 @@ servers:
 info:
   title: HarToOpenApi
   version: 1.0.0
+  description: >-
+    OpenAPI spec generated from HAR data for exampletwo.com on
+    2022-08-08T15:19:31.230Z
 paths:
   /login:
     get:
@@ -706,6 +749,7 @@ paths:
               type: object
         required: true
       responses: {}
+      summary: ''
     parameters: []
 servers:
   - url: /
@@ -720,6 +764,7 @@ exports[`Spec generator > Returns two specs for a har with two domains and force
     "domain": "example.com",
     "spec": {
       "info": {
+        "description": "OpenAPI spec generated from HAR data for example.com on 2022-08-08T15:19:31.233Z",
         "title": "HarToOpenApi",
         "version": "1.0.0",
       },
@@ -762,6 +807,7 @@ exports[`Spec generator > Returns two specs for a har with two domains and force
                 "url": "http://example.com",
               },
             ],
+            "summary": "",
           },
           "parameters": [],
         },
@@ -776,6 +822,9 @@ exports[`Spec generator > Returns two specs for a har with two domains and force
 info:
   title: HarToOpenApi
   version: 1.0.0
+  description: >-
+    OpenAPI spec generated from HAR data for example.com on
+    2022-08-08T15:19:31.233Z
 paths:
   /login:
     get:
@@ -802,6 +851,7 @@ paths:
       responses: {}
       servers:
         - url: http://example.com
+      summary: ''
     parameters: []
 servers:
   - url: /
@@ -811,6 +861,7 @@ servers:
     "domain": "exampletwo.com",
     "spec": {
       "info": {
+        "description": "OpenAPI spec generated from HAR data for exampletwo.com on 2022-08-08T15:19:31.234Z",
         "title": "HarToOpenApi",
         "version": "1.0.0",
       },
@@ -853,6 +904,7 @@ servers:
                 "url": "http://exampletwo.com",
               },
             ],
+            "summary": "",
           },
           "parameters": [],
         },
@@ -867,6 +919,9 @@ servers:
 info:
   title: HarToOpenApi
   version: 1.0.0
+  description: >-
+    OpenAPI spec generated from HAR data for exampletwo.com on
+    2022-08-08T15:19:31.234Z
 paths:
   /login:
     get:
@@ -893,6 +948,7 @@ paths:
       responses: {}
       servers:
         - url: http://exampletwo.com
+      summary: ''
     parameters: []
 servers:
   - url: /

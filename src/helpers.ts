@@ -39,6 +39,7 @@ export const addMethod = (method: string, url: URL, config: InternalConfig): Ope
   const operationsObject = {
     operationId,
     description: "",
+    summary: "",
     parameters: [],
     responses: {},
   } as OperationObject;

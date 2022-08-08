@@ -5,6 +5,7 @@ exports[`Parameterized URLs > Can parse the parameterized url properly 1`] = `
   "domain": "google.com",
   "spec": {
     "info": {
+      "description": "OpenAPI spec generated from HAR data for google.com on 2022-08-08T15:19:31.144Z",
       "title": "HarToOpenApi",
       "version": "1.0.0",
     },
@@ -126,6 +127,7 @@ exports[`Parameterized URLs > Can parse the parameterized url properly 1`] = `
               "description": "",
             },
           },
+          "summary": "",
         },
       },
       "/login/date/{date}/id/{id}/uuid/{uuid}": {
@@ -267,6 +269,7 @@ exports[`Parameterized URLs > Can parse the parameterized url properly 1`] = `
               "description": "",
             },
           },
+          "summary": "",
         },
       },
       "/login/id/{id}": {
@@ -384,6 +387,7 @@ exports[`Parameterized URLs > Can parse the parameterized url properly 1`] = `
               "description": "",
             },
           },
+          "summary": "",
         },
       },
       "/login/id/{id}/idTwo/{id1}": {
@@ -511,6 +515,7 @@ exports[`Parameterized URLs > Can parse the parameterized url properly 1`] = `
               "description": "",
             },
           },
+          "summary": "",
         },
       },
       "/login/id/{id}/idTwo/{id1}/{bool}": {
@@ -648,6 +653,7 @@ exports[`Parameterized URLs > Can parse the parameterized url properly 1`] = `
               "description": "",
             },
           },
+          "summary": "",
         },
       },
       "/login/uuid/{uuid}": {
@@ -768,6 +774,7 @@ exports[`Parameterized URLs > Can parse the parameterized url properly 1`] = `
               "description": "",
             },
           },
+          "summary": "",
         },
       },
     },
@@ -781,6 +788,9 @@ exports[`Parameterized URLs > Can parse the parameterized url properly 1`] = `
 info:
   title: HarToOpenApi
   version: 1.0.0
+  description: >-
+    OpenAPI spec generated from HAR data for google.com on
+    2022-08-08T15:19:31.144Z
 paths:
   /login/date/{date}:
     parameters:
@@ -866,6 +876,7 @@ paths:
                 title: LoginDatePostRequest
                 type: object
           description: ''
+      summary: ''
   /login/date/{date}/id/{id}/uuid/{uuid}:
     parameters:
       - example: '2022-02-02'
@@ -967,6 +978,7 @@ paths:
                 title: LoginDateIDUUIDPostRequest
                 type: object
           description: ''
+      summary: ''
   /login/id/{id}:
     parameters:
       - example: '1234567'
@@ -1050,6 +1062,7 @@ paths:
                 title: LoginIDPostRequest
                 type: object
           description: ''
+      summary: ''
   /login/id/{id}/idTwo/{id1}:
     parameters:
       - example: '1234567'
@@ -1140,6 +1153,7 @@ paths:
                 title: LoginIDIDTwoId1PostRequest
                 type: object
           description: ''
+      summary: ''
   /login/id/{id}/idTwo/{id1}/{bool}:
     parameters:
       - example: '1234567'
@@ -1237,6 +1251,7 @@ paths:
                 title: LoginIDIDTwoId1BoolPostRequest
                 type: object
           description: ''
+      summary: ''
   /login/uuid/{uuid}:
     parameters:
       - example: 123e4567-e89b-12d3-a456-426655440000
@@ -1323,6 +1338,7 @@ paths:
                 title: LoginUUIDPostRequest
                 type: object
           description: ''
+      summary: ''
 servers:
   - url: /
 ",

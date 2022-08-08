@@ -30,6 +30,8 @@ export interface Config {
   // when we encounter a URL, try and parameterize it, such that something like
   // GET /uuids/123e4567-e89b-12d3-a456-426655440000 becomes GET /uuids/{uuid}
   attemptToParameterizeUrl?: boolean;
+  // when we encounter a path without a response or with a response that does not have 2xx, dont include it
+  dropPathsWithoutSuccessfulResponse?: boolean;
 }
 
 type Required<T, K extends keyof T> = T & { [P in K]-?: T[P] };
@@ -42,6 +44,7 @@ export type InternalConfig = WithRequired<
   | "attemptToParameterizeUrl"
   | "relaxedMethods"
   | "guessAuthenticationHeaders"
+  | "dropPathsWithoutSuccessfulResponse"
   | "relaxedContentTypeJsonParse"
   | "forceAllRequestsInSameSpec"
 >;

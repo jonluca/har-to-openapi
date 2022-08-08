@@ -37,6 +37,11 @@ export interface Config {
   // if true, we'll treat every url as having the same domain, regardless of what its actual domain is
   // the first domain we see is the domain we'll use
   forceAllRequestsInSameSpec?: boolean;
+  // if true, every path object will have its own servers entry, defining its base path. This is useful when
+  // forceAllRequestsInSameSpec is set
+  addServersToPaths?: boolean;
+  // try and guess common auth headers
+  guessAuthenticationHeaders?: boolean;
   // if the response has this status code, ignore the body
   ignoreBodiesForStatusCodes?: number[];
   // whether non standard methods should be allowed (like HTTP MY_CUSTOM_METHOD)
@@ -55,5 +60,10 @@ export interface Config {
   logErrors?: boolean;
   // a string, regex, or callback to filter urls for inclusion
   urlFilter?: string | RegExp | ((url: string) => boolean | Promise<boolean>);
+  // when we encounter a URL, try and parameterize it, such that something like
+  // GET /uuids/123e4567-e89b-12d3-a456-426655440000 becomes GET /uuids/{uuid}
+  attemptToParameterizeUrl?: boolean;
+  // when we encounter a path without a response or with a response that does not have 2xx, dont include it
+  dropPathsWithoutSuccessfulResponse?: boolean;
 }
 ```

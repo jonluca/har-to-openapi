@@ -37,7 +37,9 @@ const getConfig = (config?: Config): InternalConfig => {
   internalConfig.filterStandardHeaders ??= true;
   internalConfig.relaxedContentTypeJsonParse ??= true;
   internalConfig.guessAuthenticationHeaders ??= true;
+  // default false
   internalConfig.forceAllRequestsInSameSpec ??= false;
+  internalConfig.dropPathsWithoutSuccessfulResponse ??= false;
   internalConfig.attemptToParameterizeUrl ??= false;
   internalConfig.relaxedMethods ??= false;
   internalConfig.logErrors ??= false;
@@ -90,6 +92,7 @@ const generateSpecs = async <T extends Har>(har: T, config?: Config): Promise<IG
     relaxedMethods,
     logErrors,
     attemptToParameterizeUrl,
+    dropPathsWithoutSuccessfulResponse,
   } = internalConfig;
 
   const groupedByHostname = groupBy(har.log.entries, (entry: Entry) => {
@@ -105,6 +108,7 @@ const generateSpecs = async <T extends Har>(har: T, config?: Config): Promise<IG
       // loop through har entries
       const spec = createEmptyApiSpec();
       spec.info.title = "HarToOpenApi";
+      spec.info.description = `OpenAPI spec generated from HAR data for ${domain} on ${new Date().toISOString()}`;
 
       const harEntriesForDomain = groupedByHostname[domain];
 
@@ -220,6 +224,25 @@ const generateSpecs = async <T extends Har>(har: T, config?: Config): Promise<IG
             console.error(e);
           }
           // error parsing one entry, move on
+        }
+      }
+
+      if (dropPathsWithoutSuccessfulResponse) {
+        for (const [path, entry] of Object.entries<PathsObject>(spec.paths)) {
+          const pathKeys = Object.keys(entry);
+          let hadSuccessfulResponse = false;
+          for (const maybeMethod of pathKeys) {
+            if (isStandardMethod(maybeMethod)) {
+              const responses = Object.keys(entry[maybeMethod].responses);
+              for (const maybeStatus of responses) {
+                // check if any of the responses had a valid status (2xx)
+                hadSuccessfulResponse ||= String(maybeStatus).startsWith("2");
+              }
+            }
+          }
+          if (!hadSuccessfulResponse) {
+            delete spec.paths[path];
+          }
         }
       }
       // If there were no valid paths, bail
