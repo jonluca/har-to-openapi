@@ -120,13 +120,14 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@openapi-contrib/json-schema-to-openapi-schema@^2.2.2":
-  version "2.2.2"
-  resolved "https://registry.npmjs.org/@openapi-contrib/json-schema-to-openapi-schema/-/json-schema-to-openapi-schema-2.2.2.tgz#0ce14613de1092dfb50f3f47190eaf8591022ad6"
-  integrity sha512-AtEIAsUvzQvmvhEcDQ/q6mLx8MPfCparc+YUQjqY2+xX3wFwM5MsTm7TZdIBnpnvmJMDUaqwO691a8dDIgXi9w==
+"@openapi-contrib/json-schema-to-openapi-schema@^2.2.3":
+  version "2.2.3"
+  resolved "https://registry.npmjs.org/@openapi-contrib/json-schema-to-openapi-schema/-/json-schema-to-openapi-schema-2.2.3.tgz#0df848569be32ed63e1dd69b39933d7ede1d7d03"
+  integrity sha512-9OzFixdSqzT/UJZkyUiL02ye1sshd5yjpxOGcD4IjqXk3mga12KWHVmwxD+Q6XMUrcUIiK0IKteux45pDJHpww==
   dependencies:
     "@apidevtools/json-schema-ref-parser" "^9.0.9"
     json-schema-walker "^0.0.4"
+    openapi-types "^12.0.0"
     yargs "^17.5.1"
 
 "@types/chai-subset@^1.3.3":

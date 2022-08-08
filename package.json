@@ -44,7 +44,7 @@
   },
   "dependencies": {
     "@loopback/openapi-v3-types": "^1.2.1",
-    "@openapi-contrib/json-schema-to-openapi-schema": "^2.2.2",
+    "@openapi-contrib/json-schema-to-openapi-schema": "^2.2.3",
     "js-yaml": "^4.1.0",
     "lodash-es": "^4.17.21",
     "quicktype-core": "^6.0.71",
