@@ -14,7 +14,7 @@ exports[`Snapshots and validity > Sample API ServerService-GetNavigationMenu2-ff
       },
     },
     "info": {
-      "description": "OpenAPI spec generated from HAR data for pc0uytxw.asia.kofax.com on 2022-08-08T15:19:30.150Z",
+      "description": "OpenAPI spec generated from HAR data for pc0uytxw.asia.kofax.com on 2022-09-01T04:00:00.000Z",
       "title": "HarToOpenApi",
       "version": "1.0.0",
     },
@@ -2638,7 +2638,7 @@ info:
   version: 1.0.0
   description: >-
     OpenAPI spec generated from HAR data for pc0uytxw.asia.kofax.com on
-    2022-08-08T15:19:30.150Z
+    2022-09-01T04:00:00.000Z
 paths:
   /agility.server.web/Services/SDK/ServerService.svc/json/GetNavigationMenu2:
     parameters: []
@@ -4855,7 +4855,7 @@ exports[`Snapshots and validity > Sample API ServerService-GetNavigationMenu2-fi
       },
     },
     "info": {
-      "description": "OpenAPI spec generated from HAR data for pc0uytxw.asia.kofax.com on 2022-08-08T15:19:30.152Z",
+      "description": "OpenAPI spec generated from HAR data for pc0uytxw.asia.kofax.com on 2022-09-01T04:00:00.000Z",
       "title": "HarToOpenApi",
       "version": "1.0.0",
     },
@@ -7479,7 +7479,7 @@ info:
   version: 1.0.0
   description: >-
     OpenAPI spec generated from HAR data for pc0uytxw.asia.kofax.com on
-    2022-08-08T15:19:30.152Z
+    2022-09-01T04:00:00.000Z
 paths:
   /agility.server.web/Services/SDK/ServerService.svc/json/GetNavigationMenu2:
     parameters: []
@@ -9696,7 +9696,7 @@ exports[`Snapshots and validity > Sample API add.har matches snapshot 1`] = `
       },
     },
     "info": {
-      "description": "OpenAPI spec generated from HAR data for developers.facebook.com on 2022-08-08T15:19:30.152Z",
+      "description": "OpenAPI spec generated from HAR data for developers.facebook.com on 2022-09-01T04:00:00.000Z",
       "title": "HarToOpenApi",
       "version": "1.0.0",
     },
@@ -9849,7 +9849,7 @@ info:
   version: 1.0.0
   description: >-
     OpenAPI spec generated from HAR data for developers.facebook.com on
-    2022-08-08T15:19:30.152Z
+    2022-09-01T04:00:00.000Z
 paths:
   /ajax/permissions/add:
     parameters: []
@@ -9970,7 +9970,7 @@ exports[`Snapshots and validity > Sample API base-path.har matches snapshot 1`] 
   "domain": "example.com",
   "spec": {
     "info": {
-      "description": "OpenAPI spec generated from HAR data for example.com on 2022-08-08T15:19:30.154Z",
+      "description": "OpenAPI spec generated from HAR data for example.com on 2022-09-01T04:00:00.000Z",
       "title": "HarToOpenApi",
       "version": "1.0.0",
     },
@@ -10025,7 +10025,7 @@ info:
   version: 1.0.0
   description: >-
     OpenAPI spec generated from HAR data for example.com on
-    2022-08-08T15:19:30.154Z
+    2022-09-01T04:00:00.000Z
 paths:
   /login:
     get:
@@ -10099,7 +10099,7 @@ exports[`Snapshots and validity > Sample API ericduran.github.io.har matches sna
       },
     },
     "info": {
-      "description": "OpenAPI spec generated from HAR data for ericduran.github.io on 2022-08-08T15:19:30.154Z",
+      "description": "OpenAPI spec generated from HAR data for ericduran.github.io on 2022-09-01T04:00:00.000Z",
       "title": "HarToOpenApi",
       "version": "1.0.0",
     },
@@ -11543,7 +11543,7 @@ info:
   version: 1.0.0
   description: >-
     OpenAPI spec generated from HAR data for ericduran.github.io on
-    2022-08-08T15:19:30.154Z
+    2022-09-01T04:00:00.000Z
 paths:
   /chromeHAR/:
     get:
@@ -12687,7 +12687,7 @@ exports[`Snapshots and validity > Sample API formdata.har matches snapshot 1`] =
   "domain": "example.com",
   "spec": {
     "info": {
-      "description": "OpenAPI spec generated from HAR data for example.com on 2022-08-08T15:19:30.154Z",
+      "description": "OpenAPI spec generated from HAR data for example.com on 2022-09-01T04:00:00.000Z",
       "title": "HarToOpenApi",
       "version": "1.0.0",
     },
@@ -12821,7 +12821,7 @@ info:
   version: 1.0.0
   description: >-
     OpenAPI spec generated from HAR data for example.com on
-    2022-08-08T15:19:30.154Z
+    2022-09-01T04:00:00.000Z
 paths:
   /invalidForm:
     get:
@@ -12923,7 +12923,7 @@ exports[`Snapshots and validity > Sample API full.har matches snapshot 1`] = `
       },
     },
     "info": {
-      "description": "OpenAPI spec generated from HAR data for httpbin.org on 2022-08-08T15:19:30.154Z",
+      "description": "OpenAPI spec generated from HAR data for httpbin.org on 2022-09-01T04:00:00.000Z",
       "title": "HarToOpenApi",
       "version": "1.0.0",
     },
@@ -13041,7 +13041,7 @@ info:
   version: 1.0.0
   description: >-
     OpenAPI spec generated from HAR data for httpbin.org on
-    2022-08-08T15:19:30.154Z
+    2022-09-01T04:00:00.000Z
 paths:
   /get:
     get:
@@ -13153,7 +13153,7 @@ exports[`Snapshots and validity > Sample API load-impact.har matches snapshot 1`
   "domain": "test.loadimpact.com",
   "spec": {
     "info": {
-      "description": "OpenAPI spec generated from HAR data for test.loadimpact.com on 2022-08-08T15:19:30.154Z",
+      "description": "OpenAPI spec generated from HAR data for test.loadimpact.com on 2022-09-01T04:00:00.000Z",
       "title": "HarToOpenApi",
       "version": "1.0.0",
     },
@@ -13208,7 +13208,7 @@ info:
   version: 1.0.0
   description: >-
     OpenAPI spec generated from HAR data for test.loadimpact.com on
-    2022-08-08T15:19:30.154Z
+    2022-09-01T04:00:00.000Z
 paths:
   /login:
     parameters: []
@@ -13274,7 +13274,7 @@ exports[`Snapshots and validity > Sample API no-success-status.har matches snaps
   "domain": "localhost",
   "spec": {
     "info": {
-      "description": "OpenAPI spec generated from HAR data for localhost on 2022-08-08T15:19:30.155Z",
+      "description": "OpenAPI spec generated from HAR data for localhost on 2022-09-01T04:00:00.000Z",
       "title": "HarToOpenApi",
       "version": "1.0.0",
     },
@@ -13311,7 +13311,7 @@ info:
   version: 1.0.0
   description: >-
     OpenAPI spec generated from HAR data for localhost on
-    2022-08-08T15:19:30.155Z
+    2022-09-01T04:00:00.000Z
 paths:
   /api/users/queries/getCurrentUser:
     parameters: []
@@ -13346,7 +13346,7 @@ exports[`Snapshots and validity > Sample API one-post-json-cookie.har matches sn
       },
     },
     "info": {
-      "description": "OpenAPI spec generated from HAR data for localhost on 2022-08-08T15:19:30.155Z",
+      "description": "OpenAPI spec generated from HAR data for localhost on 2022-09-01T04:00:00.000Z",
       "title": "HarToOpenApi",
       "version": "1.0.0",
     },
@@ -13482,7 +13482,7 @@ info:
   version: 1.0.0
   description: >-
     OpenAPI spec generated from HAR data for localhost on
-    2022-08-08T15:19:30.155Z
+    2022-09-01T04:00:00.000Z
 paths:
   /api/users/queries/getCurrentUser:
     parameters: []
@@ -13582,7 +13582,7 @@ exports[`Snapshots and validity > Sample API post-data-conflict.har matches snap
   "domain": "test.loadimpact.com",
   "spec": {
     "info": {
-      "description": "OpenAPI spec generated from HAR data for test.loadimpact.com on 2022-08-08T15:19:30.155Z",
+      "description": "OpenAPI spec generated from HAR data for test.loadimpact.com on 2022-09-01T04:00:00.000Z",
       "title": "HarToOpenApi",
       "version": "1.0.0",
     },
@@ -13637,7 +13637,7 @@ info:
   version: 1.0.0
   description: >-
     OpenAPI spec generated from HAR data for test.loadimpact.com on
-    2022-08-08T15:19:30.155Z
+    2022-09-01T04:00:00.000Z
 paths:
   /login:
     parameters: []
@@ -13684,7 +13684,7 @@ exports[`Snapshots and validity > Sample API post-json-invalid.har matches snaps
       },
     },
     "info": {
-      "description": "OpenAPI spec generated from HAR data for localhost on 2022-08-08T15:19:30.155Z",
+      "description": "OpenAPI spec generated from HAR data for localhost on 2022-09-01T04:00:00.000Z",
       "title": "HarToOpenApi",
       "version": "1.0.0",
     },
@@ -13748,7 +13748,7 @@ info:
   version: 1.0.0
   description: >-
     OpenAPI spec generated from HAR data for localhost on
-    2022-08-08T15:19:30.155Z
+    2022-09-01T04:00:00.000Z
 paths:
   /api/users/queries/getCurrentUser:
     parameters: []
@@ -13797,7 +13797,7 @@ exports[`Snapshots and validity > Sample API post-same-endpoint-diff-bodies.har 
   "domain": "localhost",
   "spec": {
     "info": {
-      "description": "OpenAPI spec generated from HAR data for localhost on 2022-08-08T15:19:30.155Z",
+      "description": "OpenAPI spec generated from HAR data for localhost on 2022-09-01T04:00:00.000Z",
       "title": "HarToOpenApi",
       "version": "1.0.0",
     },
@@ -13930,7 +13930,7 @@ info:
   version: 1.0.0
   description: >-
     OpenAPI spec generated from HAR data for localhost on
-    2022-08-08T15:19:30.155Z
+    2022-09-01T04:00:00.000Z
 paths:
   /api/users/queries/getCurrentUser:
     parameters: []
@@ -14046,7 +14046,7 @@ exports[`Snapshots and validity > Sample API request-generator-all-status-and-me
       },
     },
     "info": {
-      "description": "OpenAPI spec generated from HAR data for requestgenerator.com on 2022-08-08T15:19:30.157Z",
+      "description": "OpenAPI spec generated from HAR data for requestgenerator.com on 2022-09-01T04:00:00.000Z",
       "title": "HarToOpenApi",
       "version": "1.0.0",
     },
@@ -72838,7 +72838,7 @@ info:
   version: 1.0.0
   description: >-
     OpenAPI spec generated from HAR data for requestgenerator.com on
-    2022-08-08T15:19:30.157Z
+    2022-09-01T04:00:00.000Z
 paths:
   /api/check-cookie:
     parameters: []
@@ -111164,7 +111164,7 @@ exports[`Snapshots and validity > Sample API security.har matches snapshot 1`] =
       },
     },
     "info": {
-      "description": "OpenAPI spec generated from HAR data for test.loadimpact.com on 2022-08-08T15:19:30.157Z",
+      "description": "OpenAPI spec generated from HAR data for test.loadimpact.com on 2022-09-01T04:00:00.000Z",
       "title": "HarToOpenApi",
       "version": "1.0.0",
     },
@@ -111235,7 +111235,7 @@ info:
   version: 1.0.0
   description: >-
     OpenAPI spec generated from HAR data for test.loadimpact.com on
-    2022-08-08T15:19:30.157Z
+    2022-09-01T04:00:00.000Z
 paths:
   /login:
     parameters: []
@@ -111289,7 +111289,7 @@ exports[`Snapshots and validity > Sample API url.har matches snapshot 1`] = `
   "domain": "google.com",
   "spec": {
     "info": {
-      "description": "OpenAPI spec generated from HAR data for google.com on 2022-08-08T15:19:30.157Z",
+      "description": "OpenAPI spec generated from HAR data for google.com on 2022-09-01T04:00:00.000Z",
       "title": "HarToOpenApi",
       "version": "1.0.0",
     },
@@ -111950,7 +111950,7 @@ info:
   version: 1.0.0
   description: >-
     OpenAPI spec generated from HAR data for google.com on
-    2022-08-08T15:19:30.157Z
+    2022-09-01T04:00:00.000Z
 paths:
   /login/date/2022-02-02:
     parameters: []
@@ -112425,7 +112425,7 @@ exports[`Snapshots and validity > Sample API urlfull.har matches snapshot 1`] = 
   "domain": "test-api.k6.io",
   "spec": {
     "info": {
-      "description": "OpenAPI spec generated from HAR data for test-api.k6.io on 2022-08-08T15:19:30.157Z",
+      "description": "OpenAPI spec generated from HAR data for test-api.k6.io on 2022-09-01T04:00:00.000Z",
       "title": "HarToOpenApi",
       "version": "1.0.0",
     },
@@ -112454,7 +112454,7 @@ info:
   version: 1.0.0
   description: >-
     OpenAPI spec generated from HAR data for test-api.k6.io on
-    2022-08-08T15:19:30.157Z
+    2022-09-01T04:00:00.000Z
 paths:
   /public/crocodiles/:
     get:
@@ -112569,7 +112569,7 @@ exports[`Snapshots and validity > Sample API www.ozon.ru.har matches snapshot 1`
       },
     },
     "info": {
-      "description": "OpenAPI spec generated from HAR data for www.ozon.ru on 2022-08-08T15:19:30.165Z",
+      "description": "OpenAPI spec generated from HAR data for www.ozon.ru on 2022-09-01T04:00:00.000Z",
       "title": "HarToOpenApi",
       "version": "1.0.0",
     },
@@ -113594,7 +113594,7 @@ info:
   version: 1.0.0
   description: >-
     OpenAPI spec generated from HAR data for www.ozon.ru on
-    2022-08-08T15:19:30.165Z
+    2022-09-01T04:00:00.000Z
 paths:
   /api/composer-api.bx/_action/summary:
     get:

@@ -2,6 +2,11 @@ import { fileURLToPath } from "url";
 import path, { dirname } from "path";
 import fs from "fs";
 import type { Har } from "har-format";
+import { vi } from "vitest";
+
+const date = new Date(2022, 8, 1);
+vi.useFakeTimers();
+vi.setSystemTime(date);
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);

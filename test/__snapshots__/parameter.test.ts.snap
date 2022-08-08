@@ -5,7 +5,7 @@ exports[`Parameterized URLs > Can parse the parameterized url properly 1`] = `
   "domain": "google.com",
   "spec": {
     "info": {
-      "description": "OpenAPI spec generated from HAR data for google.com on 2022-08-08T15:19:31.144Z",
+      "description": "OpenAPI spec generated from HAR data for google.com on 2022-09-01T04:00:00.000Z",
       "title": "HarToOpenApi",
       "version": "1.0.0",
     },
@@ -790,7 +790,7 @@ info:
   version: 1.0.0
   description: >-
     OpenAPI spec generated from HAR data for google.com on
-    2022-08-08T15:19:31.144Z
+    2022-09-01T04:00:00.000Z
 paths:
   /login/date/{date}:
     parameters:

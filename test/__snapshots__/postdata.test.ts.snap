@@ -5,7 +5,7 @@ exports[`har-to-openapi: Post data > HAR with request with postdata matches snap
   "domain": "test.loadimpact.com",
   "spec": {
     "info": {
-      "description": "OpenAPI spec generated from HAR data for test.loadimpact.com on 2022-08-08T15:19:31.437Z",
+      "description": "OpenAPI spec generated from HAR data for test.loadimpact.com on 2022-09-01T04:00:00.000Z",
       "title": "HarToOpenApi",
       "version": "1.0.0",
     },
@@ -60,7 +60,7 @@ info:
   version: 1.0.0
   description: >-
     OpenAPI spec generated from HAR data for test.loadimpact.com on
-    2022-08-08T15:19:31.437Z
+    2022-09-01T04:00:00.000Z
 paths:
   /login:
     parameters: []
@@ -99,7 +99,7 @@ exports[`har-to-openapi: Post data > HAR with request with postdata with a misma
   "domain": "test.loadimpact.com",
   "spec": {
     "info": {
-      "description": "OpenAPI spec generated from HAR data for test.loadimpact.com on 2022-08-08T15:19:31.438Z",
+      "description": "OpenAPI spec generated from HAR data for test.loadimpact.com on 2022-09-01T04:00:00.000Z",
       "title": "HarToOpenApi",
       "version": "1.0.0",
     },
@@ -154,7 +154,7 @@ info:
   version: 1.0.0
   description: >-
     OpenAPI spec generated from HAR data for test.loadimpact.com on
-    2022-08-08T15:19:31.438Z
+    2022-09-01T04:00:00.000Z
 paths:
   /login:
     parameters: []
