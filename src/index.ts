@@ -236,6 +236,7 @@ const generateSpecs = async <T extends Har>(har: T, config?: Config): Promise<IG
             type: "http",
             name: schemaName,
             in: "header",
+            scheme: "bearer",
           } as SecuritySchemeObject;
         });
       }
