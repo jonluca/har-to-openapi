@@ -66,6 +66,7 @@ const STANDARD_HEADERS = [
   "sec-fetch-site",
   ":authority",
   ":method",
+  ":status",
   ":scheme",
   ":path",
 ] as const;

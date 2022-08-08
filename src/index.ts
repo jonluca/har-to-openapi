@@ -36,6 +36,17 @@ const getConfig = (config?: Config): InternalConfig => {
   return internalConfig;
 };
 
+const tryGetHostname = (url: string, logErrors?: boolean, fallback?: string): string | undefined => {
+  try {
+    return new URL(url).hostname;
+  } catch {
+    if (logErrors) {
+      console.error(`Error parsing url ${url}`);
+    }
+  }
+  return fallback;
+};
+
 const generateSpecs = async <T extends Har>(har: T, config?: Config): Promise<IGenerateSpecResponse[]> => {
   if (!har?.log?.entries?.length) {
     return [];
@@ -63,18 +74,10 @@ const generateSpecs = async <T extends Har>(har: T, config?: Config): Promise<IG
   } = internalConfig;
 
   const groupedByHostname = groupBy(har.log.entries, (entry: Entry) => {
-    try {
-      const url = new URL(entry.request.url);
-      if (forceAllRequestsInSameSpec) {
-        return "specs";
-      }
-      return url.hostname;
-    } catch (e) {
-      if (logErrors) {
-        console.error(`Error parsing url ${entry.request.url}`);
-      }
-      return undefined;
+    if (forceAllRequestsInSameSpec) {
+      return "specs";
     }
+    return tryGetHostname(entry.request.url, logErrors);
   });
   const specs: IGenerateSpecResponse[] = [];
 
@@ -87,6 +90,8 @@ const generateSpecs = async <T extends Har>(har: T, config?: Config): Promise<IG
       const harEntriesForDomain = groupedByHostname[domain];
 
       const securitySchemas: SecurityRequirementObject[] = [];
+      const firstUrl = harEntriesForDomain[0].request.url;
+
       for (const item of harEntriesForDomain) {
         try {
           const url = item.request.url;
@@ -215,7 +220,8 @@ const generateSpecs = async <T extends Har>(har: T, config?: Config): Promise<IG
       // sort paths
       spec.paths = sortJson(spec.paths, { depth: 200 });
       const yamlSpec = YAML.dump(spec);
-      specs.push({ spec, yamlSpec });
+      const labeledDomain = tryGetHostname(firstUrl, logErrors, domain);
+      specs.push({ spec, yamlSpec, domain: labeledDomain });
     } catch (err) {
       if (logErrors) {
         console.error(`Error creating spec for ${domain}`);
@@ -232,7 +238,7 @@ const generateSpec = async <T extends Har>(har: T, config?: Config): Promise<IGe
   }
   const spec = createEmptyApiSpec();
   spec.info.title = "HarToOpenApi - no valid specs found";
-  return { spec, yamlSpec: YAML.dump(spec) };
+  return { spec, yamlSpec: YAML.dump(spec), domain: undefined };
 };
 
 export { generateSpec, generateSpecs };

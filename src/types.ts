@@ -49,4 +49,5 @@ export type InternalConfig = WithRequired<
 export interface IGenerateSpecResponse {
   spec: OpenApiSpec;
   yamlSpec: string;
+  domain: string | undefined;
 }

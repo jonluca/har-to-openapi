@@ -2,6 +2,7 @@
 
 exports[`har-to-openapi: Post data > HAR with request with postdata matches snapshot 1`] = `
 {
+  "domain": "test.loadimpact.com",
   "spec": {
     "info": {
       "title": "HarToOpenApi",
@@ -89,6 +90,7 @@ servers:
 
 exports[`har-to-openapi: Post data > HAR with request with postdata with a mismatch matches snapshot 1`] = `
 {
+  "domain": "test.loadimpact.com",
   "spec": {
     "info": {
       "title": "HarToOpenApi",
