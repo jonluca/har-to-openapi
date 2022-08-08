@@ -9,6 +9,7 @@ exports[`Snapshots and validity > Sample API ServerService-GetNavigationMenu2-ff
         "Cookie": {
           "in": "header",
           "name": "Cookie",
+          "scheme": "bearer",
           "type": "http",
         },
       },
@@ -4831,6 +4832,7 @@ components:
       type: http
       name: Cookie
       in: header
+      scheme: bearer
 ",
 }
 `;
@@ -4844,6 +4846,7 @@ exports[`Snapshots and validity > Sample API ServerService-GetNavigationMenu2-fi
         "Cookie": {
           "in": "header",
           "name": "Cookie",
+          "scheme": "bearer",
           "type": "http",
         },
       },
@@ -9666,6 +9669,7 @@ components:
       type: http
       name: Cookie
       in: header
+      scheme: bearer
 ",
 }
 `;
@@ -9679,6 +9683,7 @@ exports[`Snapshots and validity > Sample API add.har matches snapshot 1`] = `
         "Cookie": {
           "in": "header",
           "name": "Cookie",
+          "scheme": "bearer",
           "type": "http",
         },
       },
@@ -9943,6 +9948,7 @@ components:
       type: http
       name: Cookie
       in: header
+      scheme: bearer
 ",
 }
 `;
@@ -10070,6 +10076,7 @@ exports[`Snapshots and validity > Sample API ericduran.github.io.har matches sna
         "Cookie": {
           "in": "header",
           "name": "Cookie",
+          "scheme": "bearer",
           "type": "http",
         },
       },
@@ -12600,6 +12607,7 @@ components:
       type: http
       name: Cookie
       in: header
+      scheme: bearer
 ",
 }
 `;
@@ -12828,6 +12836,7 @@ exports[`Snapshots and validity > Sample API full.har matches snapshot 1`] = `
         "Authorization": {
           "in": "header",
           "name": "Authorization",
+          "scheme": "bearer",
           "type": "http",
         },
       },
@@ -13019,6 +13028,7 @@ components:
       type: http
       name: Authorization
       in: header
+      scheme: bearer
 ",
 }
 `;
@@ -13174,6 +13184,7 @@ exports[`Snapshots and validity > Sample API one-post-json-cookie.har matches sn
         "Cookie": {
           "in": "header",
           "name": "Cookie",
+          "scheme": "bearer",
           "type": "http",
         },
       },
@@ -13400,6 +13411,7 @@ components:
       type: http
       name: Cookie
       in: header
+      scheme: bearer
 ",
 }
 `;
@@ -13500,6 +13512,7 @@ exports[`Snapshots and validity > Sample API post-json-invalid.har matches snaps
         "Cookie": {
           "in": "header",
           "name": "Cookie",
+          "scheme": "bearer",
           "type": "http",
         },
       },
@@ -13603,6 +13616,7 @@ components:
       type: http
       name: Cookie
       in: header
+      scheme: bearer
 ",
 }
 `;
@@ -13835,6 +13849,7 @@ exports[`Snapshots and validity > Sample API request-generator-all-status-and-me
         "cookie": {
           "in": "header",
           "name": "cookie",
+          "scheme": "bearer",
           "type": "http",
         },
         "cookieAuth": {
@@ -109627,6 +109642,7 @@ components:
       type: http
       name: cookie
       in: header
+      scheme: bearer
 ",
 }
 `;
@@ -109640,6 +109656,7 @@ exports[`Snapshots and validity > Sample API security.har matches snapshot 1`] =
         "X-Auth-Token": {
           "in": "header",
           "name": "X-Auth-Token",
+          "scheme": "bearer",
           "type": "http",
         },
       },
@@ -109755,6 +109772,7 @@ components:
       type: http
       name: X-Auth-Token
       in: header
+      scheme: bearer
 ",
 }
 `;
@@ -109899,6 +109917,7 @@ exports[`Snapshots and validity > Sample API www.ozon.ru.har matches snapshot 1`
         "cookie": {
           "in": "header",
           "name": "cookie",
+          "scheme": "bearer",
           "type": "http",
         },
         "cookieAreaId": {
@@ -111911,6 +111930,7 @@ components:
       type: http
       name: cookie
       in: header
+      scheme: bearer
 ",
 }
 `;
