@@ -16,6 +16,9 @@ exports[`Parameterized URLs > Can parse the parameterized url properly 1`] = `
             "in": "path",
             "name": "date",
             "required": true,
+            "schema": {
+              "type": "string",
+            },
           },
         ],
         "post": {
@@ -128,16 +131,25 @@ exports[`Parameterized URLs > Can parse the parameterized url properly 1`] = `
             "in": "path",
             "name": "date",
             "required": true,
+            "schema": {
+              "type": "string",
+            },
           },
           {
             "in": "path",
             "name": "id",
             "required": true,
+            "schema": {
+              "type": "integer",
+            },
           },
           {
             "in": "path",
             "name": "uuid",
             "required": true,
+            "schema": {
+              "type": "string",
+            },
           },
         ],
         "post": {
@@ -250,6 +262,9 @@ exports[`Parameterized URLs > Can parse the parameterized url properly 1`] = `
             "in": "path",
             "name": "id",
             "required": true,
+            "schema": {
+              "type": "integer",
+            },
           },
         ],
         "post": {
@@ -362,11 +377,17 @@ exports[`Parameterized URLs > Can parse the parameterized url properly 1`] = `
             "in": "path",
             "name": "id",
             "required": true,
+            "schema": {
+              "type": "integer",
+            },
           },
           {
             "in": "path",
             "name": "id1",
             "required": true,
+            "schema": {
+              "type": "integer",
+            },
           },
         ],
         "post": {
@@ -473,12 +494,146 @@ exports[`Parameterized URLs > Can parse the parameterized url properly 1`] = `
           },
         },
       },
+      "/login/id/{id}/idTwo/{id1}/{bool}": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+            },
+          },
+          {
+            "in": "path",
+            "name": "id1",
+            "required": true,
+            "schema": {
+              "type": "integer",
+            },
+          },
+          {
+            "in": "path",
+            "name": "bool",
+            "required": true,
+            "schema": {
+              "type": "boolean",
+            },
+          },
+        ],
+        "post": {
+          "description": "",
+          "operationId": "postLoginId1234567IdTwoTrue",
+          "parameters": [],
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "meta": {},
+                  "params": {
+                    "test": "true",
+                  },
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "meta": {
+                      "additionalProperties": false,
+                      "title": "Meta",
+                      "type": "object",
+                    },
+                    "params": {
+                      "additionalProperties": false,
+                      "properties": {
+                        "test": {
+                          "format": "boolean",
+                          "type": "string",
+                        },
+                      },
+                      "required": [],
+                      "title": "Params",
+                      "type": "object",
+                    },
+                  },
+                  "required": [],
+                  "title": "LoginIDIDTwoId1BoolPostRequest",
+                  "type": "object",
+                },
+              },
+            },
+            "required": true,
+          },
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "example": {
+                    "error": null,
+                    "meta": {},
+                    "result": {
+                      "email": "luis.tejeda@company.com",
+                      "id": 1,
+                      "name": "Luis Tejeda Sanchez",
+                      "role": "USER",
+                      "test": "true",
+                    },
+                  },
+                  "schema": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "error": {
+                        "nullable": true,
+                      },
+                      "meta": {
+                        "additionalProperties": false,
+                        "title": "Meta",
+                        "type": "object",
+                      },
+                      "result": {
+                        "additionalProperties": false,
+                        "properties": {
+                          "email": {
+                            "type": "string",
+                          },
+                          "id": {
+                            "type": "integer",
+                          },
+                          "name": {
+                            "type": "string",
+                          },
+                          "role": {
+                            "type": "string",
+                          },
+                          "test": {
+                            "format": "boolean",
+                            "type": "string",
+                          },
+                        },
+                        "required": [],
+                        "title": "Result",
+                        "type": "object",
+                      },
+                    },
+                    "required": [],
+                    "title": "LoginIDIDTwoId1BoolPostRequest",
+                    "type": "object",
+                  },
+                },
+              },
+              "description": "",
+            },
+          },
+        },
+      },
       "/login/uuid/{uuid}": {
         "parameters": [
           {
             "in": "path",
             "name": "uuid",
             "required": true,
+            "schema": {
+              "type": "string",
+            },
           },
         ],
         "post": {
@@ -602,6 +757,8 @@ paths:
       - in: path
         name: date
         required: true
+        schema:
+          type: string
     post:
       description: ''
       operationId: postLoginDate20220202
@@ -681,12 +838,18 @@ paths:
       - in: path
         name: date
         required: true
+        schema:
+          type: string
       - in: path
         name: id
         required: true
+        schema:
+          type: integer
       - in: path
         name: uuid
         required: true
+        schema:
+          type: string
     post:
       description: ''
       operationId: postLoginDate20220202Id12345Uuid123E4567E89B12D3A456426655440000
@@ -766,6 +929,8 @@ paths:
       - in: path
         name: id
         required: true
+        schema:
+          type: integer
     post:
       description: ''
       operationId: postLoginId1234567
@@ -845,9 +1010,13 @@ paths:
       - in: path
         name: id
         required: true
+        schema:
+          type: integer
       - in: path
         name: id1
         required: true
+        schema:
+          type: integer
     post:
       description: ''
       operationId: postLoginId1234567IdTwo
@@ -922,11 +1091,104 @@ paths:
                 title: LoginIDIDTwoId1PostRequest
                 type: object
           description: ''
+  /login/id/{id}/idTwo/{id1}/{bool}:
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+      - in: path
+        name: id1
+        required: true
+        schema:
+          type: integer
+      - in: path
+        name: bool
+        required: true
+        schema:
+          type: boolean
+    post:
+      description: ''
+      operationId: postLoginId1234567IdTwoTrue
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            example:
+              meta: {}
+              params:
+                test: 'true'
+            schema:
+              additionalProperties: false
+              properties:
+                meta:
+                  additionalProperties: false
+                  title: Meta
+                  type: object
+                params:
+                  additionalProperties: false
+                  properties:
+                    test:
+                      format: boolean
+                      type: string
+                  required: []
+                  title: Params
+                  type: object
+              required: []
+              title: LoginIDIDTwoId1BoolPostRequest
+              type: object
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              example:
+                error: null
+                meta: {}
+                result:
+                  email: luis.tejeda@company.com
+                  id: 1
+                  name: Luis Tejeda Sanchez
+                  role: USER
+                  test: 'true'
+              schema:
+                additionalProperties: false
+                properties:
+                  error:
+                    nullable: true
+                  meta:
+                    additionalProperties: false
+                    title: Meta
+                    type: object
+                  result:
+                    additionalProperties: false
+                    properties:
+                      email:
+                        type: string
+                      id:
+                        type: integer
+                      name:
+                        type: string
+                      role:
+                        type: string
+                      test:
+                        format: boolean
+                        type: string
+                    required: []
+                    title: Result
+                    type: object
+                required: []
+                title: LoginIDIDTwoId1BoolPostRequest
+                type: object
+          description: ''
   /login/uuid/{uuid}:
     parameters:
       - in: path
         name: uuid
         required: true
+        schema:
+          type: string
     post:
       description: ''
       operationId: postLoginUuid123E4567E89B12D3A456426655440000

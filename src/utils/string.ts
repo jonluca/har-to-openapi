@@ -1,6 +1,6 @@
 import type { Cookie } from "har-format";
 import { camelCase, uniq } from "lodash-es";
-import type { ParameterObject } from "openapi3-ts/src/model/OpenApi";
+import type { ParameterObject, SchemaObject } from "openapi3-ts/src/model/OpenApi";
 
 const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
@@ -36,12 +36,12 @@ export const parameterizeUrl = (path: string) => {
   const parts = path.split(/[/|${|-}]/g);
   const parameterizedParts = [];
   const parameters: ParameterObject[] = [];
-  const addParameter = (id: string) => {
+  const addParameter = (id: string, type?: SchemaObject["type"]) => {
     const prefix = id;
     const count = parameters.filter((p) => p.name.startsWith(prefix)).length;
     const suffix = count > 0 ? `${count}` : "";
     const name = `${prefix}${suffix}`;
-    parameters.push({ in: "path", name, required: true } as ParameterObject);
+    parameters.push({ in: "path", name, required: true, schema: { type: type || "string" } } as ParameterObject);
     parameterizedParts.push(`{${name}}`);
   };
   for (const part of parts) {
@@ -51,8 +51,7 @@ export const parameterizeUrl = (path: string) => {
     }
     // if its a UUID, skip it
     if (uuidRegex.test(part)) {
-      addParameter("uuid");
-
+      addParameter("uuid", "string");
       continue;
     }
     if (dateRegex.test(part)) {
@@ -61,7 +60,11 @@ export const parameterizeUrl = (path: string) => {
     }
     // if its a number and greater than 3 digits, probably safe to skip?
     if (part.length > 3 && !isNaN(Number(part))) {
-      addParameter("id");
+      addParameter("id", "integer");
+      continue;
+    }
+    if (part === "true" || part === "false") {
+      addParameter("bool", "boolean");
       continue;
     }
     parameterizedParts.push(part);
