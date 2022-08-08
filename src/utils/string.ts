@@ -36,12 +36,23 @@ export const parameterizeUrl = (path: string) => {
   const parts = path.split(/[/|${|-}]/g);
   const parameterizedParts = [];
   const parameters: ParameterObject[] = [];
-  const addParameter = (id: string, type?: SchemaObject["type"]) => {
+  const addParameter = (
+    id: string,
+    part: string,
+    type: SchemaObject["type"] = "string",
+    extraSchemaParts?: Partial<SchemaObject>,
+  ) => {
     const prefix = id;
     const count = parameters.filter((p) => p.name.startsWith(prefix)).length;
     const suffix = count > 0 ? `${count}` : "";
     const name = `${prefix}${suffix}`;
-    parameters.push({ in: "path", name, required: true, schema: { type: type || "string" } } as ParameterObject);
+    parameters.push({
+      in: "path",
+      name,
+      required: true,
+      schema: { type, default: part, ...extraSchemaParts },
+      example: part,
+    } as ParameterObject);
     parameterizedParts.push(`{${name}}`);
   };
   for (const part of parts) {
@@ -51,20 +62,24 @@ export const parameterizeUrl = (path: string) => {
     }
     // if its a UUID, skip it
     if (uuidRegex.test(part)) {
-      addParameter("uuid", "string");
+      addParameter("uuid", part, "string", {
+        pattern: "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+        minLength: 36,
+        maxLength: 36,
+      });
       continue;
     }
     if (dateRegex.test(part)) {
-      addParameter("date");
+      addParameter("date", part, "string", { format: "date" });
       continue;
     }
     // if its a number and greater than 3 digits, probably safe to skip?
     if (part.length > 3 && !isNaN(Number(part))) {
-      addParameter("id", "integer");
+      addParameter("id", part, "integer");
       continue;
     }
     if (part === "true" || part === "false") {
-      addParameter("bool", "boolean");
+      addParameter("bool", part, "boolean");
       continue;
     }
     parameterizedParts.push(part);

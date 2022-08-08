@@ -13,10 +13,13 @@ exports[`Parameterized URLs > Can parse the parameterized url properly 1`] = `
       "/login/date/{date}": {
         "parameters": [
           {
+            "example": "2022-02-02",
             "in": "path",
             "name": "date",
             "required": true,
             "schema": {
+              "default": "2022-02-02",
+              "format": "date",
               "type": "string",
             },
           },
@@ -128,26 +131,36 @@ exports[`Parameterized URLs > Can parse the parameterized url properly 1`] = `
       "/login/date/{date}/id/{id}/uuid/{uuid}": {
         "parameters": [
           {
+            "example": "2022-02-02",
             "in": "path",
             "name": "date",
             "required": true,
             "schema": {
+              "default": "2022-02-02",
+              "format": "date",
               "type": "string",
             },
           },
           {
+            "example": "12345",
             "in": "path",
             "name": "id",
             "required": true,
             "schema": {
+              "default": "12345",
               "type": "integer",
             },
           },
           {
+            "example": "123e4567-e89b-12d3-a456-426655440000",
             "in": "path",
             "name": "uuid",
             "required": true,
             "schema": {
+              "default": "123e4567-e89b-12d3-a456-426655440000",
+              "maxLength": 36,
+              "minLength": 36,
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
               "type": "string",
             },
           },
@@ -259,10 +272,12 @@ exports[`Parameterized URLs > Can parse the parameterized url properly 1`] = `
       "/login/id/{id}": {
         "parameters": [
           {
+            "example": "1234567",
             "in": "path",
             "name": "id",
             "required": true,
             "schema": {
+              "default": "1234567",
               "type": "integer",
             },
           },
@@ -374,18 +389,22 @@ exports[`Parameterized URLs > Can parse the parameterized url properly 1`] = `
       "/login/id/{id}/idTwo/{id1}": {
         "parameters": [
           {
+            "example": "1234567",
             "in": "path",
             "name": "id",
             "required": true,
             "schema": {
+              "default": "1234567",
               "type": "integer",
             },
           },
           {
+            "example": "1234567",
             "in": "path",
             "name": "id1",
             "required": true,
             "schema": {
+              "default": "1234567",
               "type": "integer",
             },
           },
@@ -497,26 +516,32 @@ exports[`Parameterized URLs > Can parse the parameterized url properly 1`] = `
       "/login/id/{id}/idTwo/{id1}/{bool}": {
         "parameters": [
           {
+            "example": "1234567",
             "in": "path",
             "name": "id",
             "required": true,
             "schema": {
+              "default": "1234567",
               "type": "integer",
             },
           },
           {
+            "example": "1234567",
             "in": "path",
             "name": "id1",
             "required": true,
             "schema": {
+              "default": "1234567",
               "type": "integer",
             },
           },
           {
+            "example": "true",
             "in": "path",
             "name": "bool",
             "required": true,
             "schema": {
+              "default": "true",
               "type": "boolean",
             },
           },
@@ -628,10 +653,15 @@ exports[`Parameterized URLs > Can parse the parameterized url properly 1`] = `
       "/login/uuid/{uuid}": {
         "parameters": [
           {
+            "example": "123e4567-e89b-12d3-a456-426655440000",
             "in": "path",
             "name": "uuid",
             "required": true,
             "schema": {
+              "default": "123e4567-e89b-12d3-a456-426655440000",
+              "maxLength": 36,
+              "minLength": 36,
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
               "type": "string",
             },
           },
@@ -754,10 +784,13 @@ info:
 paths:
   /login/date/{date}:
     parameters:
-      - in: path
+      - example: '2022-02-02'
+        in: path
         name: date
         required: true
         schema:
+          default: '2022-02-02'
+          format: date
           type: string
     post:
       description: ''
@@ -835,20 +868,30 @@ paths:
           description: ''
   /login/date/{date}/id/{id}/uuid/{uuid}:
     parameters:
-      - in: path
+      - example: '2022-02-02'
+        in: path
         name: date
         required: true
         schema:
+          default: '2022-02-02'
+          format: date
           type: string
-      - in: path
+      - example: '12345'
+        in: path
         name: id
         required: true
         schema:
+          default: '12345'
           type: integer
-      - in: path
+      - example: 123e4567-e89b-12d3-a456-426655440000
+        in: path
         name: uuid
         required: true
         schema:
+          default: 123e4567-e89b-12d3-a456-426655440000
+          maxLength: 36
+          minLength: 36
+          pattern: ^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$
           type: string
     post:
       description: ''
@@ -926,10 +969,12 @@ paths:
           description: ''
   /login/id/{id}:
     parameters:
-      - in: path
+      - example: '1234567'
+        in: path
         name: id
         required: true
         schema:
+          default: '1234567'
           type: integer
     post:
       description: ''
@@ -1007,15 +1052,19 @@ paths:
           description: ''
   /login/id/{id}/idTwo/{id1}:
     parameters:
-      - in: path
+      - example: '1234567'
+        in: path
         name: id
         required: true
         schema:
+          default: '1234567'
           type: integer
-      - in: path
+      - example: '1234567'
+        in: path
         name: id1
         required: true
         schema:
+          default: '1234567'
           type: integer
     post:
       description: ''
@@ -1093,20 +1142,26 @@ paths:
           description: ''
   /login/id/{id}/idTwo/{id1}/{bool}:
     parameters:
-      - in: path
+      - example: '1234567'
+        in: path
         name: id
         required: true
         schema:
+          default: '1234567'
           type: integer
-      - in: path
+      - example: '1234567'
+        in: path
         name: id1
         required: true
         schema:
+          default: '1234567'
           type: integer
-      - in: path
+      - example: 'true'
+        in: path
         name: bool
         required: true
         schema:
+          default: 'true'
           type: boolean
     post:
       description: ''
@@ -1184,10 +1239,15 @@ paths:
           description: ''
   /login/uuid/{uuid}:
     parameters:
-      - in: path
+      - example: 123e4567-e89b-12d3-a456-426655440000
+        in: path
         name: uuid
         required: true
         schema:
+          default: 123e4567-e89b-12d3-a456-426655440000
+          maxLength: 36
+          minLength: 36
+          pattern: ^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$
           type: string
     post:
       description: ''
