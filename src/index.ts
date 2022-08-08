@@ -6,13 +6,13 @@ import sortJson from "sort-json";
 import { addMethod, addQueryStringParams, addRequestHeaders, getBody, getResponseBody, getSecurity } from "./helpers";
 import type { Config, IGenerateSpecResponse, InternalConfig } from "./types";
 import type {
+  ParameterObject,
   PathItemObject,
   PathsObject,
   SecurityRequirementObject,
   SecuritySchemeObject,
   ServerObject,
 } from "openapi3-ts/src/model/OpenApi";
-import type { ParameterObject } from "openapi3-ts/src/model/OpenApi";
 import { cloneDeep, groupBy } from "lodash-es";
 import { addResponse } from "./utils/baseResponse";
 import { isStandardMethod } from "./utils/methods";
@@ -123,7 +123,7 @@ const generateSpecs = async <T extends Har>(har: T, config?: Config): Promise<IG
           // filter and collapse path urls
           const urlObj = new URL(url);
 
-          let urlPath = urlObj.pathname.replace(/\/+$/, "");
+          let urlPath = urlObj.pathname;
           let pathParams: ParameterObject[] = [];
           if (attemptToParameterizeUrl) {
             const { path, parameters } = parameterizeUrl(urlPath);
