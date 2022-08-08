@@ -14892,7 +14892,7 @@ exports[`Snapshots and validity > Sample API request-generator-all-status-and-me
       "/api/status/200": {
         "get": {
           "description": "",
-          "operationId": "getApiStatus",
+          "operationId": "getApiStatus200",
           "parameters": [
             {
               "description": "cookie",
@@ -14976,7 +14976,7 @@ exports[`Snapshots and validity > Sample API request-generator-all-status-and-me
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusFormData",
+          "operationId": "postApiStatus200FormData",
           "parameters": [
             {
               "description": "cookie",
@@ -15090,7 +15090,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusJsonBody",
+          "operationId": "postApiStatus200JsonBody",
           "parameters": [
             {
               "description": "cookie",
@@ -15199,7 +15199,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/200/query-params": {
         "get": {
           "description": "",
-          "operationId": "getApiStatusQueryParams",
+          "operationId": "getApiStatus200QueryParams",
           "parameters": [
             {
               "description": "userId",
@@ -15871,7 +15871,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/201": {
         "get": {
           "description": "",
-          "operationId": "getApiStatus",
+          "operationId": "getApiStatus201",
           "parameters": [
             {
               "description": "cookie",
@@ -15955,7 +15955,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusFormData",
+          "operationId": "postApiStatus201FormData",
           "parameters": [
             {
               "description": "cookie",
@@ -16069,7 +16069,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusJsonBody",
+          "operationId": "postApiStatus201JsonBody",
           "parameters": [
             {
               "description": "cookie",
@@ -16178,7 +16178,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/201/query-params": {
         "get": {
           "description": "",
-          "operationId": "getApiStatusQueryParams",
+          "operationId": "getApiStatus201QueryParams",
           "parameters": [
             {
               "description": "userId",
@@ -16850,7 +16850,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/202": {
         "get": {
           "description": "",
-          "operationId": "getApiStatus",
+          "operationId": "getApiStatus202",
           "parameters": [
             {
               "description": "cookie",
@@ -16934,7 +16934,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusFormData",
+          "operationId": "postApiStatus202FormData",
           "parameters": [
             {
               "description": "cookie",
@@ -17048,7 +17048,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusJsonBody",
+          "operationId": "postApiStatus202JsonBody",
           "parameters": [
             {
               "description": "cookie",
@@ -17157,7 +17157,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/202/query-params": {
         "get": {
           "description": "",
-          "operationId": "getApiStatusQueryParams",
+          "operationId": "getApiStatus202QueryParams",
           "parameters": [
             {
               "description": "userId",
@@ -17829,7 +17829,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/203": {
         "get": {
           "description": "",
-          "operationId": "getApiStatus",
+          "operationId": "getApiStatus203",
           "parameters": [
             {
               "description": "cookie",
@@ -17913,7 +17913,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusFormData",
+          "operationId": "postApiStatus203FormData",
           "parameters": [
             {
               "description": "cookie",
@@ -18027,7 +18027,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusJsonBody",
+          "operationId": "postApiStatus203JsonBody",
           "parameters": [
             {
               "description": "cookie",
@@ -18136,7 +18136,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/203/query-params": {
         "get": {
           "description": "",
-          "operationId": "getApiStatusQueryParams",
+          "operationId": "getApiStatus203QueryParams",
           "parameters": [
             {
               "description": "userId",
@@ -18808,7 +18808,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/204": {
         "get": {
           "description": "",
-          "operationId": "getApiStatus",
+          "operationId": "getApiStatus204",
           "parameters": [
             {
               "description": "cookie",
@@ -18880,7 +18880,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusFormData",
+          "operationId": "postApiStatus204FormData",
           "parameters": [
             {
               "description": "cookie",
@@ -18973,7 +18973,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusJsonBody",
+          "operationId": "postApiStatus204JsonBody",
           "parameters": [
             {
               "description": "cookie",
@@ -19070,7 +19070,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/204/query-params": {
         "get": {
           "description": "",
-          "operationId": "getApiStatusQueryParams",
+          "operationId": "getApiStatus204QueryParams",
           "parameters": [
             {
               "description": "userId",
@@ -19658,7 +19658,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/205": {
         "get": {
           "description": "",
-          "operationId": "getApiStatus",
+          "operationId": "getApiStatus205",
           "parameters": [
             {
               "description": "cookie",
@@ -19742,7 +19742,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusFormData",
+          "operationId": "postApiStatus205FormData",
           "parameters": [
             {
               "description": "cookie",
@@ -19856,7 +19856,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusJsonBody",
+          "operationId": "postApiStatus205JsonBody",
           "parameters": [
             {
               "description": "cookie",
@@ -19965,7 +19965,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/205/query-params": {
         "get": {
           "description": "",
-          "operationId": "getApiStatusQueryParams",
+          "operationId": "getApiStatus205QueryParams",
           "parameters": [
             {
               "description": "userId",
@@ -20637,7 +20637,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/206": {
         "get": {
           "description": "",
-          "operationId": "getApiStatus",
+          "operationId": "getApiStatus206",
           "parameters": [
             {
               "description": "cookie",
@@ -20721,7 +20721,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusFormData",
+          "operationId": "postApiStatus206FormData",
           "parameters": [
             {
               "description": "cookie",
@@ -20835,7 +20835,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusJsonBody",
+          "operationId": "postApiStatus206JsonBody",
           "parameters": [
             {
               "description": "cookie",
@@ -20944,7 +20944,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/206/query-params": {
         "get": {
           "description": "",
-          "operationId": "getApiStatusQueryParams",
+          "operationId": "getApiStatus206QueryParams",
           "parameters": [
             {
               "description": "userId",
@@ -21616,7 +21616,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/207": {
         "get": {
           "description": "",
-          "operationId": "getApiStatus",
+          "operationId": "getApiStatus207",
           "parameters": [
             {
               "description": "cookie",
@@ -21700,7 +21700,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusFormData",
+          "operationId": "postApiStatus207FormData",
           "parameters": [
             {
               "description": "cookie",
@@ -21814,7 +21814,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusJsonBody",
+          "operationId": "postApiStatus207JsonBody",
           "parameters": [
             {
               "description": "cookie",
@@ -21923,7 +21923,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/207/query-params": {
         "get": {
           "description": "",
-          "operationId": "getApiStatusQueryParams",
+          "operationId": "getApiStatus207QueryParams",
           "parameters": [
             {
               "description": "userId",
@@ -22595,7 +22595,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/208": {
         "get": {
           "description": "",
-          "operationId": "getApiStatus",
+          "operationId": "getApiStatus208",
           "parameters": [
             {
               "description": "cookie",
@@ -22679,7 +22679,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusFormData",
+          "operationId": "postApiStatus208FormData",
           "parameters": [
             {
               "description": "cookie",
@@ -22793,7 +22793,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusJsonBody",
+          "operationId": "postApiStatus208JsonBody",
           "parameters": [
             {
               "description": "cookie",
@@ -22902,7 +22902,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/208/query-params": {
         "get": {
           "description": "",
-          "operationId": "getApiStatusQueryParams",
+          "operationId": "getApiStatus208QueryParams",
           "parameters": [
             {
               "description": "userId",
@@ -23574,7 +23574,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/226": {
         "get": {
           "description": "",
-          "operationId": "getApiStatus",
+          "operationId": "getApiStatus226",
           "parameters": [
             {
               "description": "cookie",
@@ -23658,7 +23658,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusFormData",
+          "operationId": "postApiStatus226FormData",
           "parameters": [
             {
               "description": "cookie",
@@ -23772,7 +23772,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusJsonBody",
+          "operationId": "postApiStatus226JsonBody",
           "parameters": [
             {
               "description": "cookie",
@@ -23881,7 +23881,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/226/query-params": {
         "get": {
           "description": "",
-          "operationId": "getApiStatusQueryParams",
+          "operationId": "getApiStatus226QueryParams",
           "parameters": [
             {
               "description": "userId",
@@ -24553,7 +24553,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/300": {
         "get": {
           "description": "",
-          "operationId": "getApiStatus",
+          "operationId": "getApiStatus300",
           "parameters": [],
           "responses": {
             "300": {
@@ -24619,7 +24619,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusFormData",
+          "operationId": "postApiStatus300FormData",
           "parameters": [
             {
               "description": "cookie",
@@ -24733,7 +24733,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusJsonBody",
+          "operationId": "postApiStatus300JsonBody",
           "parameters": [
             {
               "description": "cookie",
@@ -24842,7 +24842,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/300/query-params": {
         "get": {
           "description": "",
-          "operationId": "getApiStatusQueryParams",
+          "operationId": "getApiStatus300QueryParams",
           "parameters": [
             {
               "description": "userId",
@@ -25514,7 +25514,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/301": {
         "get": {
           "description": "",
-          "operationId": "getApiStatus",
+          "operationId": "getApiStatus301",
           "parameters": [],
           "responses": {
             "301": {
@@ -25580,7 +25580,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusFormData",
+          "operationId": "postApiStatus301FormData",
           "parameters": [
             {
               "description": "cookie",
@@ -25694,7 +25694,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusJsonBody",
+          "operationId": "postApiStatus301JsonBody",
           "parameters": [
             {
               "description": "cookie",
@@ -25803,7 +25803,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/301/query-params": {
         "get": {
           "description": "",
-          "operationId": "getApiStatusQueryParams",
+          "operationId": "getApiStatus301QueryParams",
           "parameters": [
             {
               "description": "userId",
@@ -26475,7 +26475,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/302": {
         "get": {
           "description": "",
-          "operationId": "getApiStatus",
+          "operationId": "getApiStatus302",
           "parameters": [
             {
               "description": "cookie",
@@ -26559,7 +26559,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusFormData",
+          "operationId": "postApiStatus302FormData",
           "parameters": [
             {
               "description": "cookie",
@@ -26673,7 +26673,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusJsonBody",
+          "operationId": "postApiStatus302JsonBody",
           "parameters": [
             {
               "description": "cookie",
@@ -26782,7 +26782,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/302/query-params": {
         "get": {
           "description": "",
-          "operationId": "getApiStatusQueryParams",
+          "operationId": "getApiStatus302QueryParams",
           "parameters": [
             {
               "description": "userId",
@@ -27454,7 +27454,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/303": {
         "get": {
           "description": "",
-          "operationId": "getApiStatus",
+          "operationId": "getApiStatus303",
           "parameters": [
             {
               "description": "cookie",
@@ -27538,7 +27538,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusFormData",
+          "operationId": "postApiStatus303FormData",
           "parameters": [
             {
               "description": "cookie",
@@ -27652,7 +27652,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusJsonBody",
+          "operationId": "postApiStatus303JsonBody",
           "parameters": [
             {
               "description": "cookie",
@@ -27761,7 +27761,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/303/query-params": {
         "get": {
           "description": "",
-          "operationId": "getApiStatusQueryParams",
+          "operationId": "getApiStatus303QueryParams",
           "parameters": [
             {
               "description": "userId",
@@ -28433,7 +28433,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/304": {
         "get": {
           "description": "",
-          "operationId": "getApiStatus",
+          "operationId": "getApiStatus304",
           "parameters": [
             {
               "description": "cookie",
@@ -28505,7 +28505,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusFormData",
+          "operationId": "postApiStatus304FormData",
           "parameters": [
             {
               "description": "cookie",
@@ -28598,7 +28598,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusJsonBody",
+          "operationId": "postApiStatus304JsonBody",
           "parameters": [
             {
               "description": "cookie",
@@ -28695,7 +28695,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/304/query-params": {
         "get": {
           "description": "",
-          "operationId": "getApiStatusQueryParams",
+          "operationId": "getApiStatus304QueryParams",
           "parameters": [
             {
               "description": "userId",
@@ -29283,7 +29283,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/305": {
         "get": {
           "description": "",
-          "operationId": "getApiStatus",
+          "operationId": "getApiStatus305",
           "parameters": [
             {
               "description": "cookie",
@@ -29367,7 +29367,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusFormData",
+          "operationId": "postApiStatus305FormData",
           "parameters": [
             {
               "description": "cookie",
@@ -29481,7 +29481,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusJsonBody",
+          "operationId": "postApiStatus305JsonBody",
           "parameters": [
             {
               "description": "cookie",
@@ -29590,7 +29590,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/305/query-params": {
         "get": {
           "description": "",
-          "operationId": "getApiStatusQueryParams",
+          "operationId": "getApiStatus305QueryParams",
           "parameters": [
             {
               "description": "userId",
@@ -30262,7 +30262,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/306": {
         "get": {
           "description": "",
-          "operationId": "getApiStatus",
+          "operationId": "getApiStatus306",
           "parameters": [
             {
               "description": "cookie",
@@ -30346,7 +30346,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusFormData",
+          "operationId": "postApiStatus306FormData",
           "parameters": [
             {
               "description": "cookie",
@@ -30460,7 +30460,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusJsonBody",
+          "operationId": "postApiStatus306JsonBody",
           "parameters": [
             {
               "description": "cookie",
@@ -30569,7 +30569,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/306/query-params": {
         "get": {
           "description": "",
-          "operationId": "getApiStatusQueryParams",
+          "operationId": "getApiStatus306QueryParams",
           "parameters": [
             {
               "description": "userId",
@@ -31241,7 +31241,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/307": {
         "get": {
           "description": "",
-          "operationId": "getApiStatus",
+          "operationId": "getApiStatus307",
           "parameters": [
             {
               "description": "cookie",
@@ -31325,7 +31325,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusFormData",
+          "operationId": "postApiStatus307FormData",
           "parameters": [
             {
               "description": "cookie",
@@ -31439,7 +31439,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusJsonBody",
+          "operationId": "postApiStatus307JsonBody",
           "parameters": [
             {
               "description": "cookie",
@@ -31548,7 +31548,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/307/query-params": {
         "get": {
           "description": "",
-          "operationId": "getApiStatusQueryParams",
+          "operationId": "getApiStatus307QueryParams",
           "parameters": [
             {
               "description": "userId",
@@ -32220,7 +32220,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/308": {
         "get": {
           "description": "",
-          "operationId": "getApiStatus",
+          "operationId": "getApiStatus308",
           "parameters": [],
           "responses": {
             "308": {
@@ -32286,7 +32286,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusFormData",
+          "operationId": "postApiStatus308FormData",
           "parameters": [
             {
               "description": "cookie",
@@ -32400,7 +32400,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusJsonBody",
+          "operationId": "postApiStatus308JsonBody",
           "parameters": [
             {
               "description": "cookie",
@@ -32509,7 +32509,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/308/query-params": {
         "get": {
           "description": "",
-          "operationId": "getApiStatusQueryParams",
+          "operationId": "getApiStatus308QueryParams",
           "parameters": [
             {
               "description": "userId",
@@ -33181,7 +33181,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/400": {
         "get": {
           "description": "",
-          "operationId": "getApiStatus",
+          "operationId": "getApiStatus400",
           "parameters": [
             {
               "description": "cookie",
@@ -33265,7 +33265,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusFormData",
+          "operationId": "postApiStatus400FormData",
           "parameters": [
             {
               "description": "cookie",
@@ -33379,7 +33379,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusJsonBody",
+          "operationId": "postApiStatus400JsonBody",
           "parameters": [
             {
               "description": "cookie",
@@ -33488,7 +33488,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/400/query-params": {
         "get": {
           "description": "",
-          "operationId": "getApiStatusQueryParams",
+          "operationId": "getApiStatus400QueryParams",
           "parameters": [
             {
               "description": "userId",
@@ -34160,7 +34160,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/401": {
         "get": {
           "description": "",
-          "operationId": "getApiStatus",
+          "operationId": "getApiStatus401",
           "parameters": [
             {
               "description": "cookie",
@@ -34244,7 +34244,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusFormData",
+          "operationId": "postApiStatus401FormData",
           "parameters": [
             {
               "description": "cookie",
@@ -34358,7 +34358,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusJsonBody",
+          "operationId": "postApiStatus401JsonBody",
           "parameters": [
             {
               "description": "cookie",
@@ -34467,7 +34467,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/401/query-params": {
         "get": {
           "description": "",
-          "operationId": "getApiStatusQueryParams",
+          "operationId": "getApiStatus401QueryParams",
           "parameters": [
             {
               "description": "userId",
@@ -35139,7 +35139,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/402": {
         "get": {
           "description": "",
-          "operationId": "getApiStatus",
+          "operationId": "getApiStatus402",
           "parameters": [
             {
               "description": "cookie",
@@ -35223,7 +35223,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusFormData",
+          "operationId": "postApiStatus402FormData",
           "parameters": [
             {
               "description": "cookie",
@@ -35337,7 +35337,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusJsonBody",
+          "operationId": "postApiStatus402JsonBody",
           "parameters": [
             {
               "description": "cookie",
@@ -35446,7 +35446,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/402/query-params": {
         "get": {
           "description": "",
-          "operationId": "getApiStatusQueryParams",
+          "operationId": "getApiStatus402QueryParams",
           "parameters": [
             {
               "description": "userId",
@@ -36118,7 +36118,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/403": {
         "get": {
           "description": "",
-          "operationId": "getApiStatus",
+          "operationId": "getApiStatus403",
           "parameters": [
             {
               "description": "cookie",
@@ -36202,7 +36202,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusFormData",
+          "operationId": "postApiStatus403FormData",
           "parameters": [
             {
               "description": "cookie",
@@ -36316,7 +36316,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusJsonBody",
+          "operationId": "postApiStatus403JsonBody",
           "parameters": [
             {
               "description": "cookie",
@@ -36425,7 +36425,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/403/query-params": {
         "get": {
           "description": "",
-          "operationId": "getApiStatusQueryParams",
+          "operationId": "getApiStatus403QueryParams",
           "parameters": [
             {
               "description": "userId",
@@ -37097,7 +37097,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/404": {
         "get": {
           "description": "",
-          "operationId": "getApiStatus",
+          "operationId": "getApiStatus404",
           "parameters": [
             {
               "description": "cookie",
@@ -37181,7 +37181,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusFormData",
+          "operationId": "postApiStatus404FormData",
           "parameters": [
             {
               "description": "cookie",
@@ -37295,7 +37295,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusJsonBody",
+          "operationId": "postApiStatus404JsonBody",
           "parameters": [
             {
               "description": "cookie",
@@ -37404,7 +37404,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/404/query-params": {
         "get": {
           "description": "",
-          "operationId": "getApiStatusQueryParams",
+          "operationId": "getApiStatus404QueryParams",
           "parameters": [
             {
               "description": "userId",
@@ -38076,7 +38076,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/405": {
         "get": {
           "description": "",
-          "operationId": "getApiStatus",
+          "operationId": "getApiStatus405",
           "parameters": [
             {
               "description": "cookie",
@@ -38160,7 +38160,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusFormData",
+          "operationId": "postApiStatus405FormData",
           "parameters": [
             {
               "description": "cookie",
@@ -38274,7 +38274,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusJsonBody",
+          "operationId": "postApiStatus405JsonBody",
           "parameters": [
             {
               "description": "cookie",
@@ -38383,7 +38383,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/405/query-params": {
         "get": {
           "description": "",
-          "operationId": "getApiStatusQueryParams",
+          "operationId": "getApiStatus405QueryParams",
           "parameters": [
             {
               "description": "userId",
@@ -39055,7 +39055,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/406": {
         "get": {
           "description": "",
-          "operationId": "getApiStatus",
+          "operationId": "getApiStatus406",
           "parameters": [
             {
               "description": "cookie",
@@ -39139,7 +39139,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusFormData",
+          "operationId": "postApiStatus406FormData",
           "parameters": [
             {
               "description": "cookie",
@@ -39253,7 +39253,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusJsonBody",
+          "operationId": "postApiStatus406JsonBody",
           "parameters": [
             {
               "description": "cookie",
@@ -39362,7 +39362,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/406/query-params": {
         "get": {
           "description": "",
-          "operationId": "getApiStatusQueryParams",
+          "operationId": "getApiStatus406QueryParams",
           "parameters": [
             {
               "description": "userId",
@@ -40034,7 +40034,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/407": {
         "get": {
           "description": "",
-          "operationId": "getApiStatus",
+          "operationId": "getApiStatus407",
           "parameters": [
             {
               "description": "cookie",
@@ -40062,7 +40062,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusFormData",
+          "operationId": "postApiStatus407FormData",
           "parameters": [
             {
               "description": "cookie",
@@ -40111,7 +40111,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusJsonBody",
+          "operationId": "postApiStatus407JsonBody",
           "parameters": [
             {
               "description": "cookie",
@@ -40164,7 +40164,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/407/query-params": {
         "get": {
           "description": "",
-          "operationId": "getApiStatusQueryParams",
+          "operationId": "getApiStatus407QueryParams",
           "parameters": [
             {
               "description": "userId",
@@ -40400,7 +40400,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/408": {
         "get": {
           "description": "",
-          "operationId": "getApiStatus",
+          "operationId": "getApiStatus408",
           "parameters": [
             {
               "description": "cookie",
@@ -40484,7 +40484,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusFormData",
+          "operationId": "postApiStatus408FormData",
           "parameters": [
             {
               "description": "cookie",
@@ -40598,7 +40598,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusJsonBody",
+          "operationId": "postApiStatus408JsonBody",
           "parameters": [
             {
               "description": "cookie",
@@ -40707,7 +40707,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/408/query-params": {
         "get": {
           "description": "",
-          "operationId": "getApiStatusQueryParams",
+          "operationId": "getApiStatus408QueryParams",
           "parameters": [
             {
               "description": "userId",
@@ -41379,7 +41379,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/409": {
         "get": {
           "description": "",
-          "operationId": "getApiStatus",
+          "operationId": "getApiStatus409",
           "parameters": [
             {
               "description": "cookie",
@@ -41463,7 +41463,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusFormData",
+          "operationId": "postApiStatus409FormData",
           "parameters": [
             {
               "description": "cookie",
@@ -41577,7 +41577,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusJsonBody",
+          "operationId": "postApiStatus409JsonBody",
           "parameters": [
             {
               "description": "cookie",
@@ -41686,7 +41686,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/409/query-params": {
         "get": {
           "description": "",
-          "operationId": "getApiStatusQueryParams",
+          "operationId": "getApiStatus409QueryParams",
           "parameters": [
             {
               "description": "userId",
@@ -42358,7 +42358,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/410": {
         "get": {
           "description": "",
-          "operationId": "getApiStatus",
+          "operationId": "getApiStatus410",
           "parameters": [],
           "responses": {
             "410": {
@@ -42424,7 +42424,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusFormData",
+          "operationId": "postApiStatus410FormData",
           "parameters": [
             {
               "description": "cookie",
@@ -42538,7 +42538,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusJsonBody",
+          "operationId": "postApiStatus410JsonBody",
           "parameters": [
             {
               "description": "cookie",
@@ -42647,7 +42647,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/410/query-params": {
         "get": {
           "description": "",
-          "operationId": "getApiStatusQueryParams",
+          "operationId": "getApiStatus410QueryParams",
           "parameters": [
             {
               "description": "userId",
@@ -43319,7 +43319,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/411": {
         "get": {
           "description": "",
-          "operationId": "getApiStatus",
+          "operationId": "getApiStatus411",
           "parameters": [
             {
               "description": "cookie",
@@ -43403,7 +43403,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusFormData",
+          "operationId": "postApiStatus411FormData",
           "parameters": [
             {
               "description": "cookie",
@@ -43517,7 +43517,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusJsonBody",
+          "operationId": "postApiStatus411JsonBody",
           "parameters": [
             {
               "description": "cookie",
@@ -43626,7 +43626,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/411/query-params": {
         "get": {
           "description": "",
-          "operationId": "getApiStatusQueryParams",
+          "operationId": "getApiStatus411QueryParams",
           "parameters": [
             {
               "description": "userId",
@@ -44298,7 +44298,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/412": {
         "get": {
           "description": "",
-          "operationId": "getApiStatus",
+          "operationId": "getApiStatus412",
           "parameters": [
             {
               "description": "cookie",
@@ -44382,7 +44382,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusFormData",
+          "operationId": "postApiStatus412FormData",
           "parameters": [
             {
               "description": "cookie",
@@ -44496,7 +44496,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusJsonBody",
+          "operationId": "postApiStatus412JsonBody",
           "parameters": [
             {
               "description": "cookie",
@@ -44605,7 +44605,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/412/query-params": {
         "get": {
           "description": "",
-          "operationId": "getApiStatusQueryParams",
+          "operationId": "getApiStatus412QueryParams",
           "parameters": [
             {
               "description": "userId",
@@ -45277,7 +45277,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/413": {
         "get": {
           "description": "",
-          "operationId": "getApiStatus",
+          "operationId": "getApiStatus413",
           "parameters": [
             {
               "description": "cookie",
@@ -45361,7 +45361,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusFormData",
+          "operationId": "postApiStatus413FormData",
           "parameters": [
             {
               "description": "cookie",
@@ -45475,7 +45475,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusJsonBody",
+          "operationId": "postApiStatus413JsonBody",
           "parameters": [
             {
               "description": "cookie",
@@ -45584,7 +45584,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/413/query-params": {
         "get": {
           "description": "",
-          "operationId": "getApiStatusQueryParams",
+          "operationId": "getApiStatus413QueryParams",
           "parameters": [
             {
               "description": "userId",
@@ -46256,7 +46256,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/414": {
         "get": {
           "description": "",
-          "operationId": "getApiStatus",
+          "operationId": "getApiStatus414",
           "parameters": [
             {
               "description": "cookie",
@@ -46340,7 +46340,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusFormData",
+          "operationId": "postApiStatus414FormData",
           "parameters": [
             {
               "description": "cookie",
@@ -46454,7 +46454,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusJsonBody",
+          "operationId": "postApiStatus414JsonBody",
           "parameters": [
             {
               "description": "cookie",
@@ -46563,7 +46563,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/414/query-params": {
         "get": {
           "description": "",
-          "operationId": "getApiStatusQueryParams",
+          "operationId": "getApiStatus414QueryParams",
           "parameters": [
             {
               "description": "userId",
@@ -47235,7 +47235,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/415": {
         "get": {
           "description": "",
-          "operationId": "getApiStatus",
+          "operationId": "getApiStatus415",
           "parameters": [
             {
               "description": "cookie",
@@ -47319,7 +47319,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusFormData",
+          "operationId": "postApiStatus415FormData",
           "parameters": [
             {
               "description": "cookie",
@@ -47433,7 +47433,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusJsonBody",
+          "operationId": "postApiStatus415JsonBody",
           "parameters": [
             {
               "description": "cookie",
@@ -47542,7 +47542,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/415/query-params": {
         "get": {
           "description": "",
-          "operationId": "getApiStatusQueryParams",
+          "operationId": "getApiStatus415QueryParams",
           "parameters": [
             {
               "description": "userId",
@@ -48214,7 +48214,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/416": {
         "get": {
           "description": "",
-          "operationId": "getApiStatus",
+          "operationId": "getApiStatus416",
           "parameters": [
             {
               "description": "cookie",
@@ -48298,7 +48298,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusFormData",
+          "operationId": "postApiStatus416FormData",
           "parameters": [
             {
               "description": "cookie",
@@ -48412,7 +48412,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusJsonBody",
+          "operationId": "postApiStatus416JsonBody",
           "parameters": [
             {
               "description": "cookie",
@@ -48521,7 +48521,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/416/query-params": {
         "get": {
           "description": "",
-          "operationId": "getApiStatusQueryParams",
+          "operationId": "getApiStatus416QueryParams",
           "parameters": [
             {
               "description": "userId",
@@ -49193,7 +49193,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/417": {
         "get": {
           "description": "",
-          "operationId": "getApiStatus",
+          "operationId": "getApiStatus417",
           "parameters": [
             {
               "description": "cookie",
@@ -49277,7 +49277,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusFormData",
+          "operationId": "postApiStatus417FormData",
           "parameters": [
             {
               "description": "cookie",
@@ -49391,7 +49391,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusJsonBody",
+          "operationId": "postApiStatus417JsonBody",
           "parameters": [
             {
               "description": "cookie",
@@ -49500,7 +49500,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/417/query-params": {
         "get": {
           "description": "",
-          "operationId": "getApiStatusQueryParams",
+          "operationId": "getApiStatus417QueryParams",
           "parameters": [
             {
               "description": "userId",
@@ -50172,7 +50172,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/418": {
         "get": {
           "description": "",
-          "operationId": "getApiStatus",
+          "operationId": "getApiStatus418",
           "parameters": [
             {
               "description": "cookie",
@@ -50256,7 +50256,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusFormData",
+          "operationId": "postApiStatus418FormData",
           "parameters": [
             {
               "description": "cookie",
@@ -50370,7 +50370,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusJsonBody",
+          "operationId": "postApiStatus418JsonBody",
           "parameters": [
             {
               "description": "cookie",
@@ -50479,7 +50479,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/418/query-params": {
         "get": {
           "description": "",
-          "operationId": "getApiStatusQueryParams",
+          "operationId": "getApiStatus418QueryParams",
           "parameters": [
             {
               "description": "userId",
@@ -51151,7 +51151,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/419": {
         "get": {
           "description": "",
-          "operationId": "getApiStatus",
+          "operationId": "getApiStatus419",
           "parameters": [
             {
               "description": "cookie",
@@ -51235,7 +51235,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusFormData",
+          "operationId": "postApiStatus419FormData",
           "parameters": [
             {
               "description": "cookie",
@@ -51349,7 +51349,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusJsonBody",
+          "operationId": "postApiStatus419JsonBody",
           "parameters": [
             {
               "description": "cookie",
@@ -51458,7 +51458,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/419/query-params": {
         "get": {
           "description": "",
-          "operationId": "getApiStatusQueryParams",
+          "operationId": "getApiStatus419QueryParams",
           "parameters": [
             {
               "description": "userId",
@@ -52130,7 +52130,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/420": {
         "get": {
           "description": "",
-          "operationId": "getApiStatus",
+          "operationId": "getApiStatus420",
           "parameters": [
             {
               "description": "cookie",
@@ -52214,7 +52214,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusFormData",
+          "operationId": "postApiStatus420FormData",
           "parameters": [
             {
               "description": "cookie",
@@ -52328,7 +52328,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusJsonBody",
+          "operationId": "postApiStatus420JsonBody",
           "parameters": [
             {
               "description": "cookie",
@@ -52437,7 +52437,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/420/query-params": {
         "get": {
           "description": "",
-          "operationId": "getApiStatusQueryParams",
+          "operationId": "getApiStatus420QueryParams",
           "parameters": [
             {
               "description": "userId",
@@ -53109,7 +53109,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/421": {
         "get": {
           "description": "",
-          "operationId": "getApiStatus",
+          "operationId": "getApiStatus421",
           "parameters": [
             {
               "description": "cookie",
@@ -53193,7 +53193,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusFormData",
+          "operationId": "postApiStatus421FormData",
           "parameters": [
             {
               "description": "cookie",
@@ -53307,7 +53307,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusJsonBody",
+          "operationId": "postApiStatus421JsonBody",
           "parameters": [
             {
               "description": "cookie",
@@ -53416,7 +53416,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/421/query-params": {
         "get": {
           "description": "",
-          "operationId": "getApiStatusQueryParams",
+          "operationId": "getApiStatus421QueryParams",
           "parameters": [
             {
               "description": "userId",
@@ -54088,7 +54088,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/422": {
         "get": {
           "description": "",
-          "operationId": "getApiStatus",
+          "operationId": "getApiStatus422",
           "parameters": [
             {
               "description": "cookie",
@@ -54172,7 +54172,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusFormData",
+          "operationId": "postApiStatus422FormData",
           "parameters": [
             {
               "description": "cookie",
@@ -54286,7 +54286,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusJsonBody",
+          "operationId": "postApiStatus422JsonBody",
           "parameters": [
             {
               "description": "cookie",
@@ -54395,7 +54395,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/422/query-params": {
         "get": {
           "description": "",
-          "operationId": "getApiStatusQueryParams",
+          "operationId": "getApiStatus422QueryParams",
           "parameters": [
             {
               "description": "userId",
@@ -55067,7 +55067,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/423": {
         "get": {
           "description": "",
-          "operationId": "getApiStatus",
+          "operationId": "getApiStatus423",
           "parameters": [
             {
               "description": "cookie",
@@ -55151,7 +55151,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusFormData",
+          "operationId": "postApiStatus423FormData",
           "parameters": [
             {
               "description": "cookie",
@@ -55265,7 +55265,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusJsonBody",
+          "operationId": "postApiStatus423JsonBody",
           "parameters": [
             {
               "description": "cookie",
@@ -55374,7 +55374,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/423/query-params": {
         "get": {
           "description": "",
-          "operationId": "getApiStatusQueryParams",
+          "operationId": "getApiStatus423QueryParams",
           "parameters": [
             {
               "description": "userId",
@@ -56046,7 +56046,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/424": {
         "get": {
           "description": "",
-          "operationId": "getApiStatus",
+          "operationId": "getApiStatus424",
           "parameters": [
             {
               "description": "cookie",
@@ -56130,7 +56130,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusFormData",
+          "operationId": "postApiStatus424FormData",
           "parameters": [
             {
               "description": "cookie",
@@ -56244,7 +56244,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusJsonBody",
+          "operationId": "postApiStatus424JsonBody",
           "parameters": [
             {
               "description": "cookie",
@@ -56353,7 +56353,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/424/query-params": {
         "get": {
           "description": "",
-          "operationId": "getApiStatusQueryParams",
+          "operationId": "getApiStatus424QueryParams",
           "parameters": [
             {
               "description": "userId",
@@ -57025,7 +57025,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/425": {
         "get": {
           "description": "",
-          "operationId": "getApiStatus",
+          "operationId": "getApiStatus425",
           "parameters": [
             {
               "description": "cookie",
@@ -57109,7 +57109,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusFormData",
+          "operationId": "postApiStatus425FormData",
           "parameters": [
             {
               "description": "cookie",
@@ -57223,7 +57223,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusJsonBody",
+          "operationId": "postApiStatus425JsonBody",
           "parameters": [
             {
               "description": "cookie",
@@ -57332,7 +57332,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/425/query-params": {
         "get": {
           "description": "",
-          "operationId": "getApiStatusQueryParams",
+          "operationId": "getApiStatus425QueryParams",
           "parameters": [
             {
               "description": "userId",
@@ -58004,7 +58004,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/426": {
         "get": {
           "description": "",
-          "operationId": "getApiStatus",
+          "operationId": "getApiStatus426",
           "parameters": [
             {
               "description": "cookie",
@@ -58088,7 +58088,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusFormData",
+          "operationId": "postApiStatus426FormData",
           "parameters": [
             {
               "description": "cookie",
@@ -58202,7 +58202,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusJsonBody",
+          "operationId": "postApiStatus426JsonBody",
           "parameters": [
             {
               "description": "cookie",
@@ -58311,7 +58311,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/426/query-params": {
         "get": {
           "description": "",
-          "operationId": "getApiStatusQueryParams",
+          "operationId": "getApiStatus426QueryParams",
           "parameters": [
             {
               "description": "userId",
@@ -58983,7 +58983,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/428": {
         "get": {
           "description": "",
-          "operationId": "getApiStatus",
+          "operationId": "getApiStatus428",
           "parameters": [
             {
               "description": "cookie",
@@ -59067,7 +59067,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusFormData",
+          "operationId": "postApiStatus428FormData",
           "parameters": [
             {
               "description": "cookie",
@@ -59181,7 +59181,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusJsonBody",
+          "operationId": "postApiStatus428JsonBody",
           "parameters": [
             {
               "description": "cookie",
@@ -59290,7 +59290,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/428/query-params": {
         "get": {
           "description": "",
-          "operationId": "getApiStatusQueryParams",
+          "operationId": "getApiStatus428QueryParams",
           "parameters": [
             {
               "description": "userId",
@@ -59962,7 +59962,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/429": {
         "get": {
           "description": "",
-          "operationId": "getApiStatus",
+          "operationId": "getApiStatus429",
           "parameters": [
             {
               "description": "cookie",
@@ -60046,7 +60046,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusFormData",
+          "operationId": "postApiStatus429FormData",
           "parameters": [
             {
               "description": "cookie",
@@ -60160,7 +60160,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusJsonBody",
+          "operationId": "postApiStatus429JsonBody",
           "parameters": [
             {
               "description": "cookie",
@@ -60269,7 +60269,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/429/query-params": {
         "get": {
           "description": "",
-          "operationId": "getApiStatusQueryParams",
+          "operationId": "getApiStatus429QueryParams",
           "parameters": [
             {
               "description": "userId",
@@ -60941,7 +60941,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/431": {
         "get": {
           "description": "",
-          "operationId": "getApiStatus",
+          "operationId": "getApiStatus431",
           "parameters": [
             {
               "description": "cookie",
@@ -61025,7 +61025,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusFormData",
+          "operationId": "postApiStatus431FormData",
           "parameters": [
             {
               "description": "cookie",
@@ -61139,7 +61139,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusJsonBody",
+          "operationId": "postApiStatus431JsonBody",
           "parameters": [
             {
               "description": "cookie",
@@ -61248,7 +61248,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/431/query-params": {
         "get": {
           "description": "",
-          "operationId": "getApiStatusQueryParams",
+          "operationId": "getApiStatus431QueryParams",
           "parameters": [
             {
               "description": "userId",
@@ -61920,7 +61920,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/451": {
         "get": {
           "description": "",
-          "operationId": "getApiStatus",
+          "operationId": "getApiStatus451",
           "parameters": [
             {
               "description": "cookie",
@@ -62004,7 +62004,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusFormData",
+          "operationId": "postApiStatus451FormData",
           "parameters": [
             {
               "description": "cookie",
@@ -62118,7 +62118,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusJsonBody",
+          "operationId": "postApiStatus451JsonBody",
           "parameters": [
             {
               "description": "cookie",
@@ -62227,7 +62227,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/451/query-params": {
         "get": {
           "description": "",
-          "operationId": "getApiStatusQueryParams",
+          "operationId": "getApiStatus451QueryParams",
           "parameters": [
             {
               "description": "userId",
@@ -62899,7 +62899,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/500": {
         "get": {
           "description": "",
-          "operationId": "getApiStatus",
+          "operationId": "getApiStatus500",
           "parameters": [
             {
               "description": "cookie",
@@ -62983,7 +62983,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusFormData",
+          "operationId": "postApiStatus500FormData",
           "parameters": [
             {
               "description": "cookie",
@@ -63097,7 +63097,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusJsonBody",
+          "operationId": "postApiStatus500JsonBody",
           "parameters": [
             {
               "description": "cookie",
@@ -63206,7 +63206,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/500/query-params": {
         "get": {
           "description": "",
-          "operationId": "getApiStatusQueryParams",
+          "operationId": "getApiStatus500QueryParams",
           "parameters": [
             {
               "description": "userId",
@@ -63878,7 +63878,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/501": {
         "get": {
           "description": "",
-          "operationId": "getApiStatus",
+          "operationId": "getApiStatus501",
           "parameters": [
             {
               "description": "cookie",
@@ -63962,7 +63962,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusFormData",
+          "operationId": "postApiStatus501FormData",
           "parameters": [
             {
               "description": "cookie",
@@ -64076,7 +64076,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusJsonBody",
+          "operationId": "postApiStatus501JsonBody",
           "parameters": [
             {
               "description": "cookie",
@@ -64185,7 +64185,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/501/query-params": {
         "get": {
           "description": "",
-          "operationId": "getApiStatusQueryParams",
+          "operationId": "getApiStatus501QueryParams",
           "parameters": [
             {
               "description": "userId",
@@ -64912,7 +64912,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/503": {
         "get": {
           "description": "",
-          "operationId": "getApiStatus",
+          "operationId": "getApiStatus503",
           "parameters": [
             {
               "description": "cookie",
@@ -64998,7 +64998,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusFormData",
+          "operationId": "postApiStatus503FormData",
           "parameters": [
             {
               "description": "cookie",
@@ -65114,7 +65114,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusJsonBody",
+          "operationId": "postApiStatus503JsonBody",
           "parameters": [
             {
               "description": "cookie",
@@ -65225,7 +65225,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/503/query-params": {
         "get": {
           "description": "",
-          "operationId": "getApiStatusQueryParams",
+          "operationId": "getApiStatus503QueryParams",
           "parameters": [
             {
               "description": "userId",
@@ -65968,7 +65968,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/505": {
         "get": {
           "description": "",
-          "operationId": "getApiStatus",
+          "operationId": "getApiStatus505",
           "parameters": [
             {
               "description": "cookie",
@@ -66054,7 +66054,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusFormData",
+          "operationId": "postApiStatus505FormData",
           "parameters": [
             {
               "description": "cookie",
@@ -66170,7 +66170,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusJsonBody",
+          "operationId": "postApiStatus505JsonBody",
           "parameters": [
             {
               "description": "cookie",
@@ -66281,7 +66281,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/505/query-params": {
         "get": {
           "description": "",
-          "operationId": "getApiStatusQueryParams",
+          "operationId": "getApiStatus505QueryParams",
           "parameters": [
             {
               "description": "userId",
@@ -66969,7 +66969,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/506": {
         "get": {
           "description": "",
-          "operationId": "getApiStatus",
+          "operationId": "getApiStatus506",
           "parameters": [
             {
               "description": "cookie",
@@ -67055,7 +67055,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusFormData",
+          "operationId": "postApiStatus506FormData",
           "parameters": [
             {
               "description": "cookie",
@@ -67171,7 +67171,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusJsonBody",
+          "operationId": "postApiStatus506JsonBody",
           "parameters": [
             {
               "description": "cookie",
@@ -67282,7 +67282,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/506/query-params": {
         "get": {
           "description": "",
-          "operationId": "getApiStatusQueryParams",
+          "operationId": "getApiStatus506QueryParams",
           "parameters": [
             {
               "description": "userId",
@@ -67970,7 +67970,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/507": {
         "get": {
           "description": "",
-          "operationId": "getApiStatus",
+          "operationId": "getApiStatus507",
           "parameters": [
             {
               "description": "cookie",
@@ -68056,7 +68056,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusFormData",
+          "operationId": "postApiStatus507FormData",
           "parameters": [
             {
               "description": "cookie",
@@ -68172,7 +68172,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusJsonBody",
+          "operationId": "postApiStatus507JsonBody",
           "parameters": [
             {
               "description": "cookie",
@@ -68283,7 +68283,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/507/query-params": {
         "get": {
           "description": "",
-          "operationId": "getApiStatusQueryParams",
+          "operationId": "getApiStatus507QueryParams",
           "parameters": [
             {
               "description": "userId",
@@ -68971,7 +68971,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/508": {
         "get": {
           "description": "",
-          "operationId": "getApiStatus",
+          "operationId": "getApiStatus508",
           "parameters": [
             {
               "description": "cookie",
@@ -69057,7 +69057,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusFormData",
+          "operationId": "postApiStatus508FormData",
           "parameters": [
             {
               "description": "cookie",
@@ -69173,7 +69173,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusJsonBody",
+          "operationId": "postApiStatus508JsonBody",
           "parameters": [
             {
               "description": "cookie",
@@ -69284,7 +69284,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/508/query-params": {
         "get": {
           "description": "",
-          "operationId": "getApiStatusQueryParams",
+          "operationId": "getApiStatus508QueryParams",
           "parameters": [
             {
               "description": "userId",
@@ -69972,7 +69972,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/510": {
         "get": {
           "description": "",
-          "operationId": "getApiStatus",
+          "operationId": "getApiStatus510",
           "parameters": [
             {
               "description": "cookie",
@@ -70058,7 +70058,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusFormData",
+          "operationId": "postApiStatus510FormData",
           "parameters": [
             {
               "description": "cookie",
@@ -70174,7 +70174,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusJsonBody",
+          "operationId": "postApiStatus510JsonBody",
           "parameters": [
             {
               "description": "cookie",
@@ -70285,7 +70285,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/510/query-params": {
         "get": {
           "description": "",
-          "operationId": "getApiStatusQueryParams",
+          "operationId": "getApiStatus510QueryParams",
           "parameters": [
             {
               "description": "userId",
@@ -70973,7 +70973,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/511": {
         "get": {
           "description": "",
-          "operationId": "getApiStatus",
+          "operationId": "getApiStatus511",
           "parameters": [
             {
               "description": "cookie",
@@ -71059,7 +71059,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusFormData",
+          "operationId": "postApiStatus511FormData",
           "parameters": [
             {
               "description": "cookie",
@@ -71175,7 +71175,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postApiStatusJsonBody",
+          "operationId": "postApiStatus511JsonBody",
           "parameters": [
             {
               "description": "cookie",
@@ -71286,7 +71286,7 @@ Content-Disposition: form-data; name=\\"registeredAt\\"
       "/api/status/511/query-params": {
         "get": {
           "description": "",
-          "operationId": "getApiStatusQueryParams",
+          "operationId": "getApiStatus511QueryParams",
           "parameters": [
             {
               "description": "userId",
@@ -72660,7 +72660,7 @@ paths:
   /api/status/200:
     get:
       description: ''
-      operationId: getApiStatus
+      operationId: getApiStatus200
       parameters:
         - description: cookie
           in: header
@@ -72715,7 +72715,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusFormData
+      operationId: postApiStatus200FormData
       parameters:
         - description: cookie
           in: header
@@ -72783,7 +72783,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusJsonBody
+      operationId: postApiStatus200JsonBody
       parameters:
         - description: cookie
           in: header
@@ -72856,7 +72856,7 @@ paths:
   /api/status/200/query-params:
     get:
       description: ''
-      operationId: getApiStatusQueryParams
+      operationId: getApiStatus200QueryParams
       parameters:
         - description: userId
           in: query
@@ -73293,7 +73293,7 @@ paths:
   /api/status/201:
     get:
       description: ''
-      operationId: getApiStatus
+      operationId: getApiStatus201
       parameters:
         - description: cookie
           in: header
@@ -73348,7 +73348,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusFormData
+      operationId: postApiStatus201FormData
       parameters:
         - description: cookie
           in: header
@@ -73416,7 +73416,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusJsonBody
+      operationId: postApiStatus201JsonBody
       parameters:
         - description: cookie
           in: header
@@ -73489,7 +73489,7 @@ paths:
   /api/status/201/query-params:
     get:
       description: ''
-      operationId: getApiStatusQueryParams
+      operationId: getApiStatus201QueryParams
       parameters:
         - description: userId
           in: query
@@ -73926,7 +73926,7 @@ paths:
   /api/status/202:
     get:
       description: ''
-      operationId: getApiStatus
+      operationId: getApiStatus202
       parameters:
         - description: cookie
           in: header
@@ -73981,7 +73981,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusFormData
+      operationId: postApiStatus202FormData
       parameters:
         - description: cookie
           in: header
@@ -74049,7 +74049,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusJsonBody
+      operationId: postApiStatus202JsonBody
       parameters:
         - description: cookie
           in: header
@@ -74122,7 +74122,7 @@ paths:
   /api/status/202/query-params:
     get:
       description: ''
-      operationId: getApiStatusQueryParams
+      operationId: getApiStatus202QueryParams
       parameters:
         - description: userId
           in: query
@@ -74559,7 +74559,7 @@ paths:
   /api/status/203:
     get:
       description: ''
-      operationId: getApiStatus
+      operationId: getApiStatus203
       parameters:
         - description: cookie
           in: header
@@ -74614,7 +74614,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusFormData
+      operationId: postApiStatus203FormData
       parameters:
         - description: cookie
           in: header
@@ -74682,7 +74682,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusJsonBody
+      operationId: postApiStatus203JsonBody
       parameters:
         - description: cookie
           in: header
@@ -74755,7 +74755,7 @@ paths:
   /api/status/203/query-params:
     get:
       description: ''
-      operationId: getApiStatusQueryParams
+      operationId: getApiStatus203QueryParams
       parameters:
         - description: userId
           in: query
@@ -75192,7 +75192,7 @@ paths:
   /api/status/204:
     get:
       description: ''
-      operationId: getApiStatus
+      operationId: getApiStatus204
       parameters:
         - description: cookie
           in: header
@@ -75238,7 +75238,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusFormData
+      operationId: postApiStatus204FormData
       parameters:
         - description: cookie
           in: header
@@ -75297,7 +75297,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusJsonBody
+      operationId: postApiStatus204JsonBody
       parameters:
         - description: cookie
           in: header
@@ -75360,7 +75360,7 @@ paths:
   /api/status/204/query-params:
     get:
       description: ''
-      operationId: getApiStatusQueryParams
+      operationId: getApiStatus204QueryParams
       parameters:
         - description: userId
           in: query
@@ -75734,7 +75734,7 @@ paths:
   /api/status/205:
     get:
       description: ''
-      operationId: getApiStatus
+      operationId: getApiStatus205
       parameters:
         - description: cookie
           in: header
@@ -75789,7 +75789,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusFormData
+      operationId: postApiStatus205FormData
       parameters:
         - description: cookie
           in: header
@@ -75857,7 +75857,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusJsonBody
+      operationId: postApiStatus205JsonBody
       parameters:
         - description: cookie
           in: header
@@ -75930,7 +75930,7 @@ paths:
   /api/status/205/query-params:
     get:
       description: ''
-      operationId: getApiStatusQueryParams
+      operationId: getApiStatus205QueryParams
       parameters:
         - description: userId
           in: query
@@ -76367,7 +76367,7 @@ paths:
   /api/status/206:
     get:
       description: ''
-      operationId: getApiStatus
+      operationId: getApiStatus206
       parameters:
         - description: cookie
           in: header
@@ -76422,7 +76422,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusFormData
+      operationId: postApiStatus206FormData
       parameters:
         - description: cookie
           in: header
@@ -76490,7 +76490,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusJsonBody
+      operationId: postApiStatus206JsonBody
       parameters:
         - description: cookie
           in: header
@@ -76563,7 +76563,7 @@ paths:
   /api/status/206/query-params:
     get:
       description: ''
-      operationId: getApiStatusQueryParams
+      operationId: getApiStatus206QueryParams
       parameters:
         - description: userId
           in: query
@@ -77000,7 +77000,7 @@ paths:
   /api/status/207:
     get:
       description: ''
-      operationId: getApiStatus
+      operationId: getApiStatus207
       parameters:
         - description: cookie
           in: header
@@ -77055,7 +77055,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusFormData
+      operationId: postApiStatus207FormData
       parameters:
         - description: cookie
           in: header
@@ -77123,7 +77123,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusJsonBody
+      operationId: postApiStatus207JsonBody
       parameters:
         - description: cookie
           in: header
@@ -77196,7 +77196,7 @@ paths:
   /api/status/207/query-params:
     get:
       description: ''
-      operationId: getApiStatusQueryParams
+      operationId: getApiStatus207QueryParams
       parameters:
         - description: userId
           in: query
@@ -77633,7 +77633,7 @@ paths:
   /api/status/208:
     get:
       description: ''
-      operationId: getApiStatus
+      operationId: getApiStatus208
       parameters:
         - description: cookie
           in: header
@@ -77688,7 +77688,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusFormData
+      operationId: postApiStatus208FormData
       parameters:
         - description: cookie
           in: header
@@ -77756,7 +77756,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusJsonBody
+      operationId: postApiStatus208JsonBody
       parameters:
         - description: cookie
           in: header
@@ -77829,7 +77829,7 @@ paths:
   /api/status/208/query-params:
     get:
       description: ''
-      operationId: getApiStatusQueryParams
+      operationId: getApiStatus208QueryParams
       parameters:
         - description: userId
           in: query
@@ -78266,7 +78266,7 @@ paths:
   /api/status/226:
     get:
       description: ''
-      operationId: getApiStatus
+      operationId: getApiStatus226
       parameters:
         - description: cookie
           in: header
@@ -78321,7 +78321,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusFormData
+      operationId: postApiStatus226FormData
       parameters:
         - description: cookie
           in: header
@@ -78389,7 +78389,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusJsonBody
+      operationId: postApiStatus226JsonBody
       parameters:
         - description: cookie
           in: header
@@ -78462,7 +78462,7 @@ paths:
   /api/status/226/query-params:
     get:
       description: ''
-      operationId: getApiStatusQueryParams
+      operationId: getApiStatus226QueryParams
       parameters:
         - description: userId
           in: query
@@ -78899,7 +78899,7 @@ paths:
   /api/status/300:
     get:
       description: ''
-      operationId: getApiStatus
+      operationId: getApiStatus300
       parameters: []
       responses:
         '300':
@@ -78944,7 +78944,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusFormData
+      operationId: postApiStatus300FormData
       parameters:
         - description: cookie
           in: header
@@ -79012,7 +79012,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusJsonBody
+      operationId: postApiStatus300JsonBody
       parameters:
         - description: cookie
           in: header
@@ -79085,7 +79085,7 @@ paths:
   /api/status/300/query-params:
     get:
       description: ''
-      operationId: getApiStatusQueryParams
+      operationId: getApiStatus300QueryParams
       parameters:
         - description: userId
           in: query
@@ -79522,7 +79522,7 @@ paths:
   /api/status/301:
     get:
       description: ''
-      operationId: getApiStatus
+      operationId: getApiStatus301
       parameters: []
       responses:
         '301':
@@ -79567,7 +79567,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusFormData
+      operationId: postApiStatus301FormData
       parameters:
         - description: cookie
           in: header
@@ -79635,7 +79635,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusJsonBody
+      operationId: postApiStatus301JsonBody
       parameters:
         - description: cookie
           in: header
@@ -79708,7 +79708,7 @@ paths:
   /api/status/301/query-params:
     get:
       description: ''
-      operationId: getApiStatusQueryParams
+      operationId: getApiStatus301QueryParams
       parameters:
         - description: userId
           in: query
@@ -80145,7 +80145,7 @@ paths:
   /api/status/302:
     get:
       description: ''
-      operationId: getApiStatus
+      operationId: getApiStatus302
       parameters:
         - description: cookie
           in: header
@@ -80200,7 +80200,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusFormData
+      operationId: postApiStatus302FormData
       parameters:
         - description: cookie
           in: header
@@ -80268,7 +80268,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusJsonBody
+      operationId: postApiStatus302JsonBody
       parameters:
         - description: cookie
           in: header
@@ -80341,7 +80341,7 @@ paths:
   /api/status/302/query-params:
     get:
       description: ''
-      operationId: getApiStatusQueryParams
+      operationId: getApiStatus302QueryParams
       parameters:
         - description: userId
           in: query
@@ -80778,7 +80778,7 @@ paths:
   /api/status/303:
     get:
       description: ''
-      operationId: getApiStatus
+      operationId: getApiStatus303
       parameters:
         - description: cookie
           in: header
@@ -80833,7 +80833,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusFormData
+      operationId: postApiStatus303FormData
       parameters:
         - description: cookie
           in: header
@@ -80901,7 +80901,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusJsonBody
+      operationId: postApiStatus303JsonBody
       parameters:
         - description: cookie
           in: header
@@ -80974,7 +80974,7 @@ paths:
   /api/status/303/query-params:
     get:
       description: ''
-      operationId: getApiStatusQueryParams
+      operationId: getApiStatus303QueryParams
       parameters:
         - description: userId
           in: query
@@ -81411,7 +81411,7 @@ paths:
   /api/status/304:
     get:
       description: ''
-      operationId: getApiStatus
+      operationId: getApiStatus304
       parameters:
         - description: cookie
           in: header
@@ -81457,7 +81457,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusFormData
+      operationId: postApiStatus304FormData
       parameters:
         - description: cookie
           in: header
@@ -81516,7 +81516,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusJsonBody
+      operationId: postApiStatus304JsonBody
       parameters:
         - description: cookie
           in: header
@@ -81579,7 +81579,7 @@ paths:
   /api/status/304/query-params:
     get:
       description: ''
-      operationId: getApiStatusQueryParams
+      operationId: getApiStatus304QueryParams
       parameters:
         - description: userId
           in: query
@@ -81953,7 +81953,7 @@ paths:
   /api/status/305:
     get:
       description: ''
-      operationId: getApiStatus
+      operationId: getApiStatus305
       parameters:
         - description: cookie
           in: header
@@ -82008,7 +82008,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusFormData
+      operationId: postApiStatus305FormData
       parameters:
         - description: cookie
           in: header
@@ -82076,7 +82076,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusJsonBody
+      operationId: postApiStatus305JsonBody
       parameters:
         - description: cookie
           in: header
@@ -82149,7 +82149,7 @@ paths:
   /api/status/305/query-params:
     get:
       description: ''
-      operationId: getApiStatusQueryParams
+      operationId: getApiStatus305QueryParams
       parameters:
         - description: userId
           in: query
@@ -82586,7 +82586,7 @@ paths:
   /api/status/306:
     get:
       description: ''
-      operationId: getApiStatus
+      operationId: getApiStatus306
       parameters:
         - description: cookie
           in: header
@@ -82641,7 +82641,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusFormData
+      operationId: postApiStatus306FormData
       parameters:
         - description: cookie
           in: header
@@ -82709,7 +82709,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusJsonBody
+      operationId: postApiStatus306JsonBody
       parameters:
         - description: cookie
           in: header
@@ -82782,7 +82782,7 @@ paths:
   /api/status/306/query-params:
     get:
       description: ''
-      operationId: getApiStatusQueryParams
+      operationId: getApiStatus306QueryParams
       parameters:
         - description: userId
           in: query
@@ -83219,7 +83219,7 @@ paths:
   /api/status/307:
     get:
       description: ''
-      operationId: getApiStatus
+      operationId: getApiStatus307
       parameters:
         - description: cookie
           in: header
@@ -83274,7 +83274,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusFormData
+      operationId: postApiStatus307FormData
       parameters:
         - description: cookie
           in: header
@@ -83342,7 +83342,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusJsonBody
+      operationId: postApiStatus307JsonBody
       parameters:
         - description: cookie
           in: header
@@ -83415,7 +83415,7 @@ paths:
   /api/status/307/query-params:
     get:
       description: ''
-      operationId: getApiStatusQueryParams
+      operationId: getApiStatus307QueryParams
       parameters:
         - description: userId
           in: query
@@ -83852,7 +83852,7 @@ paths:
   /api/status/308:
     get:
       description: ''
-      operationId: getApiStatus
+      operationId: getApiStatus308
       parameters: []
       responses:
         '308':
@@ -83897,7 +83897,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusFormData
+      operationId: postApiStatus308FormData
       parameters:
         - description: cookie
           in: header
@@ -83965,7 +83965,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusJsonBody
+      operationId: postApiStatus308JsonBody
       parameters:
         - description: cookie
           in: header
@@ -84038,7 +84038,7 @@ paths:
   /api/status/308/query-params:
     get:
       description: ''
-      operationId: getApiStatusQueryParams
+      operationId: getApiStatus308QueryParams
       parameters:
         - description: userId
           in: query
@@ -84475,7 +84475,7 @@ paths:
   /api/status/400:
     get:
       description: ''
-      operationId: getApiStatus
+      operationId: getApiStatus400
       parameters:
         - description: cookie
           in: header
@@ -84530,7 +84530,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusFormData
+      operationId: postApiStatus400FormData
       parameters:
         - description: cookie
           in: header
@@ -84598,7 +84598,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusJsonBody
+      operationId: postApiStatus400JsonBody
       parameters:
         - description: cookie
           in: header
@@ -84671,7 +84671,7 @@ paths:
   /api/status/400/query-params:
     get:
       description: ''
-      operationId: getApiStatusQueryParams
+      operationId: getApiStatus400QueryParams
       parameters:
         - description: userId
           in: query
@@ -85108,7 +85108,7 @@ paths:
   /api/status/401:
     get:
       description: ''
-      operationId: getApiStatus
+      operationId: getApiStatus401
       parameters:
         - description: cookie
           in: header
@@ -85163,7 +85163,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusFormData
+      operationId: postApiStatus401FormData
       parameters:
         - description: cookie
           in: header
@@ -85231,7 +85231,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusJsonBody
+      operationId: postApiStatus401JsonBody
       parameters:
         - description: cookie
           in: header
@@ -85304,7 +85304,7 @@ paths:
   /api/status/401/query-params:
     get:
       description: ''
-      operationId: getApiStatusQueryParams
+      operationId: getApiStatus401QueryParams
       parameters:
         - description: userId
           in: query
@@ -85741,7 +85741,7 @@ paths:
   /api/status/402:
     get:
       description: ''
-      operationId: getApiStatus
+      operationId: getApiStatus402
       parameters:
         - description: cookie
           in: header
@@ -85796,7 +85796,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusFormData
+      operationId: postApiStatus402FormData
       parameters:
         - description: cookie
           in: header
@@ -85864,7 +85864,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusJsonBody
+      operationId: postApiStatus402JsonBody
       parameters:
         - description: cookie
           in: header
@@ -85937,7 +85937,7 @@ paths:
   /api/status/402/query-params:
     get:
       description: ''
-      operationId: getApiStatusQueryParams
+      operationId: getApiStatus402QueryParams
       parameters:
         - description: userId
           in: query
@@ -86374,7 +86374,7 @@ paths:
   /api/status/403:
     get:
       description: ''
-      operationId: getApiStatus
+      operationId: getApiStatus403
       parameters:
         - description: cookie
           in: header
@@ -86429,7 +86429,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusFormData
+      operationId: postApiStatus403FormData
       parameters:
         - description: cookie
           in: header
@@ -86497,7 +86497,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusJsonBody
+      operationId: postApiStatus403JsonBody
       parameters:
         - description: cookie
           in: header
@@ -86570,7 +86570,7 @@ paths:
   /api/status/403/query-params:
     get:
       description: ''
-      operationId: getApiStatusQueryParams
+      operationId: getApiStatus403QueryParams
       parameters:
         - description: userId
           in: query
@@ -87007,7 +87007,7 @@ paths:
   /api/status/404:
     get:
       description: ''
-      operationId: getApiStatus
+      operationId: getApiStatus404
       parameters:
         - description: cookie
           in: header
@@ -87062,7 +87062,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusFormData
+      operationId: postApiStatus404FormData
       parameters:
         - description: cookie
           in: header
@@ -87130,7 +87130,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusJsonBody
+      operationId: postApiStatus404JsonBody
       parameters:
         - description: cookie
           in: header
@@ -87203,7 +87203,7 @@ paths:
   /api/status/404/query-params:
     get:
       description: ''
-      operationId: getApiStatusQueryParams
+      operationId: getApiStatus404QueryParams
       parameters:
         - description: userId
           in: query
@@ -87640,7 +87640,7 @@ paths:
   /api/status/405:
     get:
       description: ''
-      operationId: getApiStatus
+      operationId: getApiStatus405
       parameters:
         - description: cookie
           in: header
@@ -87695,7 +87695,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusFormData
+      operationId: postApiStatus405FormData
       parameters:
         - description: cookie
           in: header
@@ -87763,7 +87763,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusJsonBody
+      operationId: postApiStatus405JsonBody
       parameters:
         - description: cookie
           in: header
@@ -87836,7 +87836,7 @@ paths:
   /api/status/405/query-params:
     get:
       description: ''
-      operationId: getApiStatusQueryParams
+      operationId: getApiStatus405QueryParams
       parameters:
         - description: userId
           in: query
@@ -88273,7 +88273,7 @@ paths:
   /api/status/406:
     get:
       description: ''
-      operationId: getApiStatus
+      operationId: getApiStatus406
       parameters:
         - description: cookie
           in: header
@@ -88328,7 +88328,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusFormData
+      operationId: postApiStatus406FormData
       parameters:
         - description: cookie
           in: header
@@ -88396,7 +88396,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusJsonBody
+      operationId: postApiStatus406JsonBody
       parameters:
         - description: cookie
           in: header
@@ -88469,7 +88469,7 @@ paths:
   /api/status/406/query-params:
     get:
       description: ''
-      operationId: getApiStatusQueryParams
+      operationId: getApiStatus406QueryParams
       parameters:
         - description: userId
           in: query
@@ -88906,7 +88906,7 @@ paths:
   /api/status/407:
     get:
       description: ''
-      operationId: getApiStatus
+      operationId: getApiStatus407
       parameters:
         - description: cookie
           in: header
@@ -88924,7 +88924,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusFormData
+      operationId: postApiStatus407FormData
       parameters:
         - description: cookie
           in: header
@@ -88955,7 +88955,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusJsonBody
+      operationId: postApiStatus407JsonBody
       parameters:
         - description: cookie
           in: header
@@ -88990,7 +88990,7 @@ paths:
   /api/status/407/query-params:
     get:
       description: ''
-      operationId: getApiStatusQueryParams
+      operationId: getApiStatus407QueryParams
       parameters:
         - description: userId
           in: query
@@ -89140,7 +89140,7 @@ paths:
   /api/status/408:
     get:
       description: ''
-      operationId: getApiStatus
+      operationId: getApiStatus408
       parameters:
         - description: cookie
           in: header
@@ -89195,7 +89195,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusFormData
+      operationId: postApiStatus408FormData
       parameters:
         - description: cookie
           in: header
@@ -89263,7 +89263,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusJsonBody
+      operationId: postApiStatus408JsonBody
       parameters:
         - description: cookie
           in: header
@@ -89336,7 +89336,7 @@ paths:
   /api/status/408/query-params:
     get:
       description: ''
-      operationId: getApiStatusQueryParams
+      operationId: getApiStatus408QueryParams
       parameters:
         - description: userId
           in: query
@@ -89773,7 +89773,7 @@ paths:
   /api/status/409:
     get:
       description: ''
-      operationId: getApiStatus
+      operationId: getApiStatus409
       parameters:
         - description: cookie
           in: header
@@ -89828,7 +89828,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusFormData
+      operationId: postApiStatus409FormData
       parameters:
         - description: cookie
           in: header
@@ -89896,7 +89896,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusJsonBody
+      operationId: postApiStatus409JsonBody
       parameters:
         - description: cookie
           in: header
@@ -89969,7 +89969,7 @@ paths:
   /api/status/409/query-params:
     get:
       description: ''
-      operationId: getApiStatusQueryParams
+      operationId: getApiStatus409QueryParams
       parameters:
         - description: userId
           in: query
@@ -90406,7 +90406,7 @@ paths:
   /api/status/410:
     get:
       description: ''
-      operationId: getApiStatus
+      operationId: getApiStatus410
       parameters: []
       responses:
         '410':
@@ -90451,7 +90451,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusFormData
+      operationId: postApiStatus410FormData
       parameters:
         - description: cookie
           in: header
@@ -90519,7 +90519,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusJsonBody
+      operationId: postApiStatus410JsonBody
       parameters:
         - description: cookie
           in: header
@@ -90592,7 +90592,7 @@ paths:
   /api/status/410/query-params:
     get:
       description: ''
-      operationId: getApiStatusQueryParams
+      operationId: getApiStatus410QueryParams
       parameters:
         - description: userId
           in: query
@@ -91029,7 +91029,7 @@ paths:
   /api/status/411:
     get:
       description: ''
-      operationId: getApiStatus
+      operationId: getApiStatus411
       parameters:
         - description: cookie
           in: header
@@ -91084,7 +91084,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusFormData
+      operationId: postApiStatus411FormData
       parameters:
         - description: cookie
           in: header
@@ -91152,7 +91152,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusJsonBody
+      operationId: postApiStatus411JsonBody
       parameters:
         - description: cookie
           in: header
@@ -91225,7 +91225,7 @@ paths:
   /api/status/411/query-params:
     get:
       description: ''
-      operationId: getApiStatusQueryParams
+      operationId: getApiStatus411QueryParams
       parameters:
         - description: userId
           in: query
@@ -91662,7 +91662,7 @@ paths:
   /api/status/412:
     get:
       description: ''
-      operationId: getApiStatus
+      operationId: getApiStatus412
       parameters:
         - description: cookie
           in: header
@@ -91717,7 +91717,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusFormData
+      operationId: postApiStatus412FormData
       parameters:
         - description: cookie
           in: header
@@ -91785,7 +91785,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusJsonBody
+      operationId: postApiStatus412JsonBody
       parameters:
         - description: cookie
           in: header
@@ -91858,7 +91858,7 @@ paths:
   /api/status/412/query-params:
     get:
       description: ''
-      operationId: getApiStatusQueryParams
+      operationId: getApiStatus412QueryParams
       parameters:
         - description: userId
           in: query
@@ -92295,7 +92295,7 @@ paths:
   /api/status/413:
     get:
       description: ''
-      operationId: getApiStatus
+      operationId: getApiStatus413
       parameters:
         - description: cookie
           in: header
@@ -92350,7 +92350,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusFormData
+      operationId: postApiStatus413FormData
       parameters:
         - description: cookie
           in: header
@@ -92418,7 +92418,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusJsonBody
+      operationId: postApiStatus413JsonBody
       parameters:
         - description: cookie
           in: header
@@ -92491,7 +92491,7 @@ paths:
   /api/status/413/query-params:
     get:
       description: ''
-      operationId: getApiStatusQueryParams
+      operationId: getApiStatus413QueryParams
       parameters:
         - description: userId
           in: query
@@ -92928,7 +92928,7 @@ paths:
   /api/status/414:
     get:
       description: ''
-      operationId: getApiStatus
+      operationId: getApiStatus414
       parameters:
         - description: cookie
           in: header
@@ -92983,7 +92983,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusFormData
+      operationId: postApiStatus414FormData
       parameters:
         - description: cookie
           in: header
@@ -93051,7 +93051,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusJsonBody
+      operationId: postApiStatus414JsonBody
       parameters:
         - description: cookie
           in: header
@@ -93124,7 +93124,7 @@ paths:
   /api/status/414/query-params:
     get:
       description: ''
-      operationId: getApiStatusQueryParams
+      operationId: getApiStatus414QueryParams
       parameters:
         - description: userId
           in: query
@@ -93561,7 +93561,7 @@ paths:
   /api/status/415:
     get:
       description: ''
-      operationId: getApiStatus
+      operationId: getApiStatus415
       parameters:
         - description: cookie
           in: header
@@ -93616,7 +93616,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusFormData
+      operationId: postApiStatus415FormData
       parameters:
         - description: cookie
           in: header
@@ -93684,7 +93684,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusJsonBody
+      operationId: postApiStatus415JsonBody
       parameters:
         - description: cookie
           in: header
@@ -93757,7 +93757,7 @@ paths:
   /api/status/415/query-params:
     get:
       description: ''
-      operationId: getApiStatusQueryParams
+      operationId: getApiStatus415QueryParams
       parameters:
         - description: userId
           in: query
@@ -94194,7 +94194,7 @@ paths:
   /api/status/416:
     get:
       description: ''
-      operationId: getApiStatus
+      operationId: getApiStatus416
       parameters:
         - description: cookie
           in: header
@@ -94249,7 +94249,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusFormData
+      operationId: postApiStatus416FormData
       parameters:
         - description: cookie
           in: header
@@ -94317,7 +94317,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusJsonBody
+      operationId: postApiStatus416JsonBody
       parameters:
         - description: cookie
           in: header
@@ -94390,7 +94390,7 @@ paths:
   /api/status/416/query-params:
     get:
       description: ''
-      operationId: getApiStatusQueryParams
+      operationId: getApiStatus416QueryParams
       parameters:
         - description: userId
           in: query
@@ -94827,7 +94827,7 @@ paths:
   /api/status/417:
     get:
       description: ''
-      operationId: getApiStatus
+      operationId: getApiStatus417
       parameters:
         - description: cookie
           in: header
@@ -94882,7 +94882,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusFormData
+      operationId: postApiStatus417FormData
       parameters:
         - description: cookie
           in: header
@@ -94950,7 +94950,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusJsonBody
+      operationId: postApiStatus417JsonBody
       parameters:
         - description: cookie
           in: header
@@ -95023,7 +95023,7 @@ paths:
   /api/status/417/query-params:
     get:
       description: ''
-      operationId: getApiStatusQueryParams
+      operationId: getApiStatus417QueryParams
       parameters:
         - description: userId
           in: query
@@ -95460,7 +95460,7 @@ paths:
   /api/status/418:
     get:
       description: ''
-      operationId: getApiStatus
+      operationId: getApiStatus418
       parameters:
         - description: cookie
           in: header
@@ -95515,7 +95515,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusFormData
+      operationId: postApiStatus418FormData
       parameters:
         - description: cookie
           in: header
@@ -95583,7 +95583,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusJsonBody
+      operationId: postApiStatus418JsonBody
       parameters:
         - description: cookie
           in: header
@@ -95656,7 +95656,7 @@ paths:
   /api/status/418/query-params:
     get:
       description: ''
-      operationId: getApiStatusQueryParams
+      operationId: getApiStatus418QueryParams
       parameters:
         - description: userId
           in: query
@@ -96093,7 +96093,7 @@ paths:
   /api/status/419:
     get:
       description: ''
-      operationId: getApiStatus
+      operationId: getApiStatus419
       parameters:
         - description: cookie
           in: header
@@ -96148,7 +96148,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusFormData
+      operationId: postApiStatus419FormData
       parameters:
         - description: cookie
           in: header
@@ -96216,7 +96216,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusJsonBody
+      operationId: postApiStatus419JsonBody
       parameters:
         - description: cookie
           in: header
@@ -96289,7 +96289,7 @@ paths:
   /api/status/419/query-params:
     get:
       description: ''
-      operationId: getApiStatusQueryParams
+      operationId: getApiStatus419QueryParams
       parameters:
         - description: userId
           in: query
@@ -96726,7 +96726,7 @@ paths:
   /api/status/420:
     get:
       description: ''
-      operationId: getApiStatus
+      operationId: getApiStatus420
       parameters:
         - description: cookie
           in: header
@@ -96781,7 +96781,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusFormData
+      operationId: postApiStatus420FormData
       parameters:
         - description: cookie
           in: header
@@ -96849,7 +96849,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusJsonBody
+      operationId: postApiStatus420JsonBody
       parameters:
         - description: cookie
           in: header
@@ -96922,7 +96922,7 @@ paths:
   /api/status/420/query-params:
     get:
       description: ''
-      operationId: getApiStatusQueryParams
+      operationId: getApiStatus420QueryParams
       parameters:
         - description: userId
           in: query
@@ -97359,7 +97359,7 @@ paths:
   /api/status/421:
     get:
       description: ''
-      operationId: getApiStatus
+      operationId: getApiStatus421
       parameters:
         - description: cookie
           in: header
@@ -97414,7 +97414,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusFormData
+      operationId: postApiStatus421FormData
       parameters:
         - description: cookie
           in: header
@@ -97482,7 +97482,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusJsonBody
+      operationId: postApiStatus421JsonBody
       parameters:
         - description: cookie
           in: header
@@ -97555,7 +97555,7 @@ paths:
   /api/status/421/query-params:
     get:
       description: ''
-      operationId: getApiStatusQueryParams
+      operationId: getApiStatus421QueryParams
       parameters:
         - description: userId
           in: query
@@ -97992,7 +97992,7 @@ paths:
   /api/status/422:
     get:
       description: ''
-      operationId: getApiStatus
+      operationId: getApiStatus422
       parameters:
         - description: cookie
           in: header
@@ -98047,7 +98047,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusFormData
+      operationId: postApiStatus422FormData
       parameters:
         - description: cookie
           in: header
@@ -98115,7 +98115,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusJsonBody
+      operationId: postApiStatus422JsonBody
       parameters:
         - description: cookie
           in: header
@@ -98188,7 +98188,7 @@ paths:
   /api/status/422/query-params:
     get:
       description: ''
-      operationId: getApiStatusQueryParams
+      operationId: getApiStatus422QueryParams
       parameters:
         - description: userId
           in: query
@@ -98625,7 +98625,7 @@ paths:
   /api/status/423:
     get:
       description: ''
-      operationId: getApiStatus
+      operationId: getApiStatus423
       parameters:
         - description: cookie
           in: header
@@ -98680,7 +98680,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusFormData
+      operationId: postApiStatus423FormData
       parameters:
         - description: cookie
           in: header
@@ -98748,7 +98748,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusJsonBody
+      operationId: postApiStatus423JsonBody
       parameters:
         - description: cookie
           in: header
@@ -98821,7 +98821,7 @@ paths:
   /api/status/423/query-params:
     get:
       description: ''
-      operationId: getApiStatusQueryParams
+      operationId: getApiStatus423QueryParams
       parameters:
         - description: userId
           in: query
@@ -99258,7 +99258,7 @@ paths:
   /api/status/424:
     get:
       description: ''
-      operationId: getApiStatus
+      operationId: getApiStatus424
       parameters:
         - description: cookie
           in: header
@@ -99313,7 +99313,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusFormData
+      operationId: postApiStatus424FormData
       parameters:
         - description: cookie
           in: header
@@ -99381,7 +99381,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusJsonBody
+      operationId: postApiStatus424JsonBody
       parameters:
         - description: cookie
           in: header
@@ -99454,7 +99454,7 @@ paths:
   /api/status/424/query-params:
     get:
       description: ''
-      operationId: getApiStatusQueryParams
+      operationId: getApiStatus424QueryParams
       parameters:
         - description: userId
           in: query
@@ -99891,7 +99891,7 @@ paths:
   /api/status/425:
     get:
       description: ''
-      operationId: getApiStatus
+      operationId: getApiStatus425
       parameters:
         - description: cookie
           in: header
@@ -99946,7 +99946,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusFormData
+      operationId: postApiStatus425FormData
       parameters:
         - description: cookie
           in: header
@@ -100014,7 +100014,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusJsonBody
+      operationId: postApiStatus425JsonBody
       parameters:
         - description: cookie
           in: header
@@ -100087,7 +100087,7 @@ paths:
   /api/status/425/query-params:
     get:
       description: ''
-      operationId: getApiStatusQueryParams
+      operationId: getApiStatus425QueryParams
       parameters:
         - description: userId
           in: query
@@ -100524,7 +100524,7 @@ paths:
   /api/status/426:
     get:
       description: ''
-      operationId: getApiStatus
+      operationId: getApiStatus426
       parameters:
         - description: cookie
           in: header
@@ -100579,7 +100579,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusFormData
+      operationId: postApiStatus426FormData
       parameters:
         - description: cookie
           in: header
@@ -100647,7 +100647,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusJsonBody
+      operationId: postApiStatus426JsonBody
       parameters:
         - description: cookie
           in: header
@@ -100720,7 +100720,7 @@ paths:
   /api/status/426/query-params:
     get:
       description: ''
-      operationId: getApiStatusQueryParams
+      operationId: getApiStatus426QueryParams
       parameters:
         - description: userId
           in: query
@@ -101157,7 +101157,7 @@ paths:
   /api/status/428:
     get:
       description: ''
-      operationId: getApiStatus
+      operationId: getApiStatus428
       parameters:
         - description: cookie
           in: header
@@ -101212,7 +101212,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusFormData
+      operationId: postApiStatus428FormData
       parameters:
         - description: cookie
           in: header
@@ -101280,7 +101280,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusJsonBody
+      operationId: postApiStatus428JsonBody
       parameters:
         - description: cookie
           in: header
@@ -101353,7 +101353,7 @@ paths:
   /api/status/428/query-params:
     get:
       description: ''
-      operationId: getApiStatusQueryParams
+      operationId: getApiStatus428QueryParams
       parameters:
         - description: userId
           in: query
@@ -101790,7 +101790,7 @@ paths:
   /api/status/429:
     get:
       description: ''
-      operationId: getApiStatus
+      operationId: getApiStatus429
       parameters:
         - description: cookie
           in: header
@@ -101845,7 +101845,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusFormData
+      operationId: postApiStatus429FormData
       parameters:
         - description: cookie
           in: header
@@ -101913,7 +101913,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusJsonBody
+      operationId: postApiStatus429JsonBody
       parameters:
         - description: cookie
           in: header
@@ -101986,7 +101986,7 @@ paths:
   /api/status/429/query-params:
     get:
       description: ''
-      operationId: getApiStatusQueryParams
+      operationId: getApiStatus429QueryParams
       parameters:
         - description: userId
           in: query
@@ -102423,7 +102423,7 @@ paths:
   /api/status/431:
     get:
       description: ''
-      operationId: getApiStatus
+      operationId: getApiStatus431
       parameters:
         - description: cookie
           in: header
@@ -102478,7 +102478,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusFormData
+      operationId: postApiStatus431FormData
       parameters:
         - description: cookie
           in: header
@@ -102546,7 +102546,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusJsonBody
+      operationId: postApiStatus431JsonBody
       parameters:
         - description: cookie
           in: header
@@ -102619,7 +102619,7 @@ paths:
   /api/status/431/query-params:
     get:
       description: ''
-      operationId: getApiStatusQueryParams
+      operationId: getApiStatus431QueryParams
       parameters:
         - description: userId
           in: query
@@ -103056,7 +103056,7 @@ paths:
   /api/status/451:
     get:
       description: ''
-      operationId: getApiStatus
+      operationId: getApiStatus451
       parameters:
         - description: cookie
           in: header
@@ -103111,7 +103111,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusFormData
+      operationId: postApiStatus451FormData
       parameters:
         - description: cookie
           in: header
@@ -103179,7 +103179,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusJsonBody
+      operationId: postApiStatus451JsonBody
       parameters:
         - description: cookie
           in: header
@@ -103252,7 +103252,7 @@ paths:
   /api/status/451/query-params:
     get:
       description: ''
-      operationId: getApiStatusQueryParams
+      operationId: getApiStatus451QueryParams
       parameters:
         - description: userId
           in: query
@@ -103689,7 +103689,7 @@ paths:
   /api/status/500:
     get:
       description: ''
-      operationId: getApiStatus
+      operationId: getApiStatus500
       parameters:
         - description: cookie
           in: header
@@ -103744,7 +103744,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusFormData
+      operationId: postApiStatus500FormData
       parameters:
         - description: cookie
           in: header
@@ -103812,7 +103812,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusJsonBody
+      operationId: postApiStatus500JsonBody
       parameters:
         - description: cookie
           in: header
@@ -103885,7 +103885,7 @@ paths:
   /api/status/500/query-params:
     get:
       description: ''
-      operationId: getApiStatusQueryParams
+      operationId: getApiStatus500QueryParams
       parameters:
         - description: userId
           in: query
@@ -104322,7 +104322,7 @@ paths:
   /api/status/501:
     get:
       description: ''
-      operationId: getApiStatus
+      operationId: getApiStatus501
       parameters:
         - description: cookie
           in: header
@@ -104377,7 +104377,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusFormData
+      operationId: postApiStatus501FormData
       parameters:
         - description: cookie
           in: header
@@ -104445,7 +104445,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusJsonBody
+      operationId: postApiStatus501JsonBody
       parameters:
         - description: cookie
           in: header
@@ -104518,7 +104518,7 @@ paths:
   /api/status/501/query-params:
     get:
       description: ''
-      operationId: getApiStatusQueryParams
+      operationId: getApiStatus501QueryParams
       parameters:
         - description: userId
           in: query
@@ -104990,7 +104990,7 @@ paths:
   /api/status/503:
     get:
       description: ''
-      operationId: getApiStatus
+      operationId: getApiStatus503
       parameters:
         - description: cookie
           in: header
@@ -105047,7 +105047,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusFormData
+      operationId: postApiStatus503FormData
       parameters:
         - description: cookie
           in: header
@@ -105117,7 +105117,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusJsonBody
+      operationId: postApiStatus503JsonBody
       parameters:
         - description: cookie
           in: header
@@ -105192,7 +105192,7 @@ paths:
   /api/status/503/query-params:
     get:
       description: ''
-      operationId: getApiStatusQueryParams
+      operationId: getApiStatus503QueryParams
       parameters:
         - description: userId
           in: query
@@ -105680,7 +105680,7 @@ paths:
   /api/status/505:
     get:
       description: ''
-      operationId: getApiStatus
+      operationId: getApiStatus505
       parameters:
         - description: cookie
           in: header
@@ -105737,7 +105737,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusFormData
+      operationId: postApiStatus505FormData
       parameters:
         - description: cookie
           in: header
@@ -105807,7 +105807,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusJsonBody
+      operationId: postApiStatus505JsonBody
       parameters:
         - description: cookie
           in: header
@@ -105882,7 +105882,7 @@ paths:
   /api/status/505/query-params:
     get:
       description: ''
-      operationId: getApiStatusQueryParams
+      operationId: getApiStatus505QueryParams
       parameters:
         - description: userId
           in: query
@@ -106335,7 +106335,7 @@ paths:
   /api/status/506:
     get:
       description: ''
-      operationId: getApiStatus
+      operationId: getApiStatus506
       parameters:
         - description: cookie
           in: header
@@ -106392,7 +106392,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusFormData
+      operationId: postApiStatus506FormData
       parameters:
         - description: cookie
           in: header
@@ -106462,7 +106462,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusJsonBody
+      operationId: postApiStatus506JsonBody
       parameters:
         - description: cookie
           in: header
@@ -106537,7 +106537,7 @@ paths:
   /api/status/506/query-params:
     get:
       description: ''
-      operationId: getApiStatusQueryParams
+      operationId: getApiStatus506QueryParams
       parameters:
         - description: userId
           in: query
@@ -106990,7 +106990,7 @@ paths:
   /api/status/507:
     get:
       description: ''
-      operationId: getApiStatus
+      operationId: getApiStatus507
       parameters:
         - description: cookie
           in: header
@@ -107047,7 +107047,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusFormData
+      operationId: postApiStatus507FormData
       parameters:
         - description: cookie
           in: header
@@ -107117,7 +107117,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusJsonBody
+      operationId: postApiStatus507JsonBody
       parameters:
         - description: cookie
           in: header
@@ -107192,7 +107192,7 @@ paths:
   /api/status/507/query-params:
     get:
       description: ''
-      operationId: getApiStatusQueryParams
+      operationId: getApiStatus507QueryParams
       parameters:
         - description: userId
           in: query
@@ -107645,7 +107645,7 @@ paths:
   /api/status/508:
     get:
       description: ''
-      operationId: getApiStatus
+      operationId: getApiStatus508
       parameters:
         - description: cookie
           in: header
@@ -107702,7 +107702,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusFormData
+      operationId: postApiStatus508FormData
       parameters:
         - description: cookie
           in: header
@@ -107772,7 +107772,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusJsonBody
+      operationId: postApiStatus508JsonBody
       parameters:
         - description: cookie
           in: header
@@ -107847,7 +107847,7 @@ paths:
   /api/status/508/query-params:
     get:
       description: ''
-      operationId: getApiStatusQueryParams
+      operationId: getApiStatus508QueryParams
       parameters:
         - description: userId
           in: query
@@ -108300,7 +108300,7 @@ paths:
   /api/status/510:
     get:
       description: ''
-      operationId: getApiStatus
+      operationId: getApiStatus510
       parameters:
         - description: cookie
           in: header
@@ -108357,7 +108357,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusFormData
+      operationId: postApiStatus510FormData
       parameters:
         - description: cookie
           in: header
@@ -108427,7 +108427,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusJsonBody
+      operationId: postApiStatus510JsonBody
       parameters:
         - description: cookie
           in: header
@@ -108502,7 +108502,7 @@ paths:
   /api/status/510/query-params:
     get:
       description: ''
-      operationId: getApiStatusQueryParams
+      operationId: getApiStatus510QueryParams
       parameters:
         - description: userId
           in: query
@@ -108955,7 +108955,7 @@ paths:
   /api/status/511:
     get:
       description: ''
-      operationId: getApiStatus
+      operationId: getApiStatus511
       parameters:
         - description: cookie
           in: header
@@ -109012,7 +109012,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusFormData
+      operationId: postApiStatus511FormData
       parameters:
         - description: cookie
           in: header
@@ -109082,7 +109082,7 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postApiStatusJsonBody
+      operationId: postApiStatus511JsonBody
       parameters:
         - description: cookie
           in: header
@@ -109157,7 +109157,7 @@ paths:
   /api/status/511/query-params:
     get:
       description: ''
-      operationId: getApiStatusQueryParams
+      operationId: getApiStatus511QueryParams
       parameters:
         - description: userId
           in: query
@@ -109773,35 +109773,106 @@ exports[`Snapshots and validity > Sample API url.har matches snapshot 1`] = `
         "parameters": [],
         "post": {
           "description": "",
-          "operationId": "postLoginDateIdUuid",
+          "operationId": "postLoginDate20220202Id12345Uuid123E4567E89B12D3A456426655440000",
           "parameters": [],
           "requestBody": {
             "content": {
-              "application/x-www-form-urlencoded": {
+              "application/json": {
+                "example": {
+                  "meta": {},
+                  "params": {
+                    "test": "true",
+                  },
+                },
                 "schema": {
+                  "additionalProperties": false,
                   "properties": {
-                    "foo0": {
-                      "type": "string",
+                    "meta": {
+                      "additionalProperties": false,
+                      "title": "Meta",
+                      "type": "object",
                     },
-                    "foo1": {
-                      "type": "string",
-                    },
-                    "foo3": {
-                      "type": "string",
+                    "params": {
+                      "additionalProperties": false,
+                      "properties": {
+                        "test": {
+                          "format": "boolean",
+                          "type": "string",
+                        },
+                      },
+                      "required": [],
+                      "title": "Params",
+                      "type": "object",
                     },
                   },
-                  "required": [
-                    "foo0",
-                    "foo3",
-                    "foo1",
-                  ],
+                  "required": [],
+                  "title": "LoginDateIDUUIDPostRequest",
                   "type": "object",
                 },
               },
             },
             "required": true,
           },
-          "responses": {},
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "example": {
+                    "error": null,
+                    "meta": {},
+                    "result": {
+                      "email": "luis.tejeda@company.com",
+                      "id": 1,
+                      "name": "Luis Tejeda Sanchez",
+                      "role": "USER",
+                      "test": "true",
+                    },
+                  },
+                  "schema": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "error": {
+                        "nullable": true,
+                      },
+                      "meta": {
+                        "additionalProperties": false,
+                        "title": "Meta",
+                        "type": "object",
+                      },
+                      "result": {
+                        "additionalProperties": false,
+                        "properties": {
+                          "email": {
+                            "type": "string",
+                          },
+                          "id": {
+                            "type": "integer",
+                          },
+                          "name": {
+                            "type": "string",
+                          },
+                          "role": {
+                            "type": "string",
+                          },
+                          "test": {
+                            "format": "boolean",
+                            "type": "string",
+                          },
+                        },
+                        "required": [],
+                        "title": "Result",
+                        "type": "object",
+                      },
+                    },
+                    "required": [],
+                    "title": "LoginDateIDUUIDPostRequest",
+                    "type": "object",
+                  },
+                },
+              },
+              "description": "",
+            },
+          },
         },
       },
     },
@@ -109820,26 +109891,78 @@ paths:
     parameters: []
     post:
       description: ''
-      operationId: postLoginDateIdUuid
+      operationId: postLoginDate20220202Id12345Uuid123E4567E89B12D3A456426655440000
       parameters: []
       requestBody:
         content:
-          application/x-www-form-urlencoded:
+          application/json:
+            example:
+              meta: {}
+              params:
+                test: 'true'
             schema:
+              additionalProperties: false
               properties:
-                foo0:
-                  type: string
-                foo1:
-                  type: string
-                foo3:
-                  type: string
-              required:
-                - foo0
-                - foo3
-                - foo1
+                meta:
+                  additionalProperties: false
+                  title: Meta
+                  type: object
+                params:
+                  additionalProperties: false
+                  properties:
+                    test:
+                      format: boolean
+                      type: string
+                  required: []
+                  title: Params
+                  type: object
+              required: []
+              title: LoginDateIDUUIDPostRequest
               type: object
         required: true
-      responses: {}
+      responses:
+        '200':
+          content:
+            application/json:
+              example:
+                error: null
+                meta: {}
+                result:
+                  email: luis.tejeda@company.com
+                  id: 1
+                  name: Luis Tejeda Sanchez
+                  role: USER
+                  test: 'true'
+              schema:
+                additionalProperties: false
+                properties:
+                  error:
+                    nullable: true
+                  meta:
+                    additionalProperties: false
+                    title: Meta
+                    type: object
+                  result:
+                    additionalProperties: false
+                    properties:
+                      email:
+                        type: string
+                      id:
+                        type: integer
+                      name:
+                        type: string
+                      role:
+                        type: string
+                      test:
+                        format: boolean
+                        type: string
+                    required: []
+                    title: Result
+                    type: object
+                required: []
+                title: LoginDateIDUUIDPostRequest
+                type: object
+          description: ''
 servers:
   - url: /
 ",

@@ -19,7 +19,7 @@ import { getCookieSecurityName, getTypenameFromPath } from "./utils/string";
 export const addMethod = (method: string, url: URL, config: InternalConfig): OperationObject => {
   const path = url.pathname;
   // generate operation id
-  const operationId = camelCase(`${method} ${getTypenameFromPath(path)}`);
+  const operationId = camelCase(`${method} ${getTypenameFromPath(path, true)}`);
   const tags = config?.tags || [];
   let pathTags: string[] = [];
   if (typeof tags === "function") {

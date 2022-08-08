@@ -6,7 +6,7 @@ const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[
 const dateRegex =
   /(((20[012]\d|19\d\d)|(1\d|2[0123]))-((0[0-9])|(1[012]))-((0[1-9])|([12][0-9])|(3[01])))|(((0[1-9])|([12][0-9])|(3[01]))-((0[0-9])|(1[012]))-((20[012]\d|19\d\d)|(1\d|2[0123])))|(((20[012]\d|19\d\d)|(1\d|2[0123]))\/((0[0-9])|(1[012]))\/((0[1-9])|([12][0-9])|(3[01])))|(((0[0-9])|(1[012]))\/((0[1-9])|([12][0-9])|(3[01]))\/((20[012]\d|19\d\d)|(1\d|2[0123])))|(((0[1-9])|([12][0-9])|(3[01]))\/((0[0-9])|(1[012]))\/((20[012]\d|19\d\d)|(1\d|2[0123])))|(((0[1-9])|([12][0-9])|(3[01]))\.((0[0-9])|(1[012]))\.((20[012]\d|19\d\d)|(1\d|2[0123])))|(((20[012]\d|19\d\d)|(1\d|2[0123]))\.((0[0-9])|(1[012]))\.((0[1-9])|([12][0-9])|(3[01])))/;
 
-export const getTypenameFromPath = (path: string) => {
+export const getTypenameFromPath = (path: string, noFilter?: boolean) => {
   const parts = path.split(/[/|${|-}]/g);
   const partsToKeep = [];
   for (const part of parts) {
@@ -15,15 +15,15 @@ export const getTypenameFromPath = (path: string) => {
       continue;
     }
     // if its a UUID, skip it
-    if (uuidRegex.test(part)) {
+    if (!noFilter && uuidRegex.test(part)) {
       continue;
     }
-    if (dateRegex.test(part)) {
+    if (!noFilter && dateRegex.test(part)) {
       partsToKeep.push("date");
       continue;
     }
     // if its a number and greater than 3 digits, probably safe to skip?
-    if (part.length >= 3 && !isNaN(Number(part))) {
+    if (!noFilter && part.length >= 3 && !isNaN(Number(part))) {
       continue;
     }
     partsToKeep.push(part);
