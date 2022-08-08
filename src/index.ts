@@ -119,7 +119,7 @@ const generateSpecs = async <T extends Har>(har: T, config?: Config): Promise<IG
 
           // filter and collapse path urls
           const urlObj = new URL(url);
-          const urlPath = urlObj.pathname;
+          const urlPath = urlObj.pathname.replace(/\/+$/, "");
 
           const queryParams = urlObj.search;
 

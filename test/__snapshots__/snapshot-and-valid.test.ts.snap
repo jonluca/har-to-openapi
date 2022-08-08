@@ -10080,7 +10080,7 @@ exports[`Snapshots and validity > Sample API ericduran.github.io.har matches sna
     },
     "openapi": "3.0.0",
     "paths": {
-      "/chromeHAR/": {
+      "/chromeHAR": {
         "get": {
           "description": "",
           "operationId": "getChromeHar",
@@ -11492,7 +11492,7 @@ info:
   title: HarToOpenApi
   version: 1.0.0
 paths:
-  /chromeHAR/:
+  /chromeHAR:
     get:
       description: ''
       operationId: getChromeHar
@@ -109856,7 +109856,7 @@ exports[`Snapshots and validity > Sample API urlfull.har matches snapshot 1`] = 
     },
     "openapi": "3.0.0",
     "paths": {
-      "/public/crocodiles/": {
+      "/public/crocodiles": {
         "get": {
           "description": "",
           "operationId": "getPublicCrocodiles",
@@ -109877,7 +109877,7 @@ info:
   title: HarToOpenApi
   version: 1.0.0
 paths:
-  /public/crocodiles/:
+  /public/crocodiles:
     get:
       description: ''
       operationId: getPublicCrocodiles
@@ -110753,7 +110753,7 @@ exports[`Snapshots and validity > Sample API www.ozon.ru.har matches snapshot 1`
           ],
         },
       },
-      "/category/videokarty-geforce-rtx3060/": {
+      "/category/videokarty-geforce-rtx3060": {
         "get": {
           "description": "",
           "operationId": "getCategoryVideokartyGeforceRtx3060",
@@ -111645,7 +111645,7 @@ paths:
             - cookieCfBm
             - cookieTmrDetect
             - cookieTmrReqNum
-  /category/videokarty-geforce-rtx3060/:
+  /category/videokarty-geforce-rtx3060:
     get:
       description: ''
       operationId: getCategoryVideokartyGeforceRtx3060
