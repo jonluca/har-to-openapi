@@ -15,7 +15,8 @@ import { cloneDeep, uniqBy } from "lodash-es";
 import { isStandardHeader } from "./utils/headers";
 import { URLSearchParams } from "url";
 
-export const addMethod = (method: string, path: string, config?: Config): OperationObject => {
+export const addMethod = (method: string, url: URL, config?: Config): OperationObject => {
+  const path = url.pathname;
   // generate operation id
   const pathId = path.replace(/(^\/|\/$|{|})/g, "").replace(/\//g, "-");
   const operationId = `${method}-${pathId}`;
@@ -41,7 +42,12 @@ export const addMethod = (method: string, path: string, config?: Config): Operat
     parameters: [],
     responses: {},
   } as OperationObject;
-
+  if (config?.addServersToPaths) {
+    const server = {
+      url: url.origin,
+    };
+    operationsObject.servers = [server]; // not perfect but we can try and set the servers property here
+  }
   if (pathTags?.length) {
     operationsObject.tags = pathTags;
   }

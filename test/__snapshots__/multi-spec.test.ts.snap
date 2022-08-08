@@ -1,0 +1,902 @@
+// Vitest Snapshot v1
+
+exports[`Spec generator > Returns one spec for a har with two domains and a callback filter 1`] = `
+[
+  {
+    "domain": "example.com",
+    "spec": {
+      "info": {
+        "title": "HarToOpenApi",
+        "version": "1.0.0",
+      },
+      "openapi": "3.0.0",
+      "paths": {
+        "/login": {
+          "get": {
+            "description": "",
+            "operationId": "get-login",
+            "parameters": [],
+            "requestBody": {
+              "content": {
+                "application/x-www-form-urlencoded": {
+                  "schema": {
+                    "properties": {
+                      "foo0": {
+                        "type": "string",
+                      },
+                      "foo1": {
+                        "type": "string",
+                      },
+                      "foo3": {
+                        "type": "string",
+                      },
+                    },
+                    "required": [
+                      "foo0",
+                      "foo3",
+                      "foo1",
+                    ],
+                    "type": "object",
+                  },
+                },
+              },
+              "required": true,
+            },
+            "responses": {},
+          },
+          "parameters": [],
+        },
+      },
+      "servers": [
+        {
+          "url": "http://example.com",
+        },
+      ],
+    },
+    "yamlSpec": "openapi: 3.0.0
+info:
+  title: HarToOpenApi
+  version: 1.0.0
+paths:
+  /login:
+    get:
+      description: ''
+      operationId: get-login
+      parameters: []
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              properties:
+                foo0:
+                  type: string
+                foo1:
+                  type: string
+                foo3:
+                  type: string
+              required:
+                - foo0
+                - foo3
+                - foo1
+              type: object
+        required: true
+      responses: {}
+    parameters: []
+servers:
+  - url: /
+",
+  },
+]
+`;
+
+exports[`Spec generator > Returns one spec for a har with two domains and a regex filter 1`] = `
+[
+  {
+    "domain": "example.com",
+    "spec": {
+      "info": {
+        "title": "HarToOpenApi",
+        "version": "1.0.0",
+      },
+      "openapi": "3.0.0",
+      "paths": {
+        "/login": {
+          "get": {
+            "description": "",
+            "operationId": "get-login",
+            "parameters": [],
+            "requestBody": {
+              "content": {
+                "application/x-www-form-urlencoded": {
+                  "schema": {
+                    "properties": {
+                      "foo0": {
+                        "type": "string",
+                      },
+                      "foo1": {
+                        "type": "string",
+                      },
+                      "foo3": {
+                        "type": "string",
+                      },
+                    },
+                    "required": [
+                      "foo0",
+                      "foo3",
+                      "foo1",
+                    ],
+                    "type": "object",
+                  },
+                },
+              },
+              "required": true,
+            },
+            "responses": {},
+          },
+          "parameters": [],
+        },
+      },
+      "servers": [
+        {
+          "url": "http://example.com",
+        },
+      ],
+    },
+    "yamlSpec": "openapi: 3.0.0
+info:
+  title: HarToOpenApi
+  version: 1.0.0
+paths:
+  /login:
+    get:
+      description: ''
+      operationId: get-login
+      parameters: []
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              properties:
+                foo0:
+                  type: string
+                foo1:
+                  type: string
+                foo3:
+                  type: string
+              required:
+                - foo0
+                - foo3
+                - foo1
+              type: object
+        required: true
+      responses: {}
+    parameters: []
+servers:
+  - url: /
+",
+  },
+]
+`;
+
+exports[`Spec generator > Returns one spec for a har with two domains and a string filter 1`] = `
+[
+  {
+    "domain": "example.com",
+    "spec": {
+      "info": {
+        "title": "HarToOpenApi",
+        "version": "1.0.0",
+      },
+      "openapi": "3.0.0",
+      "paths": {
+        "/login": {
+          "get": {
+            "description": "",
+            "operationId": "get-login",
+            "parameters": [],
+            "requestBody": {
+              "content": {
+                "application/x-www-form-urlencoded": {
+                  "schema": {
+                    "properties": {
+                      "foo0": {
+                        "type": "string",
+                      },
+                      "foo1": {
+                        "type": "string",
+                      },
+                      "foo3": {
+                        "type": "string",
+                      },
+                    },
+                    "required": [
+                      "foo0",
+                      "foo3",
+                      "foo1",
+                    ],
+                    "type": "object",
+                  },
+                },
+              },
+              "required": true,
+            },
+            "responses": {},
+          },
+          "parameters": [],
+        },
+      },
+      "servers": [
+        {
+          "url": "http://example.com",
+        },
+      ],
+    },
+    "yamlSpec": "openapi: 3.0.0
+info:
+  title: HarToOpenApi
+  version: 1.0.0
+paths:
+  /login:
+    get:
+      description: ''
+      operationId: get-login
+      parameters: []
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              properties:
+                foo0:
+                  type: string
+                foo1:
+                  type: string
+                foo3:
+                  type: string
+              required:
+                - foo0
+                - foo3
+                - foo1
+              type: object
+        required: true
+      responses: {}
+    parameters: []
+servers:
+  - url: /
+",
+  },
+]
+`;
+
+exports[`Spec generator > Returns one spec for a har with two domains and an async callback filter 1`] = `
+[
+  {
+    "domain": "example.com",
+    "spec": {
+      "info": {
+        "title": "HarToOpenApi",
+        "version": "1.0.0",
+      },
+      "openapi": "3.0.0",
+      "paths": {
+        "/login": {
+          "get": {
+            "description": "",
+            "operationId": "get-login",
+            "parameters": [],
+            "requestBody": {
+              "content": {
+                "application/x-www-form-urlencoded": {
+                  "schema": {
+                    "properties": {
+                      "foo0": {
+                        "type": "string",
+                      },
+                      "foo1": {
+                        "type": "string",
+                      },
+                      "foo3": {
+                        "type": "string",
+                      },
+                    },
+                    "required": [
+                      "foo0",
+                      "foo3",
+                      "foo1",
+                    ],
+                    "type": "object",
+                  },
+                },
+              },
+              "required": true,
+            },
+            "responses": {},
+          },
+          "parameters": [],
+        },
+      },
+      "servers": [
+        {
+          "url": "http://example.com",
+        },
+      ],
+    },
+    "yamlSpec": "openapi: 3.0.0
+info:
+  title: HarToOpenApi
+  version: 1.0.0
+paths:
+  /login:
+    get:
+      description: ''
+      operationId: get-login
+      parameters: []
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              properties:
+                foo0:
+                  type: string
+                foo1:
+                  type: string
+                foo3:
+                  type: string
+              required:
+                - foo0
+                - foo3
+                - foo1
+              type: object
+        required: true
+      responses: {}
+    parameters: []
+servers:
+  - url: /
+",
+  },
+]
+`;
+
+exports[`Spec generator > Returns one spec for a har with two domains and forceAllRequestsInSameSpec set to true 1`] = `
+[
+  {
+    "domain": "example.com",
+    "spec": {
+      "info": {
+        "title": "HarToOpenApi",
+        "version": "1.0.0",
+      },
+      "openapi": "3.0.0",
+      "paths": {
+        "/login": {
+          "get": {
+            "description": "",
+            "operationId": "get-login",
+            "parameters": [],
+            "requestBody": {
+              "content": {
+                "application/x-www-form-urlencoded": {
+                  "schema": {
+                    "properties": {
+                      "foo0": {
+                        "type": "string",
+                      },
+                      "foo1": {
+                        "type": "string",
+                      },
+                      "foo3": {
+                        "type": "string",
+                      },
+                    },
+                    "required": [
+                      "foo0",
+                      "foo3",
+                      "foo1",
+                    ],
+                    "type": "object",
+                  },
+                },
+              },
+              "required": true,
+            },
+            "responses": {},
+          },
+          "parameters": [],
+        },
+      },
+      "servers": [
+        {
+          "url": "http://example.com",
+        },
+      ],
+    },
+    "yamlSpec": "openapi: 3.0.0
+info:
+  title: HarToOpenApi
+  version: 1.0.0
+paths:
+  /login:
+    get:
+      description: ''
+      operationId: get-login
+      parameters: []
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              properties:
+                foo0:
+                  type: string
+                foo1:
+                  type: string
+                foo3:
+                  type: string
+              required:
+                - foo0
+                - foo3
+                - foo1
+              type: object
+        required: true
+      responses: {}
+    parameters: []
+servers:
+  - url: /
+",
+  },
+]
+`;
+
+exports[`Spec generator > Returns one spec for a har with two domains and forceAllRequestsInSameSpec set to true, and adds servers to path 1`] = `
+[
+  {
+    "domain": "example.com",
+    "spec": {
+      "info": {
+        "title": "HarToOpenApi",
+        "version": "1.0.0",
+      },
+      "openapi": "3.0.0",
+      "paths": {
+        "/login": {
+          "get": {
+            "description": "",
+            "operationId": "get-login",
+            "parameters": [],
+            "requestBody": {
+              "content": {
+                "application/x-www-form-urlencoded": {
+                  "schema": {
+                    "properties": {
+                      "foo0": {
+                        "type": "string",
+                      },
+                      "foo1": {
+                        "type": "string",
+                      },
+                      "foo3": {
+                        "type": "string",
+                      },
+                    },
+                    "required": [
+                      "foo0",
+                      "foo3",
+                      "foo1",
+                    ],
+                    "type": "object",
+                  },
+                },
+              },
+              "required": true,
+            },
+            "responses": {},
+            "servers": [
+              {
+                "url": "http://example.com",
+              },
+            ],
+          },
+          "parameters": [],
+        },
+      },
+      "servers": [
+        {
+          "url": "http://example.com",
+        },
+      ],
+    },
+    "yamlSpec": "openapi: 3.0.0
+info:
+  title: HarToOpenApi
+  version: 1.0.0
+paths:
+  /login:
+    get:
+      description: ''
+      operationId: get-login
+      parameters: []
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              properties:
+                foo0:
+                  type: string
+                foo1:
+                  type: string
+                foo3:
+                  type: string
+              required:
+                - foo0
+                - foo3
+                - foo1
+              type: object
+        required: true
+      responses: {}
+      servers:
+        - url: http://example.com
+    parameters: []
+servers:
+  - url: /
+",
+  },
+]
+`;
+
+exports[`Spec generator > Returns two specs for a har with two domains 1`] = `
+[
+  {
+    "domain": "example.com",
+    "spec": {
+      "info": {
+        "title": "HarToOpenApi",
+        "version": "1.0.0",
+      },
+      "openapi": "3.0.0",
+      "paths": {
+        "/login": {
+          "get": {
+            "description": "",
+            "operationId": "get-login",
+            "parameters": [],
+            "requestBody": {
+              "content": {
+                "application/x-www-form-urlencoded": {
+                  "schema": {
+                    "properties": {
+                      "foo0": {
+                        "type": "string",
+                      },
+                      "foo1": {
+                        "type": "string",
+                      },
+                      "foo3": {
+                        "type": "string",
+                      },
+                    },
+                    "required": [
+                      "foo0",
+                      "foo3",
+                      "foo1",
+                    ],
+                    "type": "object",
+                  },
+                },
+              },
+              "required": true,
+            },
+            "responses": {},
+          },
+          "parameters": [],
+        },
+      },
+      "servers": [
+        {
+          "url": "http://example.com",
+        },
+      ],
+    },
+    "yamlSpec": "openapi: 3.0.0
+info:
+  title: HarToOpenApi
+  version: 1.0.0
+paths:
+  /login:
+    get:
+      description: ''
+      operationId: get-login
+      parameters: []
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              properties:
+                foo0:
+                  type: string
+                foo1:
+                  type: string
+                foo3:
+                  type: string
+              required:
+                - foo0
+                - foo3
+                - foo1
+              type: object
+        required: true
+      responses: {}
+    parameters: []
+servers:
+  - url: /
+",
+  },
+  {
+    "domain": "exampletwo.com",
+    "spec": {
+      "info": {
+        "title": "HarToOpenApi",
+        "version": "1.0.0",
+      },
+      "openapi": "3.0.0",
+      "paths": {
+        "/login": {
+          "get": {
+            "description": "",
+            "operationId": "get-login",
+            "parameters": [],
+            "requestBody": {
+              "content": {
+                "application/x-www-form-urlencoded": {
+                  "schema": {
+                    "properties": {
+                      "foo0": {
+                        "type": "string",
+                      },
+                      "foo1": {
+                        "type": "string",
+                      },
+                      "foo3": {
+                        "type": "string",
+                      },
+                    },
+                    "required": [
+                      "foo0",
+                      "foo3",
+                      "foo1",
+                    ],
+                    "type": "object",
+                  },
+                },
+              },
+              "required": true,
+            },
+            "responses": {},
+          },
+          "parameters": [],
+        },
+      },
+      "servers": [
+        {
+          "url": "http://exampletwo.com",
+        },
+      ],
+    },
+    "yamlSpec": "openapi: 3.0.0
+info:
+  title: HarToOpenApi
+  version: 1.0.0
+paths:
+  /login:
+    get:
+      description: ''
+      operationId: get-login
+      parameters: []
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              properties:
+                foo0:
+                  type: string
+                foo1:
+                  type: string
+                foo3:
+                  type: string
+              required:
+                - foo0
+                - foo3
+                - foo1
+              type: object
+        required: true
+      responses: {}
+    parameters: []
+servers:
+  - url: /
+",
+  },
+]
+`;
+
+exports[`Spec generator > Returns two specs for a har with two domains and forceAllRequestsInSameSpec set to false, and adds servers to path 1`] = `
+[
+  {
+    "domain": "example.com",
+    "spec": {
+      "info": {
+        "title": "HarToOpenApi",
+        "version": "1.0.0",
+      },
+      "openapi": "3.0.0",
+      "paths": {
+        "/login": {
+          "get": {
+            "description": "",
+            "operationId": "get-login",
+            "parameters": [],
+            "requestBody": {
+              "content": {
+                "application/x-www-form-urlencoded": {
+                  "schema": {
+                    "properties": {
+                      "foo0": {
+                        "type": "string",
+                      },
+                      "foo1": {
+                        "type": "string",
+                      },
+                      "foo3": {
+                        "type": "string",
+                      },
+                    },
+                    "required": [
+                      "foo0",
+                      "foo3",
+                      "foo1",
+                    ],
+                    "type": "object",
+                  },
+                },
+              },
+              "required": true,
+            },
+            "responses": {},
+            "servers": [
+              {
+                "url": "http://example.com",
+              },
+            ],
+          },
+          "parameters": [],
+        },
+      },
+      "servers": [
+        {
+          "url": "http://example.com",
+        },
+      ],
+    },
+    "yamlSpec": "openapi: 3.0.0
+info:
+  title: HarToOpenApi
+  version: 1.0.0
+paths:
+  /login:
+    get:
+      description: ''
+      operationId: get-login
+      parameters: []
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              properties:
+                foo0:
+                  type: string
+                foo1:
+                  type: string
+                foo3:
+                  type: string
+              required:
+                - foo0
+                - foo3
+                - foo1
+              type: object
+        required: true
+      responses: {}
+      servers:
+        - url: http://example.com
+    parameters: []
+servers:
+  - url: /
+",
+  },
+  {
+    "domain": "exampletwo.com",
+    "spec": {
+      "info": {
+        "title": "HarToOpenApi",
+        "version": "1.0.0",
+      },
+      "openapi": "3.0.0",
+      "paths": {
+        "/login": {
+          "get": {
+            "description": "",
+            "operationId": "get-login",
+            "parameters": [],
+            "requestBody": {
+              "content": {
+                "application/x-www-form-urlencoded": {
+                  "schema": {
+                    "properties": {
+                      "foo0": {
+                        "type": "string",
+                      },
+                      "foo1": {
+                        "type": "string",
+                      },
+                      "foo3": {
+                        "type": "string",
+                      },
+                    },
+                    "required": [
+                      "foo0",
+                      "foo3",
+                      "foo1",
+                    ],
+                    "type": "object",
+                  },
+                },
+              },
+              "required": true,
+            },
+            "responses": {},
+            "servers": [
+              {
+                "url": "http://exampletwo.com",
+              },
+            ],
+          },
+          "parameters": [],
+        },
+      },
+      "servers": [
+        {
+          "url": "http://exampletwo.com",
+        },
+      ],
+    },
+    "yamlSpec": "openapi: 3.0.0
+info:
+  title: HarToOpenApi
+  version: 1.0.0
+paths:
+  /login:
+    get:
+      description: ''
+      operationId: get-login
+      parameters: []
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              properties:
+                foo0:
+                  type: string
+                foo1:
+                  type: string
+                foo3:
+                  type: string
+              required:
+                - foo0
+                - foo3
+                - foo1
+              type: object
+        required: true
+      responses: {}
+      servers:
+        - url: http://exampletwo.com
+    parameters: []
+servers:
+  - url: /
+",
+  },
+]
+`;

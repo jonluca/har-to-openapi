@@ -19,6 +19,9 @@ export interface Config {
   // if true, we'll treat every url as having the same domain, regardless of what its actual domain is
   // the first domain we see is the domain we'll use
   forceAllRequestsInSameSpec?: boolean;
+  // if true, every path object will have its own servers entry, defining its base path. This is useful when
+  // forceAllRequestsInSameSpec is set
+  addServersToPaths?: boolean;
   // if the response has this status code, ignore the body
   ignoreBodiesForStatusCodes?: number[];
   // whether non standard methods should be allowed (like HTTP MY_CUSTOM_METHOD)
@@ -43,7 +46,11 @@ type Required<T, K extends keyof T> = T & { [P in K]-?: T[P] };
 type WithRequired<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>> & Required<T, K>;
 export type InternalConfig = WithRequired<
   Config,
-  "filterStandardHeaders" | "forceAllRequestsInSameSpec" | "relaxedMethods" | "relaxedContentTypeJsonParse"
+  | "filterStandardHeaders"
+  | "addServersToPaths"
+  | "relaxedMethods"
+  | "relaxedContentTypeJsonParse"
+  | "forceAllRequestsInSameSpec"
 >;
 
 export interface IGenerateSpecResponse {

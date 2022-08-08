@@ -5,7 +5,12 @@ import YAML from "js-yaml";
 import sortJson from "sort-json";
 import { addMethod, addQueryStringParams, addRequestHeaders, getBody, getResponseBody, getSecurity } from "./helpers";
 import type { Config, IGenerateSpecResponse, InternalConfig } from "./types";
-import type { PathItemObject, PathsObject, SecurityRequirementObject } from "openapi3-ts/src/model/OpenApi";
+import type {
+  PathItemObject,
+  PathsObject,
+  SecurityRequirementObject,
+  ServerObject,
+} from "openapi3-ts/src/model/OpenApi";
 import { cloneDeep, groupBy } from "lodash-es";
 import { addResponse } from "./utils/baseResponse";
 import { isStandardMethod } from "./utils/methods";
@@ -36,7 +41,9 @@ const getConfig = (config?: Config): InternalConfig => {
   return internalConfig;
 };
 
-const tryGetHostname = (url: string, logErrors?: boolean, fallback?: string): string | undefined => {
+function tryGetHostname(url: string, logErrors: boolean | undefined, fallback: string): string;
+function tryGetHostname(url: string, logErrors: boolean | undefined): string | undefined;
+function tryGetHostname(url: string, logErrors?: boolean, fallback?: string): string | undefined {
   try {
     return new URL(url).hostname;
   } catch {
@@ -45,7 +52,7 @@ const tryGetHostname = (url: string, logErrors?: boolean, fallback?: string): st
     }
   }
   return fallback;
-};
+}
 
 const generateSpecs = async <T extends Har>(har: T, config?: Config): Promise<IGenerateSpecResponse[]> => {
   if (!har?.log?.entries?.length) {
@@ -128,7 +135,7 @@ const generateSpecs = async <T extends Har>(har: T, config?: Config): Promise<IG
           spec.paths[urlPath] ??= { parameters: [] } as PathsObject;
           const path = spec.paths[urlPath] as PathItemObject;
 
-          path[method] ??= addMethod(method, urlPath, config);
+          path[method] ??= addMethod(method, urlObj, config);
           const specMethod = path[method] as OperationObject;
           // generate response
           const status = item.response?.status;
@@ -221,6 +228,11 @@ const generateSpecs = async <T extends Har>(har: T, config?: Config): Promise<IG
       spec.paths = sortJson(spec.paths, { depth: 200 });
       const yamlSpec = YAML.dump(spec);
       const labeledDomain = tryGetHostname(firstUrl, logErrors, domain);
+      const prefix = firstUrl?.startsWith("https://") ? "https://" : "http://";
+      const server: ServerObject = {
+        url: `${prefix}${labeledDomain}`,
+      };
+      spec.servers = [server];
       specs.push({ spec, yamlSpec, domain: labeledDomain });
     } catch (err) {
       if (logErrors) {
