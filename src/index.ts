@@ -1,19 +1,30 @@
 import type { OperationObject } from "@loopback/openapi-v3-types";
 import { createEmptyApiSpec } from "@loopback/openapi-v3-types";
-import type { Entry, Har, QueryString } from "har-format";
+import type { Cookie, Entry, Har, QueryString } from "har-format";
 import YAML from "js-yaml";
 import sortJson from "sort-json";
-import { addMethod, addQueryStringParams, addRequestHeaders, getBody, getResponseBody, getSecurity } from "./helpers";
+import {
+  addMethod,
+  addQueryStringParams,
+  addRequestHeaders,
+  getBody,
+  getResponseBody,
+  getSecurity,
+  uniqueHeaders,
+} from "./helpers";
 import type { Config, IGenerateSpecResponse, InternalConfig } from "./types";
 import type {
   PathItemObject,
   PathsObject,
   SecurityRequirementObject,
+  SecuritySchemeObject,
   ServerObject,
 } from "openapi3-ts/src/model/OpenApi";
 import { cloneDeep, groupBy } from "lodash-es";
 import { addResponse } from "./utils/baseResponse";
 import { isStandardMethod } from "./utils/methods";
+import { DEFAULT_AUTH_HEADERS, isStandardHeader } from "./utils/headers";
+import { getCookieSecurityName } from "./utils/string";
 
 const checkPathFromFilter = async (urlPath: string, filter: Config["urlFilter"]) => {
   if (typeof filter === "string") {
@@ -32,11 +43,17 @@ const getConfig = (config?: Config): InternalConfig => {
   // set up some defaults
   internalConfig.filterStandardHeaders ??= true;
   internalConfig.relaxedContentTypeJsonParse ??= true;
+  internalConfig.guessAuthenticationHeaders ??= true;
   internalConfig.forceAllRequestsInSameSpec ??= false;
   internalConfig.relaxedMethods ??= false;
   internalConfig.logErrors ??= false;
   if (internalConfig.securityHeaders) {
     internalConfig.securityHeaders = internalConfig.securityHeaders.map((l) => l.toLowerCase());
+  }
+
+  if (internalConfig.guessAuthenticationHeaders) {
+    internalConfig.securityHeaders ??= [];
+    internalConfig.securityHeaders.push(...DEFAULT_AUTH_HEADERS);
   }
   return internalConfig;
 };
@@ -97,6 +114,7 @@ const generateSpecs = async <T extends Har>(har: T, config?: Config): Promise<IG
       const harEntriesForDomain = groupedByHostname[domain];
 
       const securitySchemas: SecurityRequirementObject[] = [];
+      const cookies: Cookie[] = [];
       const firstUrl = harEntriesForDomain[0].request.url;
 
       for (const item of harEntriesForDomain) {
@@ -145,9 +163,12 @@ const generateSpecs = async <T extends Har>(har: T, config?: Config): Promise<IG
 
           const requestHeaders = item.request.headers;
           if (securityHeaders?.length && requestHeaders?.length) {
-            const security = getSecurity(requestHeaders, securityHeaders);
+            const security = getSecurity(requestHeaders, securityHeaders, item.request.cookies);
             if (security) {
               securitySchemas.push(security);
+              if (security.cookie && item.request.cookies?.length) {
+                cookies.push(...item.request.cookies);
+              }
               specMethod.security = [security];
             }
           }
@@ -206,14 +227,24 @@ const generateSpecs = async <T extends Har>(har: T, config?: Config): Promise<IG
 
       if (securitySchemas.length) {
         spec.components ||= {};
-        spec.components.securitySchemes = {};
+        spec.components.securitySchemes ??= {};
+        if (cookies.length) {
+          cookies.forEach((cookie) => {
+            const schemaName = getCookieSecurityName(cookie);
+            spec.components!.securitySchemes![schemaName] = {
+              type: "apiKey",
+              name: cookie.name,
+              in: "cookie",
+            } as SecuritySchemeObject;
+          });
+        }
         securitySchemas.forEach((schema) => {
           const schemaName = Object.keys(schema)[0];
           spec.components!.securitySchemes![schemaName] = {
             type: "http",
             name: schemaName,
             in: "header",
-          };
+          } as SecuritySchemeObject;
         });
       }
 
@@ -241,6 +272,7 @@ const generateSpecs = async <T extends Har>(har: T, config?: Config): Promise<IG
     }
   }
 
+  console.log(Array.from(uniqueHeaders).filter((l) => !isStandardHeader(l)));
   return specs;
 };
 const generateSpec = async <T extends Har>(har: T, config?: Config): Promise<IGenerateSpecResponse> => {

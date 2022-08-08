@@ -37,7 +37,10 @@ describe("Body and header tests", async () => {
     ]);
   });
   test(`Not found security headers dont set security property`, async ({ expect }) => {
-    const data = await generateSpec(securityHeader, { securityHeaders: ["X-Auth-Token-NoExist"] });
+    const data = await generateSpec(securityHeader, {
+      securityHeaders: ["X-Auth-Token-NoExist"],
+      guessAuthenticationHeaders: false,
+    });
     const security = data.spec.paths["/login"].post.security;
     expect(security).not.toBeDefined();
   });

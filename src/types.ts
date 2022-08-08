@@ -7,6 +7,8 @@ export interface Config {
   // if true, every path object will have its own servers entry, defining its base path. This is useful when
   // forceAllRequestsInSameSpec is set
   addServersToPaths?: boolean;
+  // try and guess common auth headers
+  guessAuthenticationHeaders?: boolean;
   // if the response has this status code, ignore the body
   ignoreBodiesForStatusCodes?: number[];
   // whether non standard methods should be allowed (like HTTP MY_CUSTOM_METHOD)
@@ -35,6 +37,7 @@ export type InternalConfig = WithRequired<
   | "filterStandardHeaders"
   | "addServersToPaths"
   | "relaxedMethods"
+  | "guessAuthenticationHeaders"
   | "relaxedContentTypeJsonParse"
   | "forceAllRequestsInSameSpec"
 >;

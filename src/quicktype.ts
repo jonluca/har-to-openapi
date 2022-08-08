@@ -55,7 +55,7 @@ export const quicktypeJSON = async (
     lang: targetLanguage,
     alphabetizeProperties: true,
     allPropertiesOptional: true,
-    fixedTopLevels: true,
+    fixedTopLevels: false,
     ignoreJsonRefs: false,
     combineClasses: false,
   });

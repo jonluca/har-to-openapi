@@ -1,6 +1,6 @@
 import type { Config, InternalConfig } from "./types";
 import type { OperationObject } from "@loopback/openapi-v3-types";
-import type { Content, Header, PostData, PostDataParams, QueryString, Response } from "har-format";
+import type { Content, Cookie, Header, PostData, PostDataParams, QueryString, Response } from "har-format";
 import type {
   HeadersObject,
   ParameterObject,
@@ -14,6 +14,7 @@ import { quicktypeJSON } from "./quicktype";
 import { cloneDeep, uniqBy } from "lodash-es";
 import { isStandardHeader } from "./utils/headers";
 import { URLSearchParams } from "url";
+import { getCookieSecurityName, getTypenameFromPath } from "./utils/string";
 
 export const addMethod = (method: string, url: URL, config?: Config): OperationObject => {
   const path = url.pathname;
@@ -104,12 +105,23 @@ export const addQueryStringParams = (specMethod: OperationObject, harParams: Que
   });
 };
 
-export const getSecurity = (headers: Header[], securityHeaders: string[]): SecurityRequirementObject | undefined => {
+export const getSecurity = (
+  headers: Header[],
+  securityHeaders: string[],
+  cookies: Cookie[] | undefined,
+): SecurityRequirementObject | undefined => {
   const security: SecurityRequirementObject = {};
   headers.forEach(function (header) {
     const headerName = header.name.trim().toLowerCase();
     if (securityHeaders.includes(headerName)) {
       security[header.name] = [];
+      if (headerName === "cookie" && cookies?.length) {
+        cookies.forEach((cookie) => {
+          const securityName = getCookieSecurityName(cookie);
+
+          security["cookie"]?.push(securityName);
+        });
+      }
     }
   });
   if (Object.keys(security).length === 0) {
@@ -208,7 +220,8 @@ export const getBody = async (
             const isBase64Encoded = "encoding" in postData && (<any>postData).encoding == "base64";
             const data = JSON.parse(isBase64Encoded ? Buffer.from(text, "base64").toString() : text);
             examples.push(JSON.stringify(data));
-            const jsonSchema = await quicktypeJSON("schema", [urlPath, method, "request"].join("-"), examples);
+            const typeName = [getTypenameFromPath(urlPath), method, "request"].join("-");
+            const jsonSchema = await quicktypeJSON("schema", typeName, examples);
             const schema = await toOpenApiSchema(cloneDeep(jsonSchema), options);
             param.content[mimeTypeWithoutExtras] = {
               // @ts-ignore
@@ -244,6 +257,7 @@ export const getBody = async (
   return param;
 };
 
+export const uniqueHeaders = new Set<string>();
 export const getResponseBody = async (
   response: Response,
   details: { urlPath: string; method: string; examples: any[] },
@@ -266,6 +280,7 @@ export const getResponseBody = async (
     : headers;
   if (customHeaders.length) {
     param.headers = customHeaders.reduce<HeadersObject>((acc, header) => {
+      uniqueHeaders.add(header.name);
       acc[header.name] = {
         description: `Custom header ${header.name}`,
         schema: {
