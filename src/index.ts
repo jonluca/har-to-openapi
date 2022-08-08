@@ -233,10 +233,9 @@ const generateSpecs = async <T extends Har>(har: T, config?: Config): Promise<IG
         securitySchemas.forEach((schema) => {
           const schemaName = Object.keys(schema)[0];
           spec.components!.securitySchemes![schemaName] = {
-            type: "http",
+            type: "apiKey",
             name: schemaName,
             in: "header",
-            scheme: "bearer",
           } as SecuritySchemeObject;
         });
       }
