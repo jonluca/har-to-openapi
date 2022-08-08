@@ -11,7 +11,7 @@ import type {
 import type { Content, Cookie, Header, PostData, PostDataParams, QueryString, Response } from "har-format";
 import toOpenApiSchema from "@openapi-contrib/json-schema-to-openapi-schema";
 import { quicktypeJSON } from "./quicktype";
-import { camelCase, cloneDeep, uniqBy } from "lodash-es";
+import { camelCase, cloneDeep, startCase, uniqBy } from "lodash-es";
 import { shouldFilterHeader } from "./utils/headers";
 import { URLSearchParams } from "url";
 import { getCookieSecurityName, getTypenameFromPath } from "./utils/string";
@@ -19,7 +19,8 @@ import { getCookieSecurityName, getTypenameFromPath } from "./utils/string";
 export const addMethod = (method: string, url: URL, config: InternalConfig): OperationObject => {
   const path = url.pathname;
   // generate operation id
-  const operationId = camelCase(`${method} ${getTypenameFromPath(path, true)}`);
+  const summary = `${method} ${getTypenameFromPath(path)}`;
+  const operationId = camelCase(summary);
   const tags = config?.tags || [];
   let pathTags: string[] = [];
   if (typeof tags === "function") {
@@ -39,7 +40,7 @@ export const addMethod = (method: string, url: URL, config: InternalConfig): Ope
   const operationsObject = {
     operationId,
     description: "",
-    summary: "",
+    summary: startCase(summary),
     parameters: [],
     responses: {},
   } as OperationObject;

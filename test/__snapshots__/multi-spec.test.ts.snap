@@ -44,7 +44,7 @@ exports[`Spec generator > Returns one spec for a har with two domains and a call
               "required": true,
             },
             "responses": {},
-            "summary": "",
+            "summary": "Get Login",
           },
           "parameters": [],
         },
@@ -86,7 +86,7 @@ paths:
               type: object
         required: true
       responses: {}
-      summary: ''
+      summary: Get Login
     parameters: []
 servers:
   - url: /
@@ -139,7 +139,7 @@ exports[`Spec generator > Returns one spec for a har with two domains and a rege
               "required": true,
             },
             "responses": {},
-            "summary": "",
+            "summary": "Get Login",
           },
           "parameters": [],
         },
@@ -181,7 +181,7 @@ paths:
               type: object
         required: true
       responses: {}
-      summary: ''
+      summary: Get Login
     parameters: []
 servers:
   - url: /
@@ -234,7 +234,7 @@ exports[`Spec generator > Returns one spec for a har with two domains and a stri
               "required": true,
             },
             "responses": {},
-            "summary": "",
+            "summary": "Get Login",
           },
           "parameters": [],
         },
@@ -276,7 +276,7 @@ paths:
               type: object
         required: true
       responses: {}
-      summary: ''
+      summary: Get Login
     parameters: []
 servers:
   - url: /
@@ -329,7 +329,7 @@ exports[`Spec generator > Returns one spec for a har with two domains and an asy
               "required": true,
             },
             "responses": {},
-            "summary": "",
+            "summary": "Get Login",
           },
           "parameters": [],
         },
@@ -371,7 +371,7 @@ paths:
               type: object
         required: true
       responses: {}
-      summary: ''
+      summary: Get Login
     parameters: []
 servers:
   - url: /
@@ -424,7 +424,7 @@ exports[`Spec generator > Returns one spec for a har with two domains and forceA
               "required": true,
             },
             "responses": {},
-            "summary": "",
+            "summary": "Get Login",
           },
           "parameters": [],
         },
@@ -464,7 +464,7 @@ paths:
               type: object
         required: true
       responses: {}
-      summary: ''
+      summary: Get Login
     parameters: []
 servers:
   - url: /
@@ -522,7 +522,7 @@ exports[`Spec generator > Returns one spec for a har with two domains and forceA
                 "url": "http://example.com",
               },
             ],
-            "summary": "",
+            "summary": "Get Login",
           },
           "parameters": [],
         },
@@ -564,7 +564,7 @@ paths:
       responses: {}
       servers:
         - url: http://example.com
-      summary: ''
+      summary: Get Login
     parameters: []
 servers:
   - url: /
@@ -617,7 +617,7 @@ exports[`Spec generator > Returns two specs for a har with two domains 1`] = `
               "required": true,
             },
             "responses": {},
-            "summary": "",
+            "summary": "Get Login",
           },
           "parameters": [],
         },
@@ -659,7 +659,7 @@ paths:
               type: object
         required: true
       responses: {}
-      summary: ''
+      summary: Get Login
     parameters: []
 servers:
   - url: /
@@ -707,7 +707,7 @@ servers:
               "required": true,
             },
             "responses": {},
-            "summary": "",
+            "summary": "Get Login",
           },
           "parameters": [],
         },
@@ -749,7 +749,7 @@ paths:
               type: object
         required: true
       responses: {}
-      summary: ''
+      summary: Get Login
     parameters: []
 servers:
   - url: /
@@ -807,7 +807,7 @@ exports[`Spec generator > Returns two specs for a har with two domains and force
                 "url": "http://example.com",
               },
             ],
-            "summary": "",
+            "summary": "Get Login",
           },
           "parameters": [],
         },
@@ -851,7 +851,7 @@ paths:
       responses: {}
       servers:
         - url: http://example.com
-      summary: ''
+      summary: Get Login
     parameters: []
 servers:
   - url: /
@@ -904,7 +904,7 @@ servers:
                 "url": "http://exampletwo.com",
               },
             ],
-            "summary": "",
+            "summary": "Get Login",
           },
           "parameters": [],
         },
@@ -948,7 +948,7 @@ paths:
       responses: {}
       servers:
         - url: http://exampletwo.com
-      summary: ''
+      summary: Get Login
     parameters: []
 servers:
   - url: /

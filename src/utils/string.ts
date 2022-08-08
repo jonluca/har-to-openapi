@@ -1,5 +1,5 @@
 import type { Cookie } from "har-format";
-import { camelCase, uniq } from "lodash-es";
+import { camelCase, startCase, uniq } from "lodash-es";
 import type { ParameterObject, SchemaObject } from "@loopback/openapi-v3-types";
 
 const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -7,7 +7,7 @@ const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[
 const dateRegex =
   /(((20[012]\d|19\d\d)|(1\d|2[0123]))-((0[0-9])|(1[012]))-((0[1-9])|([12][0-9])|(3[01])))|(((0[1-9])|([12][0-9])|(3[01]))-((0[0-9])|(1[012]))-((20[012]\d|19\d\d)|(1\d|2[0123])))|(((20[012]\d|19\d\d)|(1\d|2[0123]))\/((0[0-9])|(1[012]))\/((0[1-9])|([12][0-9])|(3[01])))|(((0[0-9])|(1[012]))\/((0[1-9])|([12][0-9])|(3[01]))\/((20[012]\d|19\d\d)|(1\d|2[0123])))|(((0[1-9])|([12][0-9])|(3[01]))\/((0[0-9])|(1[012]))\/((20[012]\d|19\d\d)|(1\d|2[0123])))|(((0[1-9])|([12][0-9])|(3[01]))\.((0[0-9])|(1[012]))\.((20[012]\d|19\d\d)|(1\d|2[0123])))|(((20[012]\d|19\d\d)|(1\d|2[0123]))\.((0[0-9])|(1[012]))\.((0[1-9])|([12][0-9])|(3[01])))/;
 
-export const getTypenameFromPath = (path: string, noFilter?: boolean) => {
+export const getTypenameFromPath = (path: string) => {
   const parts = path.split(/[/|${|-}]/g);
   const partsToKeep = [];
   for (const part of parts) {
@@ -16,21 +16,27 @@ export const getTypenameFromPath = (path: string, noFilter?: boolean) => {
       continue;
     }
     // if its a UUID, skip it
-    if (!noFilter && uuidRegex.test(part)) {
+    if (uuidRegex.test(part)) {
+      partsToKeep.push("By UUID");
       continue;
     }
-    if (!noFilter && dateRegex.test(part)) {
-      partsToKeep.push("date");
+    if (part.length > 3 && !isNaN(Number(part))) {
+      partsToKeep.push("By ID");
       continue;
     }
-    // if its a number and greater than 3 digits, probably safe to skip?
-    if (!noFilter && part.length >= 3 && !isNaN(Number(part))) {
+    if (dateRegex.test(part)) {
+      partsToKeep.push("By Date");
+      continue;
+    }
+
+    if (part === "true" || part === "false") {
+      partsToKeep.push(`set${startCase(part)}`);
       continue;
     }
     partsToKeep.push(part);
   }
   // kind of heuristics, but we want to filter out things that are like uuids or just numbers
-  return camelCase(uniq(partsToKeep).join(" "));
+  return uniq(partsToKeep).join(" ");
 };
 export const parameterizeUrl = (path: string) => {
   const parts = path.split(/[/|${|-}]/g);

@@ -44,7 +44,7 @@ exports[`har-to-openapi: Post data > HAR with request with postdata matches snap
             "required": true,
           },
           "responses": {},
-          "summary": "",
+          "summary": "Post Login",
         },
       },
     },
@@ -87,7 +87,7 @@ paths:
               type: object
         required: true
       responses: {}
-      summary: ''
+      summary: Post Login
 servers:
   - url: /
 ",
@@ -138,7 +138,7 @@ exports[`har-to-openapi: Post data > HAR with request with postdata with a misma
             "required": true,
           },
           "responses": {},
-          "summary": "",
+          "summary": "Post Login",
         },
       },
     },
@@ -180,7 +180,7 @@ paths:
               type: object
         required: true
       responses: {}
-      summary: ''
+      summary: Post Login
 servers:
   - url: /
 ",

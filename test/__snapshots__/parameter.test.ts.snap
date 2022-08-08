@@ -27,7 +27,7 @@ exports[`Parameterized URLs > Can parse the parameterized url properly 1`] = `
         ],
         "post": {
           "description": "",
-          "operationId": "postLoginDate20220202",
+          "operationId": "postLoginDateByDate",
           "parameters": [],
           "requestBody": {
             "content": {
@@ -127,7 +127,7 @@ exports[`Parameterized URLs > Can parse the parameterized url properly 1`] = `
               "description": "",
             },
           },
-          "summary": "",
+          "summary": "Post Login Date By Date",
         },
       },
       "/login/date/{date}/id/{id}/uuid/{uuid}": {
@@ -169,7 +169,7 @@ exports[`Parameterized URLs > Can parse the parameterized url properly 1`] = `
         ],
         "post": {
           "description": "",
-          "operationId": "postLoginDate20220202Id12345Uuid123E4567E89B12D3A456426655440000",
+          "operationId": "postLoginDateByDateIdByIdUuidByUuid",
           "parameters": [],
           "requestBody": {
             "content": {
@@ -269,7 +269,7 @@ exports[`Parameterized URLs > Can parse the parameterized url properly 1`] = `
               "description": "",
             },
           },
-          "summary": "",
+          "summary": "Post Login Date By Date Id By ID Uuid By UUID",
         },
       },
       "/login/id/{id}": {
@@ -287,7 +287,7 @@ exports[`Parameterized URLs > Can parse the parameterized url properly 1`] = `
         ],
         "post": {
           "description": "",
-          "operationId": "postLoginId1234567",
+          "operationId": "postLoginIdById",
           "parameters": [],
           "requestBody": {
             "content": {
@@ -387,7 +387,7 @@ exports[`Parameterized URLs > Can parse the parameterized url properly 1`] = `
               "description": "",
             },
           },
-          "summary": "",
+          "summary": "Post Login Id By ID",
         },
       },
       "/login/id/{id}/idTwo/{id1}": {
@@ -415,7 +415,7 @@ exports[`Parameterized URLs > Can parse the parameterized url properly 1`] = `
         ],
         "post": {
           "description": "",
-          "operationId": "postLoginId1234567IdTwo",
+          "operationId": "postLoginIdByIdIdTwo",
           "parameters": [],
           "requestBody": {
             "content": {
@@ -515,7 +515,7 @@ exports[`Parameterized URLs > Can parse the parameterized url properly 1`] = `
               "description": "",
             },
           },
-          "summary": "",
+          "summary": "Post Login Id By ID Id Two",
         },
       },
       "/login/id/{id}/idTwo/{id1}/{bool}": {
@@ -553,7 +553,7 @@ exports[`Parameterized URLs > Can parse the parameterized url properly 1`] = `
         ],
         "post": {
           "description": "",
-          "operationId": "postLoginId1234567IdTwoTrue",
+          "operationId": "postLoginIdByIdIdTwoSetTrue",
           "parameters": [],
           "requestBody": {
             "content": {
@@ -653,7 +653,7 @@ exports[`Parameterized URLs > Can parse the parameterized url properly 1`] = `
               "description": "",
             },
           },
-          "summary": "",
+          "summary": "Post Login Id By ID Id Two Set True",
         },
       },
       "/login/uuid/{uuid}": {
@@ -674,7 +674,7 @@ exports[`Parameterized URLs > Can parse the parameterized url properly 1`] = `
         ],
         "post": {
           "description": "",
-          "operationId": "postLoginUuid123E4567E89B12D3A456426655440000",
+          "operationId": "postLoginUuidByUuid",
           "parameters": [],
           "requestBody": {
             "content": {
@@ -774,7 +774,7 @@ exports[`Parameterized URLs > Can parse the parameterized url properly 1`] = `
               "description": "",
             },
           },
-          "summary": "",
+          "summary": "Post Login Uuid By UUID",
         },
       },
     },
@@ -804,7 +804,7 @@ paths:
           type: string
     post:
       description: ''
-      operationId: postLoginDate20220202
+      operationId: postLoginDateByDate
       parameters: []
       requestBody:
         content:
@@ -876,7 +876,7 @@ paths:
                 title: LoginDatePostRequest
                 type: object
           description: ''
-      summary: ''
+      summary: Post Login Date By Date
   /login/date/{date}/id/{id}/uuid/{uuid}:
     parameters:
       - example: '2022-02-02'
@@ -906,7 +906,7 @@ paths:
           type: string
     post:
       description: ''
-      operationId: postLoginDate20220202Id12345Uuid123E4567E89B12D3A456426655440000
+      operationId: postLoginDateByDateIdByIdUuidByUuid
       parameters: []
       requestBody:
         content:
@@ -978,7 +978,7 @@ paths:
                 title: LoginDateIDUUIDPostRequest
                 type: object
           description: ''
-      summary: ''
+      summary: Post Login Date By Date Id By ID Uuid By UUID
   /login/id/{id}:
     parameters:
       - example: '1234567'
@@ -990,7 +990,7 @@ paths:
           type: integer
     post:
       description: ''
-      operationId: postLoginId1234567
+      operationId: postLoginIdById
       parameters: []
       requestBody:
         content:
@@ -1062,7 +1062,7 @@ paths:
                 title: LoginIDPostRequest
                 type: object
           description: ''
-      summary: ''
+      summary: Post Login Id By ID
   /login/id/{id}/idTwo/{id1}:
     parameters:
       - example: '1234567'
@@ -1081,7 +1081,7 @@ paths:
           type: integer
     post:
       description: ''
-      operationId: postLoginId1234567IdTwo
+      operationId: postLoginIdByIdIdTwo
       parameters: []
       requestBody:
         content:
@@ -1153,7 +1153,7 @@ paths:
                 title: LoginIDIDTwoId1PostRequest
                 type: object
           description: ''
-      summary: ''
+      summary: Post Login Id By ID Id Two
   /login/id/{id}/idTwo/{id1}/{bool}:
     parameters:
       - example: '1234567'
@@ -1179,7 +1179,7 @@ paths:
           type: boolean
     post:
       description: ''
-      operationId: postLoginId1234567IdTwoTrue
+      operationId: postLoginIdByIdIdTwoSetTrue
       parameters: []
       requestBody:
         content:
@@ -1251,7 +1251,7 @@ paths:
                 title: LoginIDIDTwoId1BoolPostRequest
                 type: object
           description: ''
-      summary: ''
+      summary: Post Login Id By ID Id Two Set True
   /login/uuid/{uuid}:
     parameters:
       - example: 123e4567-e89b-12d3-a456-426655440000
@@ -1266,7 +1266,7 @@ paths:
           type: string
     post:
       description: ''
-      operationId: postLoginUuid123E4567E89B12D3A456426655440000
+      operationId: postLoginUuidByUuid
       parameters: []
       requestBody:
         content:
@@ -1338,7 +1338,7 @@ paths:
                 title: LoginUUIDPostRequest
                 type: object
           description: ''
-      summary: ''
+      summary: Post Login Uuid By UUID
 servers:
   - url: /
 ",
