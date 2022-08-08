@@ -37,7 +37,7 @@
     "lint": "eslint src",
     "build": "rm -fr dist/* && tsc -p tsconfig.json && tsc -p tsconfig-cjs.json && node scripts/fixup.js",
     "typecheck": "tsc --noEmit",
-    "prettier": "prettier --write \"**/*.+(js|jsx|ts|tsx|har||json|css|md)\"",
+    "prettier": "prettier --write \"**/*.*\"",
     "test": "vitest --coverage",
     "test:update": "vitest -u",
     "test:watch": "vitest -w"
