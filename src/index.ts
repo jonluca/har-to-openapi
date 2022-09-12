@@ -52,7 +52,7 @@ const getConfig = (config?: HarToOpenAPIConfig): InternalConfig => {
     internalConfig.securityHeaders = Array.from(new Set(internalConfig.securityHeaders.map((l) => l.toLowerCase())));
   }
 
-  return internalConfig;
+  return Object.freeze(internalConfig);
 };
 
 function tryGetHostname(url: string, logErrors: boolean | undefined, fallback: string): string;

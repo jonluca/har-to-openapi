@@ -6,7 +6,7 @@ exports[`Spec generator > Returns one spec for a har with two domains and a call
     "domain": "example.com",
     "spec": {
       "info": {
-        "description": "OpenAPI spec generated from HAR data for example.com on 2022-09-01T00:00:00.000Z",
+        "description": "OpenAPI spec generated from HAR data for example.com on 2022-01-01T00:00:00.000Z",
         "title": "HarToOpenApi",
         "version": "1.0.0",
       },
@@ -61,7 +61,7 @@ info:
   version: 1.0.0
   description: >-
     OpenAPI spec generated from HAR data for example.com on
-    2022-09-01T00:00:00.000Z
+    2022-01-01T00:00:00.000Z
 paths:
   /login:
     get:
@@ -101,7 +101,7 @@ exports[`Spec generator > Returns one spec for a har with two domains and a rege
     "domain": "example.com",
     "spec": {
       "info": {
-        "description": "OpenAPI spec generated from HAR data for example.com on 2022-09-01T00:00:00.000Z",
+        "description": "OpenAPI spec generated from HAR data for example.com on 2022-01-01T00:00:00.000Z",
         "title": "HarToOpenApi",
         "version": "1.0.0",
       },
@@ -156,7 +156,7 @@ info:
   version: 1.0.0
   description: >-
     OpenAPI spec generated from HAR data for example.com on
-    2022-09-01T00:00:00.000Z
+    2022-01-01T00:00:00.000Z
 paths:
   /login:
     get:
@@ -196,7 +196,7 @@ exports[`Spec generator > Returns one spec for a har with two domains and a stri
     "domain": "example.com",
     "spec": {
       "info": {
-        "description": "OpenAPI spec generated from HAR data for example.com on 2022-09-01T00:00:00.000Z",
+        "description": "OpenAPI spec generated from HAR data for example.com on 2022-01-01T00:00:00.000Z",
         "title": "HarToOpenApi",
         "version": "1.0.0",
       },
@@ -251,7 +251,7 @@ info:
   version: 1.0.0
   description: >-
     OpenAPI spec generated from HAR data for example.com on
-    2022-09-01T00:00:00.000Z
+    2022-01-01T00:00:00.000Z
 paths:
   /login:
     get:
@@ -291,7 +291,7 @@ exports[`Spec generator > Returns one spec for a har with two domains and an asy
     "domain": "example.com",
     "spec": {
       "info": {
-        "description": "OpenAPI spec generated from HAR data for example.com on 2022-09-01T00:00:00.000Z",
+        "description": "OpenAPI spec generated from HAR data for example.com on 2022-01-01T00:00:00.000Z",
         "title": "HarToOpenApi",
         "version": "1.0.0",
       },
@@ -346,7 +346,7 @@ info:
   version: 1.0.0
   description: >-
     OpenAPI spec generated from HAR data for example.com on
-    2022-09-01T00:00:00.000Z
+    2022-01-01T00:00:00.000Z
 paths:
   /login:
     get:
@@ -386,7 +386,7 @@ exports[`Spec generator > Returns one spec for a har with two domains and forceA
     "domain": "example.com",
     "spec": {
       "info": {
-        "description": "OpenAPI spec generated from HAR data for specs on 2022-09-01T00:00:00.000Z",
+        "description": "OpenAPI spec generated from HAR data for specs on 2022-01-01T00:00:00.000Z",
         "title": "HarToOpenApi",
         "version": "1.0.0",
       },
@@ -439,7 +439,7 @@ exports[`Spec generator > Returns one spec for a har with two domains and forceA
 info:
   title: HarToOpenApi
   version: 1.0.0
-  description: OpenAPI spec generated from HAR data for specs on 2022-09-01T00:00:00.000Z
+  description: OpenAPI spec generated from HAR data for specs on 2022-01-01T00:00:00.000Z
 paths:
   /login:
     get:
@@ -479,7 +479,7 @@ exports[`Spec generator > Returns one spec for a har with two domains and forceA
     "domain": "example.com",
     "spec": {
       "info": {
-        "description": "OpenAPI spec generated from HAR data for specs on 2022-09-01T00:00:00.000Z",
+        "description": "OpenAPI spec generated from HAR data for specs on 2022-01-01T00:00:00.000Z",
         "title": "HarToOpenApi",
         "version": "1.0.0",
       },
@@ -537,7 +537,7 @@ exports[`Spec generator > Returns one spec for a har with two domains and forceA
 info:
   title: HarToOpenApi
   version: 1.0.0
-  description: OpenAPI spec generated from HAR data for specs on 2022-09-01T00:00:00.000Z
+  description: OpenAPI spec generated from HAR data for specs on 2022-01-01T00:00:00.000Z
 paths:
   /login:
     get:
@@ -579,7 +579,7 @@ exports[`Spec generator > Returns two specs for a har with two domains 1`] = `
     "domain": "example.com",
     "spec": {
       "info": {
-        "description": "OpenAPI spec generated from HAR data for example.com on 2022-09-01T00:00:00.000Z",
+        "description": "OpenAPI spec generated from HAR data for example.com on 2022-01-01T00:00:00.000Z",
         "title": "HarToOpenApi",
         "version": "1.0.0",
       },
@@ -634,7 +634,7 @@ info:
   version: 1.0.0
   description: >-
     OpenAPI spec generated from HAR data for example.com on
-    2022-09-01T00:00:00.000Z
+    2022-01-01T00:00:00.000Z
 paths:
   /login:
     get:
@@ -669,7 +669,7 @@ servers:
     "domain": "exampletwo.com",
     "spec": {
       "info": {
-        "description": "OpenAPI spec generated from HAR data for exampletwo.com on 2022-09-01T00:00:00.000Z",
+        "description": "OpenAPI spec generated from HAR data for exampletwo.com on 2022-01-01T00:00:00.000Z",
         "title": "HarToOpenApi",
         "version": "1.0.0",
       },
@@ -724,7 +724,7 @@ info:
   version: 1.0.0
   description: >-
     OpenAPI spec generated from HAR data for exampletwo.com on
-    2022-09-01T00:00:00.000Z
+    2022-01-01T00:00:00.000Z
 paths:
   /login:
     get:
@@ -764,7 +764,7 @@ exports[`Spec generator > Returns two specs for a har with two domains and force
     "domain": "example.com",
     "spec": {
       "info": {
-        "description": "OpenAPI spec generated from HAR data for example.com on 2022-09-01T00:00:00.000Z",
+        "description": "OpenAPI spec generated from HAR data for example.com on 2022-01-01T00:00:00.000Z",
         "title": "HarToOpenApi",
         "version": "1.0.0",
       },
@@ -824,7 +824,7 @@ info:
   version: 1.0.0
   description: >-
     OpenAPI spec generated from HAR data for example.com on
-    2022-09-01T00:00:00.000Z
+    2022-01-01T00:00:00.000Z
 paths:
   /login:
     get:
@@ -861,7 +861,7 @@ servers:
     "domain": "exampletwo.com",
     "spec": {
       "info": {
-        "description": "OpenAPI spec generated from HAR data for exampletwo.com on 2022-09-01T00:00:00.000Z",
+        "description": "OpenAPI spec generated from HAR data for exampletwo.com on 2022-01-01T00:00:00.000Z",
         "title": "HarToOpenApi",
         "version": "1.0.0",
       },
@@ -921,7 +921,7 @@ info:
   version: 1.0.0
   description: >-
     OpenAPI spec generated from HAR data for exampletwo.com on
-    2022-09-01T00:00:00.000Z
+    2022-01-01T00:00:00.000Z
 paths:
   /login:
     get:

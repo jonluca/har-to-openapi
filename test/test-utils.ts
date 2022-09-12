@@ -4,8 +4,7 @@ import fs from "fs";
 import type { Har } from "har-format";
 import { vi } from "vitest";
 
-const date = new Date(2022, 8, 1);
-date.setUTCHours(0, 0, 0, 0);
+const date = new Date("01/01/2022 0:00:00 GMT");
 vi.useFakeTimers();
 vi.setSystemTime(date);
 

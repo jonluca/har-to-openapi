@@ -11,7 +11,7 @@ import type {
 import type { Content, Cookie, Header, PostData, PostDataParams, QueryString, Response } from "har-format";
 import toOpenApiSchema from "@openapi-contrib/json-schema-to-openapi-schema";
 import { quicktypeJSON } from "./quicktype";
-import { camelCase, cloneDeep, startCase, uniqBy } from "lodash-es";
+import { camelCase, startCase, uniqBy } from "lodash-es";
 import { shouldFilterHeader } from "./utils/headers";
 import { URLSearchParams } from "url";
 import { getCookieSecurityName, getTypenameFromPath } from "./utils/string";
@@ -223,7 +223,7 @@ export const getBody = async (
             examples.push(JSON.stringify(data));
             const typeName = camelCase([getTypenameFromPath(urlPath), method, "request"].join(" "));
             const jsonSchema = await quicktypeJSON("schema", typeName, examples);
-            const schema = await toOpenApiSchema(cloneDeep(jsonSchema), options);
+            const schema = await toOpenApiSchema(jsonSchema, options);
             param.content[mimeTypeWithoutExtras] = {
               // @ts-ignore
               schema,

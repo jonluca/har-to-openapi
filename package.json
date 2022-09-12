@@ -8,7 +8,7 @@
   "files": [
     "/dist"
   ],
-  "sideEffects": true,
+  "sideEffects": false,
   "main": "dist/cjs/index.js",
   "module": "dist/mjs/index.js",
   "exports": {
@@ -49,31 +49,32 @@
     "lodash-es": "^4.17.21",
     "quicktype-core": "^6.0.71",
     "sort-json": "^2.0.1",
-    "uuid": "^8.3.2"
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
+    "@types/eslint": "8.4.6",
     "@types/har-format": "^1.2.8",
     "@types/js-yaml": "^4.0.5",
     "@types/lodash-es": "^4.17.6",
+    "@types/node": "^18.7.16",
     "@types/sort-json": "^2.0.1",
-    "@types/eslint": "8.4.5",
-    "@types/node": "^18.6.5",
-    "@typescript-eslint/eslint-plugin": "^5.33.0",
-    "@typescript-eslint/eslint-plugin-tslint": "^5.33.0",
-    "@typescript-eslint/parser": "^5.33.0",
+    "@typescript-eslint/eslint-plugin": "^5.36.2",
+    "@typescript-eslint/eslint-plugin-tslint": "^5.36.2",
+    "@typescript-eslint/parser": "^5.36.2",
+    "@vitest/coverage-c8": "^0.23.2",
     "c8": "^7.12.0",
-    "eslint": "^8.21.0",
+    "eslint": "^8.23.1",
     "eslint-config-prettier": "^8.5.0",
     "eslint-config-standard": "^17.0.0",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-prettier": "^4.2.1",
-    "eslint-plugin-promise": "^6.0.0",
+    "eslint-plugin-promise": "^6.0.1",
     "eslint-plugin-unused-imports": "^2.0.0",
     "lint-staged": "^13.0.3",
-    "openapi-schema-validator": "^12.0.0",
+    "openapi-schema-validator": "^12.0.2",
     "prettier": "^2.7.1",
-    "typescript": "4.7.4",
-    "vitest": "^0.21.0"
+    "typescript": "4.8.3",
+    "vitest": "^0.23.2"
   },
   "lint-staged": {
     "**/*.{js,ts,jsx,tsx}": [
