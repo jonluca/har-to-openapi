@@ -2,21 +2,14 @@
   "name": "har-to-openapi",
   "version": "0.0.0-development",
   "license": "MIT",
-  "author": "Jonluca DeCaro <lottie@jonlu.ca>",
+  "author": "Jonluca DeCaro <hartoopenapi@jonlu.ca>",
   "description": "Convert a HAR object to an OpenAPI object",
-  "types": "dist/mjs/index.d.ts",
+  "types": "dist/index.d.ts",
   "files": [
     "/dist"
   ],
   "sideEffects": false,
-  "main": "dist/cjs/index.js",
-  "module": "dist/mjs/index.js",
-  "exports": {
-    ".": {
-      "import": "./dist/mjs/index.js",
-      "require": "./dist/cjs/index.js"
-    }
-  },
+  "main": "dist/index.js",
   "keywords": [
     "har",
     "openapi",
@@ -35,7 +28,7 @@
   "scripts": {
     "prepublishOnly": "yarn build",
     "lint": "eslint src",
-    "build": "rm -fr dist/* && tsc -p tsconfig.json && tsc -p tsconfig-cjs.json && node scripts/fixup.js",
+    "build": "rm -fr dist/* && tsc -p tsconfig.json",
     "typecheck": "tsc --noEmit",
     "prettier": "prettier --write \"**/*.+(js|jsx|ts|tsx|har||json|css|md)\"",
     "test": "vitest --coverage",
@@ -47,23 +40,23 @@
     "@openapi-contrib/json-schema-to-openapi-schema": "^2.2.3",
     "js-yaml": "^4.1.0",
     "lodash-es": "^4.17.21",
-    "quicktype-core": "^6.0.71",
+    "quicktype-core": "^6.1.0",
     "sort-json": "^2.0.1",
     "uuid": "^9.0.0"
   },
   "devDependencies": {
     "@types/eslint": "8.4.6",
-    "@types/har-format": "^1.2.8",
+    "@types/har-format": "^1.2.9",
     "@types/js-yaml": "^4.0.5",
     "@types/lodash-es": "^4.17.6",
-    "@types/node": "^18.7.16",
+    "@types/node": "^18.7.23",
     "@types/sort-json": "^2.0.1",
-    "@typescript-eslint/eslint-plugin": "^5.36.2",
-    "@typescript-eslint/eslint-plugin-tslint": "^5.36.2",
-    "@typescript-eslint/parser": "^5.36.2",
-    "@vitest/coverage-c8": "^0.23.2",
+    "@typescript-eslint/eslint-plugin": "^5.38.1",
+    "@typescript-eslint/eslint-plugin-tslint": "^5.38.1",
+    "@typescript-eslint/parser": "^5.38.1",
+    "@vitest/coverage-c8": "^0.23.4",
     "c8": "^7.12.0",
-    "eslint": "^8.23.1",
+    "eslint": "^8.24.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-config-standard": "^17.0.0",
     "eslint-plugin-import": "^2.26.0",
@@ -73,8 +66,8 @@
     "lint-staged": "^13.0.3",
     "openapi-schema-validator": "^12.0.2",
     "prettier": "^2.7.1",
-    "typescript": "4.8.3",
-    "vitest": "^0.23.2"
+    "typescript": "4.8.4",
+    "vitest": "^0.23.4"
   },
   "lint-staged": {
     "**/*.{js,ts,jsx,tsx}": [
