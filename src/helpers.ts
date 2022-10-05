@@ -146,11 +146,14 @@ const mapParams = (params: PostDataParams["params"]): SchemaObject => {
     };
     return query.name;
   });
-  return {
+  const response: SchemaObject = {
     type: "object",
     properties,
-    required,
   };
+  if (required.length) {
+    response.required = required;
+  }
+  return response;
 };
 const getFormData = (postData: PostData | Content): SchemaObject | undefined => {
   if (postData && "params" in postData && postData?.params?.length && postData.params.length > 0) {
