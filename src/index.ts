@@ -19,7 +19,7 @@ import { isStandardMethod } from "./utils/methods";
 import { DEFAULT_AUTH_HEADERS } from "./utils/headers";
 import { getCookieSecurityName, parameterizeUrl } from "./utils/string";
 
-const checkPathFromFilter = async (urlPath: string, filter: HarToOpenAPIConfig["urlFilter"]) => {
+const checkPathFromFilter = async (urlPath: string, harEntry: Entry, filter: HarToOpenAPIConfig["urlFilter"]) => {
   if (typeof filter === "string") {
     return urlPath.includes(filter);
   }
@@ -27,7 +27,7 @@ const checkPathFromFilter = async (urlPath: string, filter: HarToOpenAPIConfig["
     return filter.test(urlPath);
   }
   if (typeof filter === "function") {
-    return filter(urlPath);
+    return filter(urlPath, harEntry);
   }
 };
 
@@ -138,7 +138,7 @@ const generateSpecs = async <T extends Har>(har: T, config?: HarToOpenAPIConfig)
           const queryParams = urlObj.search;
 
           if (urlFilter) {
-            const isValid = await checkPathFromFilter(urlObj.href, urlFilter);
+            const isValid = await checkPathFromFilter(urlObj.href, item, urlFilter);
             if (!isValid) {
               continue;
             }
