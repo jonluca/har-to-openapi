@@ -1,8 +1,7 @@
 import { describe, test } from "vitest";
 import { generateSpec } from "../src";
 import type { PathItemObject } from "@loopback/openapi-v3-types";
-import { loadImpact } from "./test-utils";
-import OpenAPISchemaValidator from "openapi-schema-validator";
+import { loadImpact, OpenAPISchemaValidator } from "./test-utils";
 
 const loginRequestTag = "Login Request";
 const loginRequestTagTwo = "Second Login Request Tag";

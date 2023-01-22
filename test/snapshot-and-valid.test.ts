@@ -1,7 +1,6 @@
 import { describe, test } from "vitest";
-import OpenAPISchemaValidator from "openapi-schema-validator";
 import { generateSpec } from "../src";
-import { allTestHars } from "./test-utils";
+import { allTestHars, OpenAPISchemaValidator } from "./test-utils";
 
 describe("Snapshots and validity", async () => {
   const hars = allTestHars();

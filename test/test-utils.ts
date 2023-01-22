@@ -3,6 +3,7 @@ import path, { dirname } from "path";
 import fs from "fs";
 import type { Har } from "har-format";
 import { vi } from "vitest";
+import OpenAPISchemaValidatorModule from "openapi-schema-validator";
 
 const date = new Date("01/01/2022 0:00:00 GMT");
 vi.useFakeTimers();
@@ -40,3 +41,4 @@ export const sameEndpointDiffPayloads = () => readHar("post-same-endpoint-diff-b
 export const customMethod = () => readHar("custom-method.har");
 
 export const allTestHars = () => readDirectory(path.join(__dirname, "data"));
+export const OpenAPISchemaValidator = OpenAPISchemaValidatorModule;

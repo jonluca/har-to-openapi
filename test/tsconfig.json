@@ -1,6 +1,10 @@
 {
   "extends": "../tsconfig.json",
   "compilerOptions": {
+    "module": "ESNext",
+    "target": "ESNext",
+    "noEmit": true,
+    "moduleResolution": "NodeNext",
     "rootDir": "../",
     "types": ["node", "vitest/globals"]
   },

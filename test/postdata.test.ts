@@ -1,7 +1,6 @@
 import { describe, test } from "vitest";
-import OpenAPISchemaValidator from "openapi-schema-validator";
 import { generateSpec } from "../src";
-import { loadImpact, postDataConflict } from "./test-utils";
+import { loadImpact, OpenAPISchemaValidator, postDataConflict } from "./test-utils";
 
 const validator = new OpenAPISchemaValidator({
   version: 3,

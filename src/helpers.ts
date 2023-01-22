@@ -205,9 +205,9 @@ export const getBody = async (
       case "x-www-form-urlencoded":
         const formSchema = getFormData(postData);
         if (formSchema) {
+          // @ts-ignore
           const schema = await toOpenApiSchema(formSchema, options);
           if (schema) {
-            // @ts-ignore
             param.content[mimeTypeWithoutExtras] = {
               schema,
             };

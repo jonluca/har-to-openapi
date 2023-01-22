@@ -10,7 +10,7 @@ export default defineConfig({
     reporters: ["verbose"],
     coverage: { reporter: ["lcov", "html", "text"] },
     deps: {
-      fallbackCJS: true,
+      interopDefault: true,
       registerNodeLoader: true,
     },
   },

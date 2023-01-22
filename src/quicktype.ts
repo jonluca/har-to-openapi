@@ -1,7 +1,8 @@
 import type { TargetLanguage } from "quicktype-core/dist/TargetLanguage";
+import type { JSONSchema } from "@apidevtools/json-schema-ref-parser";
+import RefParser from "@apidevtools/json-schema-ref-parser";
 import { InputData, jsonInputForTargetLanguage, quicktype } from "quicktype-core";
 import { cloneDeep } from "lodash-es";
-import RefParser from "@apidevtools/json-schema-ref-parser";
 
 /**
  * This is a hotfix and really only a partial solution as it does not cover all cases.
@@ -10,7 +11,7 @@ import RefParser from "@apidevtools/json-schema-ref-parser";
  *
  * original source https://github.com/asyncapi/modelina/pull/829/files
  */
-const handleRootReference = (input: Record<string, any>): Record<string, any> => {
+const handleRootReference = (input: Record<string, any>): JSONSchema => {
   //Because of https://github.com/APIDevTools/json-schema-ref-parser/issues/201 the tool cannot handle root references.
   //This really is a bad patch to fix an underlying problem, but until a full library is available, this is best we can do.
   const hasRootRef = input.$ref !== undefined;
@@ -63,7 +64,14 @@ export const quicktypeJSON = async (
   const returnJSON = JSON.parse(result.lines.join("\n"));
   const parser = new RefParser();
   const derefd = handleRootReference(cloneDeep(returnJSON));
-  const dereferenced = await parser.dereference(derefd, { dereference: { circular: "ignore" } });
+  const dereferenced = await parser.dereference(derefd, {
+    dereference: {
+      circular: "ignore",
+      onDereference() {
+        // no op
+      },
+    },
+  });
   // if we have circular references we're kinda screwed, i think
   delete dereferenced.definitions;
   return dereferenced;

@@ -1,7 +1,6 @@
 import { describe, test } from "vitest";
 import { generateSpec } from "../src";
-import { parameterizedUrlHar } from "./test-utils";
-import OpenAPISchemaValidator from "openapi-schema-validator";
+import { OpenAPISchemaValidator, parameterizedUrlHar } from "./test-utils";
 
 const har = parameterizedUrlHar();
 const validator = new OpenAPISchemaValidator({
