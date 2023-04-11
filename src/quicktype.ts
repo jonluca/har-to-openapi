@@ -2,7 +2,7 @@ import type { TargetLanguage } from "quicktype-core/dist/TargetLanguage";
 import type { JSONSchema } from "@apidevtools/json-schema-ref-parser";
 import RefParser from "@apidevtools/json-schema-ref-parser";
 import { InputData, jsonInputForTargetLanguage, quicktype } from "quicktype-core";
-import { cloneDeep } from "lodash-es";
+import { cloneDeep } from "lodash";
 
 /**
  * This is a hotfix and really only a partial solution as it does not cover all cases.
@@ -67,9 +67,6 @@ export const quicktypeJSON = async (
   const dereferenced = await parser.dereference(derefd, {
     dereference: {
       circular: "ignore",
-      onDereference() {
-        // no op
-      },
     },
   });
   // if we have circular references we're kinda screwed, i think

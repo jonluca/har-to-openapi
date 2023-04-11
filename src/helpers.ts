@@ -11,7 +11,7 @@ import type {
 import type { Content, Cookie, Header, PostData, PostDataParams, QueryString, Response } from "har-format";
 import toOpenApiSchema from "@openapi-contrib/json-schema-to-openapi-schema";
 import { quicktypeJSON } from "./quicktype";
-import { camelCase, startCase, uniqBy } from "lodash-es";
+import { camelCase, startCase, uniqBy } from "lodash";
 import { shouldFilterHeader } from "./utils/headers";
 import { URLSearchParams } from "url";
 import { getCookieSecurityName, getTypenameFromPath } from "./utils/string";

@@ -13,7 +13,7 @@ import YAML from "js-yaml";
 import sortJson from "sort-json";
 import { addMethod, addQueryStringParams, addRequestHeaders, getBody, getResponseBody, getSecurity } from "./helpers";
 import type { HarToOpenAPIConfig, HarToOpenAPISpec, InternalConfig } from "./types";
-import { cloneDeep, groupBy } from "lodash-es";
+import { cloneDeep, groupBy } from "lodash";
 import { addResponse } from "./utils/baseResponse";
 import { isStandardMethod } from "./utils/methods";
 import { DEFAULT_AUTH_HEADERS } from "./utils/headers";

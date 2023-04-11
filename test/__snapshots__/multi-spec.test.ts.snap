@@ -1,4 +1,4 @@
-// Vitest Snapshot v1
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`Spec generator > Returns one spec for a har with two domains and a callback filter 1`] = `
 [
