@@ -34,7 +34,7 @@ const har = {
       {
         index: 0,
         request: {
-          method: "CUSTOM",
+          method: "GET",
           url: "http://test.loadimpact.com/login",
           headers: [
             {
