@@ -58,7 +58,7 @@ const har = {
   },
 };
 
-const openapi = await generateSpec(har);
+const openapi = await generateSpec(har, { relaxedMethods: true });
 const { spec, yamlSpec } = openapi;
 // spec = { ... } openapi spec schema document
 // yamlSpec = string, "info: ..."
