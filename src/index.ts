@@ -93,6 +93,7 @@ const generateSpecs = async <T extends Har>(har: T, config?: HarToOpenAPIConfig)
     logErrors,
     attemptToParameterizeUrl,
     dropPathsWithoutSuccessfulResponse,
+    pathReplace,
   } = internalConfig;
 
   const groupedByHostname = groupBy(har.log.entries, (entry: Entry) => {
@@ -126,6 +127,12 @@ const generateSpecs = async <T extends Har>(har: T, config?: HarToOpenAPIConfig)
 
           // filter and collapse path urls
           const urlObj = new URL(url);
+
+          if (pathReplace) {
+            for (const key in pathReplace) {
+              urlObj.pathname = urlObj.pathname.replace(new RegExp(key, "g"), pathReplace[key]);
+            }
+          }
 
           let urlPath = urlObj.pathname;
           let pathParams: ParameterObject[] = [];
