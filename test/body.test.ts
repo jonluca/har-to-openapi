@@ -1,15 +1,20 @@
 import { describe, test } from "vitest";
 import { generateSpec } from "../src";
-import { formDataHar, invalidJson, sameEndpointDiffPayloads, securityHar } from "./test-utils";
+import { formDataHar, htmlHar, invalidJson, sameEndpointDiffPayloads, securityHar } from "./test-utils";
 import { getBody } from "../src/helpers";
 
 const invalidHar = invalidJson();
 const har = sameEndpointDiffPayloads();
 const securityHeader = securityHar();
+const html = htmlHar();
 
 describe("Body and header tests", async () => {
   test(`Doesn't crash on invalid json`, async ({ expect }) => {
     const data = await generateSpec(invalidHar, { filterStandardHeaders: true });
+    expect(data).toBeDefined();
+  });
+  test("Parses normal html properly", async ({ expect }) => {
+    const data = await generateSpec(html, { filterStandardHeaders: true });
     expect(data).toBeDefined();
   });
   test(`Merges bodies to same endpoint`, async ({ expect }) => {

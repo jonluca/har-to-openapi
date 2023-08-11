@@ -15,6 +15,7 @@ import { camelCase, startCase, uniqBy } from "lodash";
 import { shouldFilterHeader } from "./utils/headers";
 import { URLSearchParams } from "url";
 import { getCookieSecurityName, getTypenameFromPath } from "./utils/string";
+import MIMEType from "whatwg-mimetype";
 
 export const addMethod = (method: string, url: URL, config: InternalConfig): OperationObject => {
   const path = url.pathname;
@@ -168,6 +169,25 @@ const getFormData = (postData: PostData | Content): SchemaObject | undefined => 
     return mapParams(params);
   }
 };
+const isBinaryMimeType = (mimeType: MIMEType): boolean => {
+  return (
+    ["image", "audio", "video"].includes(mimeType.type) ||
+    [
+      "octet-stream",
+      "x-octet-stream",
+      "pdf",
+      "png",
+      "jpeg",
+      "msword",
+      "vnd.ms-excel",
+      "vnd.ms-powerpoint",
+      "zip",
+      "rar",
+      "x-tar",
+      "x-7z-compressed",
+    ].includes(mimeType.subtype)
+  );
+};
 
 export const getBody = async (
   postData: PostData | Content | undefined,
@@ -195,48 +215,92 @@ export const getBody = async (
     },
   } as Parameters<typeof toOpenApiSchema>[1];
   if (postData && text !== undefined) {
-    const mimeTypeWithoutExtras = postData.mimeType.split(";")[0];
-    const string = mimeTypeWithoutExtras?.split("/").filter(Boolean);
-    const mime = string.pop();
-    // We run the risk of circular references here
+    const mimeType = new MIMEType(postData.mimeType);
+    const mimeEssence = mimeType.essence;
+    const mime = mimeType.subtype;
+
+    // do nothing on json parse failures - just take the mime type and say its a string
+    const isBase64Encoded = "encoding" in postData && (<any>postData).encoding == "base64";
+    const isBinary = isBinaryMimeType(mimeType);
+    const baseSchemaFallback = { type: "string", format: isBase64Encoded || isBinary ? "binary" : undefined };
+
+    // first check for binary types
+    const tryParseJson = async () => {
+      const data = JSON.parse(isBase64Encoded ? Buffer.from(text, "base64").toString() : text);
+      examples.push(JSON.stringify(data));
+      const typeName = camelCase([getTypenameFromPath(urlPath), method, "request"].join(" "));
+      const jsonSchema = await quicktypeJSON("schema", typeName, examples);
+      const schema = await toOpenApiSchema(jsonSchema, options);
+      return { schema, data };
+    };
+    if (isBinary) {
+      if (config.relaxedContentTypeJsonParse) {
+        try {
+          const { schema, data } = await tryParseJson();
+          param.content[mimeEssence] = {
+            schema,
+            example: data,
+          };
+          return param;
+        } catch (err) {
+          // continue
+        }
+      }
+      param.content[mimeEssence] = {
+        schema: baseSchemaFallback,
+      };
+      return param;
+    }
+    // We run the risk of circular references down below
     const mimeLower = mime!.toLocaleLowerCase();
     switch (mimeLower) {
       case "form-data":
       case "x-www-form-urlencoded":
         const formSchema = getFormData(postData);
         if (formSchema) {
-          // @ts-ignore
           const schema = await toOpenApiSchema(formSchema, options);
           if (schema) {
-            param.content[mimeTypeWithoutExtras] = {
+            param.content[mimeEssence] = {
               schema,
             };
           }
         }
         break;
       // try and parse plain and text as json as well
+      case "image":
+      case "audio":
+      case "video": {
+        param.content[mimeEssence] = {
+          schema: baseSchemaFallback,
+        };
+        break;
+      }
       case "plain":
       case "text":
       case "json":
-      default:
-        if (mimeLower === "json" || config?.relaxedContentTypeJsonParse) {
+      default: {
+        if (mimeLower === "json" || config.relaxedContentTypeJsonParse) {
           try {
-            const isBase64Encoded = "encoding" in postData && (<any>postData).encoding == "base64";
-            const data = JSON.parse(isBase64Encoded ? Buffer.from(text, "base64").toString() : text);
-            examples.push(JSON.stringify(data));
-            const typeName = camelCase([getTypenameFromPath(urlPath), method, "request"].join(" "));
-            const jsonSchema = await quicktypeJSON("schema", typeName, examples);
-            const schema = await toOpenApiSchema(jsonSchema, options);
-            param.content[mimeTypeWithoutExtras] = {
-              // @ts-ignore
+            const { schema, data } = await tryParseJson();
+            param.content[mimeEssence] = {
               schema,
               example: data,
             };
           } catch (err) {
-            // do nothing on json parse failures
+            param.content[mimeEssence] = {
+              schema: baseSchemaFallback,
+              example: config.includeNonJsonExampleResponses ? text : undefined,
+            };
           }
         }
         break;
+      }
+    }
+    if (!param.content[mimeEssence]) {
+      param.content[mimeEssence] = {
+        schema: baseSchemaFallback,
+        example: config.includeNonJsonExampleResponses ? text : undefined,
+      };
     }
   } else {
     const multipartMimeType = "multipart/form-data";

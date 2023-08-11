@@ -10127,7 +10127,15 @@ exports[`Snapshots and validity > Sample API ericduran.github.io.har matches sna
           ],
           "responses": {
             "200": {
-              "content": {},
+              "content": {
+                "text/html": {
+                  "example": undefined,
+                  "schema": {
+                    "format": undefined,
+                    "type": "string",
+                  },
+                },
+              },
               "description": "",
               "headers": {
                 "X-Cache": {
@@ -10184,7 +10192,14 @@ exports[`Snapshots and validity > Sample API ericduran.github.io.har matches sna
           ],
           "responses": {
             "200": {
-              "content": {},
+              "content": {
+                "image/png": {
+                  "schema": {
+                    "format": "binary",
+                    "type": "string",
+                  },
+                },
+              },
               "description": "",
               "headers": {
                 "X-Cache": {
@@ -10241,7 +10256,14 @@ exports[`Snapshots and validity > Sample API ericduran.github.io.har matches sna
           ],
           "responses": {
             "200": {
-              "content": {},
+              "content": {
+                "image/png": {
+                  "schema": {
+                    "format": "binary",
+                    "type": "string",
+                  },
+                },
+              },
               "description": "",
               "headers": {
                 "X-Cache": {
@@ -10298,7 +10320,14 @@ exports[`Snapshots and validity > Sample API ericduran.github.io.har matches sna
           ],
           "responses": {
             "200": {
-              "content": {},
+              "content": {
+                "image/png": {
+                  "schema": {
+                    "format": "binary",
+                    "type": "string",
+                  },
+                },
+              },
               "description": "",
               "headers": {
                 "X-Cache": {
@@ -10355,7 +10384,14 @@ exports[`Snapshots and validity > Sample API ericduran.github.io.har matches sna
           ],
           "responses": {
             "200": {
-              "content": {},
+              "content": {
+                "image/png": {
+                  "schema": {
+                    "format": "binary",
+                    "type": "string",
+                  },
+                },
+              },
               "description": "",
               "headers": {
                 "X-Cache": {
@@ -10412,7 +10448,14 @@ exports[`Snapshots and validity > Sample API ericduran.github.io.har matches sna
           ],
           "responses": {
             "200": {
-              "content": {},
+              "content": {
+                "image/png": {
+                  "schema": {
+                    "format": "binary",
+                    "type": "string",
+                  },
+                },
+              },
               "description": "",
               "headers": {
                 "X-Cache": {
@@ -10469,7 +10512,14 @@ exports[`Snapshots and validity > Sample API ericduran.github.io.har matches sna
           ],
           "responses": {
             "200": {
-              "content": {},
+              "content": {
+                "image/png": {
+                  "schema": {
+                    "format": "binary",
+                    "type": "string",
+                  },
+                },
+              },
               "description": "",
               "headers": {
                 "X-Cache": {
@@ -10526,7 +10576,14 @@ exports[`Snapshots and validity > Sample API ericduran.github.io.har matches sna
           ],
           "responses": {
             "200": {
-              "content": {},
+              "content": {
+                "image/png": {
+                  "schema": {
+                    "format": "binary",
+                    "type": "string",
+                  },
+                },
+              },
               "description": "",
               "headers": {
                 "X-Cache": {
@@ -10583,7 +10640,14 @@ exports[`Snapshots and validity > Sample API ericduran.github.io.har matches sna
           ],
           "responses": {
             "200": {
-              "content": {},
+              "content": {
+                "image/png": {
+                  "schema": {
+                    "format": "binary",
+                    "type": "string",
+                  },
+                },
+              },
               "description": "",
               "headers": {
                 "X-Cache": {
@@ -10640,7 +10704,15 @@ exports[`Snapshots and validity > Sample API ericduran.github.io.har matches sna
           ],
           "responses": {
             "200": {
-              "content": {},
+              "content": {
+                "text/css": {
+                  "example": undefined,
+                  "schema": {
+                    "format": undefined,
+                    "type": "string",
+                  },
+                },
+              },
               "description": "",
               "headers": {
                 "X-Cache": {
@@ -10697,7 +10769,15 @@ exports[`Snapshots and validity > Sample API ericduran.github.io.har matches sna
           ],
           "responses": {
             "200": {
-              "content": {},
+              "content": {
+                "text/css": {
+                  "example": undefined,
+                  "schema": {
+                    "format": undefined,
+                    "type": "string",
+                  },
+                },
+              },
               "description": "",
               "headers": {
                 "X-Cache": {
@@ -10754,7 +10834,15 @@ exports[`Snapshots and validity > Sample API ericduran.github.io.har matches sna
           ],
           "responses": {
             "200": {
-              "content": {},
+              "content": {
+                "text/css": {
+                  "example": undefined,
+                  "schema": {
+                    "format": undefined,
+                    "type": "string",
+                  },
+                },
+              },
               "description": "",
               "headers": {
                 "X-Cache": {
@@ -10811,7 +10899,15 @@ exports[`Snapshots and validity > Sample API ericduran.github.io.har matches sna
           ],
           "responses": {
             "200": {
-              "content": {},
+              "content": {
+                "text/css": {
+                  "example": undefined,
+                  "schema": {
+                    "format": undefined,
+                    "type": "string",
+                  },
+                },
+              },
               "description": "",
               "headers": {
                 "X-Cache": {
@@ -10868,7 +10964,15 @@ exports[`Snapshots and validity > Sample API ericduran.github.io.har matches sna
           ],
           "responses": {
             "200": {
-              "content": {},
+              "content": {
+                "text/css": {
+                  "example": undefined,
+                  "schema": {
+                    "format": undefined,
+                    "type": "string",
+                  },
+                },
+              },
               "description": "",
               "headers": {
                 "X-Cache": {
@@ -10925,7 +11029,15 @@ exports[`Snapshots and validity > Sample API ericduran.github.io.har matches sna
           ],
           "responses": {
             "200": {
-              "content": {},
+              "content": {
+                "text/css": {
+                  "example": undefined,
+                  "schema": {
+                    "format": undefined,
+                    "type": "string",
+                  },
+                },
+              },
               "description": "",
               "headers": {
                 "X-Cache": {
@@ -10982,7 +11094,15 @@ exports[`Snapshots and validity > Sample API ericduran.github.io.har matches sna
           ],
           "responses": {
             "200": {
-              "content": {},
+              "content": {
+                "text/css": {
+                  "example": undefined,
+                  "schema": {
+                    "format": undefined,
+                    "type": "string",
+                  },
+                },
+              },
               "description": "",
               "headers": {
                 "X-Cache": {
@@ -11039,7 +11159,15 @@ exports[`Snapshots and validity > Sample API ericduran.github.io.har matches sna
           ],
           "responses": {
             "200": {
-              "content": {},
+              "content": {
+                "text/css": {
+                  "example": undefined,
+                  "schema": {
+                    "format": undefined,
+                    "type": "string",
+                  },
+                },
+              },
               "description": "",
               "headers": {
                 "X-Cache": {
@@ -11096,7 +11224,15 @@ exports[`Snapshots and validity > Sample API ericduran.github.io.har matches sna
           ],
           "responses": {
             "200": {
-              "content": {},
+              "content": {
+                "text/css": {
+                  "example": undefined,
+                  "schema": {
+                    "format": undefined,
+                    "type": "string",
+                  },
+                },
+              },
               "description": "",
               "headers": {
                 "X-Cache": {
@@ -11153,7 +11289,15 @@ exports[`Snapshots and validity > Sample API ericduran.github.io.har matches sna
           ],
           "responses": {
             "200": {
-              "content": {},
+              "content": {
+                "text/css": {
+                  "example": undefined,
+                  "schema": {
+                    "format": undefined,
+                    "type": "string",
+                  },
+                },
+              },
               "description": "",
               "headers": {
                 "X-Cache": {
@@ -11210,7 +11354,15 @@ exports[`Snapshots and validity > Sample API ericduran.github.io.har matches sna
           ],
           "responses": {
             "200": {
-              "content": {},
+              "content": {
+                "text/css": {
+                  "example": undefined,
+                  "schema": {
+                    "format": undefined,
+                    "type": "string",
+                  },
+                },
+              },
               "description": "",
               "headers": {
                 "X-Cache": {
@@ -11267,7 +11419,15 @@ exports[`Snapshots and validity > Sample API ericduran.github.io.har matches sna
           ],
           "responses": {
             "200": {
-              "content": {},
+              "content": {
+                "application/x-javascript": {
+                  "example": undefined,
+                  "schema": {
+                    "format": undefined,
+                    "type": "string",
+                  },
+                },
+              },
               "description": "",
               "headers": {
                 "X-Cache": {
@@ -11324,7 +11484,15 @@ exports[`Snapshots and validity > Sample API ericduran.github.io.har matches sna
           ],
           "responses": {
             "200": {
-              "content": {},
+              "content": {
+                "application/x-javascript": {
+                  "example": undefined,
+                  "schema": {
+                    "format": undefined,
+                    "type": "string",
+                  },
+                },
+              },
               "description": "",
               "headers": {
                 "X-Cache": {
@@ -11381,7 +11549,15 @@ exports[`Snapshots and validity > Sample API ericduran.github.io.har matches sna
           ],
           "responses": {
             "200": {
-              "content": {},
+              "content": {
+                "application/x-javascript": {
+                  "example": undefined,
+                  "schema": {
+                    "format": undefined,
+                    "type": "string",
+                  },
+                },
+              },
               "description": "",
               "headers": {
                 "X-Cache": {
@@ -11438,7 +11614,15 @@ exports[`Snapshots and validity > Sample API ericduran.github.io.har matches sna
           ],
           "responses": {
             "200": {
-              "content": {},
+              "content": {
+                "application/x-javascript": {
+                  "example": undefined,
+                  "schema": {
+                    "format": undefined,
+                    "type": "string",
+                  },
+                },
+              },
               "description": "",
               "headers": {
                 "X-Cache": {
@@ -11495,7 +11679,15 @@ exports[`Snapshots and validity > Sample API ericduran.github.io.har matches sna
           ],
           "responses": {
             "200": {
-              "content": {},
+              "content": {
+                "application/x-javascript": {
+                  "example": undefined,
+                  "schema": {
+                    "format": undefined,
+                    "type": "string",
+                  },
+                },
+              },
               "description": "",
               "headers": {
                 "X-Cache": {
@@ -11571,7 +11763,10 @@ paths:
             type: string
       responses:
         '200':
-          content: {}
+          content:
+            text/html:
+              schema:
+                type: string
           description: ''
           headers:
             X-Cache:
@@ -11616,7 +11811,11 @@ paths:
             type: string
       responses:
         '200':
-          content: {}
+          content:
+            image/png:
+              schema:
+                format: binary
+                type: string
           description: ''
           headers:
             X-Cache:
@@ -11661,7 +11860,11 @@ paths:
             type: string
       responses:
         '200':
-          content: {}
+          content:
+            image/png:
+              schema:
+                format: binary
+                type: string
           description: ''
           headers:
             X-Cache:
@@ -11706,7 +11909,11 @@ paths:
             type: string
       responses:
         '200':
-          content: {}
+          content:
+            image/png:
+              schema:
+                format: binary
+                type: string
           description: ''
           headers:
             X-Cache:
@@ -11751,7 +11958,11 @@ paths:
             type: string
       responses:
         '200':
-          content: {}
+          content:
+            image/png:
+              schema:
+                format: binary
+                type: string
           description: ''
           headers:
             X-Cache:
@@ -11796,7 +12007,11 @@ paths:
             type: string
       responses:
         '200':
-          content: {}
+          content:
+            image/png:
+              schema:
+                format: binary
+                type: string
           description: ''
           headers:
             X-Cache:
@@ -11841,7 +12056,11 @@ paths:
             type: string
       responses:
         '200':
-          content: {}
+          content:
+            image/png:
+              schema:
+                format: binary
+                type: string
           description: ''
           headers:
             X-Cache:
@@ -11886,7 +12105,11 @@ paths:
             type: string
       responses:
         '200':
-          content: {}
+          content:
+            image/png:
+              schema:
+                format: binary
+                type: string
           description: ''
           headers:
             X-Cache:
@@ -11931,7 +12154,11 @@ paths:
             type: string
       responses:
         '200':
-          content: {}
+          content:
+            image/png:
+              schema:
+                format: binary
+                type: string
           description: ''
           headers:
             X-Cache:
@@ -11976,7 +12203,10 @@ paths:
             type: string
       responses:
         '200':
-          content: {}
+          content:
+            text/css:
+              schema:
+                type: string
           description: ''
           headers:
             X-Cache:
@@ -12021,7 +12251,10 @@ paths:
             type: string
       responses:
         '200':
-          content: {}
+          content:
+            text/css:
+              schema:
+                type: string
           description: ''
           headers:
             X-Cache:
@@ -12066,7 +12299,10 @@ paths:
             type: string
       responses:
         '200':
-          content: {}
+          content:
+            text/css:
+              schema:
+                type: string
           description: ''
           headers:
             X-Cache:
@@ -12111,7 +12347,10 @@ paths:
             type: string
       responses:
         '200':
-          content: {}
+          content:
+            text/css:
+              schema:
+                type: string
           description: ''
           headers:
             X-Cache:
@@ -12156,7 +12395,10 @@ paths:
             type: string
       responses:
         '200':
-          content: {}
+          content:
+            text/css:
+              schema:
+                type: string
           description: ''
           headers:
             X-Cache:
@@ -12201,7 +12443,10 @@ paths:
             type: string
       responses:
         '200':
-          content: {}
+          content:
+            text/css:
+              schema:
+                type: string
           description: ''
           headers:
             X-Cache:
@@ -12246,7 +12491,10 @@ paths:
             type: string
       responses:
         '200':
-          content: {}
+          content:
+            text/css:
+              schema:
+                type: string
           description: ''
           headers:
             X-Cache:
@@ -12291,7 +12539,10 @@ paths:
             type: string
       responses:
         '200':
-          content: {}
+          content:
+            text/css:
+              schema:
+                type: string
           description: ''
           headers:
             X-Cache:
@@ -12336,7 +12587,10 @@ paths:
             type: string
       responses:
         '200':
-          content: {}
+          content:
+            text/css:
+              schema:
+                type: string
           description: ''
           headers:
             X-Cache:
@@ -12381,7 +12635,10 @@ paths:
             type: string
       responses:
         '200':
-          content: {}
+          content:
+            text/css:
+              schema:
+                type: string
           description: ''
           headers:
             X-Cache:
@@ -12426,7 +12683,10 @@ paths:
             type: string
       responses:
         '200':
-          content: {}
+          content:
+            text/css:
+              schema:
+                type: string
           description: ''
           headers:
             X-Cache:
@@ -12471,7 +12731,10 @@ paths:
             type: string
       responses:
         '200':
-          content: {}
+          content:
+            application/x-javascript:
+              schema:
+                type: string
           description: ''
           headers:
             X-Cache:
@@ -12516,7 +12779,10 @@ paths:
             type: string
       responses:
         '200':
-          content: {}
+          content:
+            application/x-javascript:
+              schema:
+                type: string
           description: ''
           headers:
             X-Cache:
@@ -12561,7 +12827,10 @@ paths:
             type: string
       responses:
         '200':
-          content: {}
+          content:
+            application/x-javascript:
+              schema:
+                type: string
           description: ''
           headers:
             X-Cache:
@@ -12606,7 +12875,10 @@ paths:
             type: string
       responses:
         '200':
-          content: {}
+          content:
+            application/x-javascript:
+              schema:
+                type: string
           description: ''
           headers:
             X-Cache:
@@ -12651,7 +12923,10 @@ paths:
             type: string
       responses:
         '200':
-          content: {}
+          content:
+            application/x-javascript:
+              schema:
+                type: string
           description: ''
           headers:
             X-Cache:
@@ -13125,6 +13400,75 @@ components:
 }
 `;
 
+exports[`Snapshots and validity > Sample API html.har matches snapshot 1`] = `
+{
+  "domain": "www.google.com",
+  "spec": {
+    "info": {
+      "description": "OpenAPI spec generated from HAR data for www.google.com on 2022-01-01T00:00:00.000Z",
+      "title": "HarToOpenApi",
+      "version": "1.0.0",
+    },
+    "openapi": "3.0.0",
+    "paths": {
+      "/": {
+        "get": {
+          "description": "",
+          "operationId": "get",
+          "parameters": [],
+          "responses": {
+            "200": {
+              "content": {
+                "text/html": {
+                  "example": undefined,
+                  "schema": {
+                    "format": undefined,
+                    "type": "string",
+                  },
+                },
+              },
+              "description": "",
+            },
+          },
+          "summary": "Get",
+        },
+        "parameters": [],
+      },
+    },
+    "servers": [
+      {
+        "url": "https://www.google.com",
+      },
+    ],
+  },
+  "yamlSpec": "openapi: 3.0.0
+info:
+  title: HarToOpenApi
+  version: 1.0.0
+  description: >-
+    OpenAPI spec generated from HAR data for www.google.com on
+    2022-01-01T00:00:00.000Z
+paths:
+  /:
+    get:
+      description: ''
+      operationId: get
+      parameters: []
+      responses:
+        '200':
+          content:
+            text/html:
+              schema:
+                type: string
+          description: ''
+      summary: Get
+    parameters: []
+servers:
+  - url: /
+",
+}
+`;
+
 exports[`Snapshots and validity > Sample API invalid-url.har matches snapshot 1`] = `
 {
   "domain": undefined,
@@ -13291,7 +13635,15 @@ exports[`Snapshots and validity > Sample API no-success-status.har matches snaps
           "operationId": "postApiUsersQueriesGetCurrentUser",
           "parameters": [],
           "requestBody": {
-            "content": {},
+            "content": {
+              "application/json": {
+                "example": undefined,
+                "schema": {
+                  "format": undefined,
+                  "type": "string",
+                },
+              },
+            },
             "required": true,
           },
           "responses": {
@@ -13324,7 +13676,10 @@ paths:
       operationId: postApiUsersQueriesGetCurrentUser
       parameters: []
       requestBody:
-        content: {}
+        content:
+          application/json:
+            schema:
+              type: string
         required: true
       responses:
         '404':
@@ -13722,12 +14077,28 @@ exports[`Snapshots and validity > Sample API post-json-invalid.har matches snaps
             },
           ],
           "requestBody": {
-            "content": {},
+            "content": {
+              "application/json": {
+                "example": undefined,
+                "schema": {
+                  "format": undefined,
+                  "type": "string",
+                },
+              },
+            },
             "required": true,
           },
           "responses": {
             "200": {
-              "content": {},
+              "content": {
+                "application/json": {
+                  "example": undefined,
+                  "schema": {
+                    "format": undefined,
+                    "type": "string",
+                  },
+                },
+              },
               "description": "",
             },
           },
@@ -13775,11 +14146,17 @@ paths:
             example: proposalHunt_sAntiCsrfToken=bMBNEsvnocdYBmF8YVzA9-tCXHyvHhpq;
             type: string
       requestBody:
-        content: {}
+        content:
+          application/json:
+            schema:
+              type: string
         required: true
       responses:
         '200':
-          content: {}
+          content:
+            application/json:
+              schema:
+                type: string
           description: ''
       security:
         - Cookie: []
@@ -113359,7 +113736,15 @@ exports[`Snapshots and validity > Sample API www.ozon.ru.har matches snapshot 1`
           ],
           "responses": {
             "200": {
-              "content": {},
+              "content": {
+                "text/html": {
+                  "example": undefined,
+                  "schema": {
+                    "format": undefined,
+                    "type": "string",
+                  },
+                },
+              },
               "description": "",
               "headers": {
                 "cf-cache-status": {
@@ -113441,7 +113826,14 @@ exports[`Snapshots and validity > Sample API www.ozon.ru.har matches snapshot 1`
           "parameters": [],
           "responses": {
             "200": {
-              "content": {},
+              "content": {
+                "image/x-icon": {
+                  "schema": {
+                    "format": "binary",
+                    "type": "string",
+                  },
+                },
+              },
               "description": "",
               "headers": {
                 "cf-cache-status": {
@@ -114280,7 +114672,10 @@ paths:
             type: string
       responses:
         '200':
-          content: {}
+          content:
+            text/html:
+              schema:
+                type: string
           description: ''
           headers:
             cf-cache-status:
@@ -114339,7 +114734,11 @@ paths:
       parameters: []
       responses:
         '200':
-          content: {}
+          content:
+            image/x-icon:
+              schema:
+                format: binary
+                type: string
           description: ''
           headers:
             cf-cache-status:

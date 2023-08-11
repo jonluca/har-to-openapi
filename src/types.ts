@@ -24,6 +24,9 @@ export interface HarToOpenAPIConfig {
   tags?: ([string] | [string, string] | string)[] | ((url: string) => string | string[] | void);
   /** response mime types to filter for */
   mimeTypes?: string[];
+  /** include examples in response objects for non-json text content
+   * * @defaultValue `false` */
+  includeNonJsonExampleResponses?: boolean;
   /** known security headers for this har, to add to security field in openapi (e.g. "X-Auth-Token") */
   securityHeaders?: string[];
   /** Whether to filter out all standard headers from the parameter list in openapi
