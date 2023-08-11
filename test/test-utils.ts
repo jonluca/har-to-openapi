@@ -39,6 +39,7 @@ export const securityHar = () => readHar("security.har");
 export const basePath = () => readHar("base-path.har");
 export const invalidJson = () => readHar("post-json-invalid.har");
 export const htmlHar = () => readHar("html.har");
+export const binaryHar = () => readHar("binary-json.har");
 export const sameEndpointDiffPayloads = () => readHar("post-same-endpoint-diff-bodies.har");
 export const customMethod = () => readHar("custom-method.har");
 

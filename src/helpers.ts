@@ -223,6 +223,7 @@ export const getBody = async (
     const isBase64Encoded = "encoding" in postData && (<any>postData).encoding == "base64";
     const isBinary = isBinaryMimeType(mimeType);
     const baseSchemaFallback = { type: "string", format: isBase64Encoded || isBinary ? "binary" : undefined };
+    const baseExample = config.includeNonJsonExampleResponses ? text : undefined;
 
     // first check for binary types
     const tryParseJson = async () => {
@@ -266,15 +267,6 @@ export const getBody = async (
           }
         }
         break;
-      // try and parse plain and text as json as well
-      case "image":
-      case "audio":
-      case "video": {
-        param.content[mimeEssence] = {
-          schema: baseSchemaFallback,
-        };
-        break;
-      }
       case "plain":
       case "text":
       case "json":
@@ -289,7 +281,7 @@ export const getBody = async (
           } catch (err) {
             param.content[mimeEssence] = {
               schema: baseSchemaFallback,
-              example: config.includeNonJsonExampleResponses ? text : undefined,
+              example: baseExample,
             };
           }
         }
@@ -299,7 +291,7 @@ export const getBody = async (
     if (!param.content[mimeEssence]) {
       param.content[mimeEssence] = {
         schema: baseSchemaFallback,
-        example: config.includeNonJsonExampleResponses ? text : undefined,
+        example: baseExample,
       };
     }
   } else {

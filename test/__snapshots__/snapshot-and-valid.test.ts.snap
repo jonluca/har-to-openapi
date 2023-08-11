@@ -10062,6 +10062,106 @@ servers:
 }
 `;
 
+exports[`Snapshots and validity > Sample API binary-json.har matches snapshot 1`] = `
+{
+  "domain": "www.google.com",
+  "spec": {
+    "info": {
+      "description": "OpenAPI spec generated from HAR data for www.google.com on 2022-01-01T00:00:00.000Z",
+      "title": "HarToOpenApi",
+      "version": "1.0.0",
+    },
+    "openapi": "3.0.0",
+    "paths": {
+      "/": {
+        "get": {
+          "description": "",
+          "operationId": "get",
+          "parameters": [],
+          "responses": {
+            "200": {
+              "content": {
+                "application/octet-stream": {
+                  "example": {
+                    "age": 30,
+                    "car": null,
+                    "name": "John",
+                  },
+                  "schema": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "age": {
+                        "type": "integer",
+                      },
+                      "car": {
+                        "nullable": true,
+                      },
+                      "name": {
+                        "type": "string",
+                      },
+                    },
+                    "required": [],
+                    "title": "GetRequest",
+                    "type": "object",
+                  },
+                },
+              },
+              "description": "",
+            },
+          },
+          "summary": "Get",
+        },
+        "parameters": [],
+      },
+    },
+    "servers": [
+      {
+        "url": "https://www.google.com",
+      },
+    ],
+  },
+  "yamlSpec": "openapi: 3.0.0
+info:
+  title: HarToOpenApi
+  version: 1.0.0
+  description: >-
+    OpenAPI spec generated from HAR data for www.google.com on
+    2022-01-01T00:00:00.000Z
+paths:
+  /:
+    get:
+      description: ''
+      operationId: get
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/octet-stream:
+              example:
+                age: 30
+                car: null
+                name: John
+              schema:
+                additionalProperties: false
+                properties:
+                  age:
+                    type: integer
+                  car:
+                    nullable: true
+                  name:
+                    type: string
+                required: []
+                title: GetRequest
+                type: object
+          description: ''
+      summary: Get
+    parameters: []
+servers:
+  - url: /
+",
+}
+`;
+
 exports[`Snapshots and validity > Sample API custom-method.har matches snapshot 1`] = `
 {
   "domain": undefined,
