@@ -13936,6 +13936,222 @@ components:
 }
 `;
 
+exports[`Snapshots and validity > Sample API pathReplace.har matches snapshot 1`] = `
+{
+  "domain": "google.com",
+  "spec": {
+    "info": {
+      "description": "OpenAPI spec generated from HAR data for google.com on 2022-01-01T00:00:00.000Z",
+      "title": "HarToOpenApi",
+      "version": "1.0.0",
+    },
+    "openapi": "3.0.0",
+    "paths": {
+      "/login/id/9zkhruw7w1zMWOC1J2SGSti2Jf8j": {
+        "parameters": [],
+        "post": {
+          "description": "",
+          "operationId": "postLoginId9Zkhruw7W1ZMwoc1J2SgSti2Jf8J",
+          "parameters": [],
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "meta": {},
+                  "params": {
+                    "test": "true",
+                  },
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "meta": {
+                      "additionalProperties": false,
+                      "title": "Meta",
+                      "type": "object",
+                    },
+                    "params": {
+                      "additionalProperties": false,
+                      "properties": {
+                        "test": {
+                          "format": "boolean",
+                          "type": "string",
+                        },
+                      },
+                      "required": [],
+                      "title": "Params",
+                      "type": "object",
+                    },
+                  },
+                  "required": [],
+                  "title": "LoginId9Zkhruw7W1ZMwoc1J2SgSti2Jf8JPostRequest",
+                  "type": "object",
+                },
+              },
+            },
+            "required": true,
+          },
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "example": {
+                    "error": null,
+                    "meta": {},
+                    "result": {
+                      "email": "luis.tejeda@company.com",
+                      "id": "9zkhruw7w1zMWOC1J2SGSti2Jf8j",
+                      "name": "Luis Tejeda Sanchez",
+                      "role": "USER",
+                      "test": "true",
+                    },
+                  },
+                  "schema": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "error": {
+                        "nullable": true,
+                      },
+                      "meta": {
+                        "additionalProperties": false,
+                        "title": "Meta",
+                        "type": "object",
+                      },
+                      "result": {
+                        "additionalProperties": false,
+                        "properties": {
+                          "email": {
+                            "type": "string",
+                          },
+                          "id": {
+                            "type": "string",
+                          },
+                          "name": {
+                            "type": "string",
+                          },
+                          "role": {
+                            "type": "string",
+                          },
+                          "test": {
+                            "format": "boolean",
+                            "type": "string",
+                          },
+                        },
+                        "required": [],
+                        "title": "Result",
+                        "type": "object",
+                      },
+                    },
+                    "required": [],
+                    "title": "LoginId9Zkhruw7W1ZMwoc1J2SgSti2Jf8JPostRequest",
+                    "type": "object",
+                  },
+                },
+              },
+              "description": "",
+            },
+          },
+          "summary": "Post Login Id 9 Zkhruw 7 W 1 Z MWOC 1 J 2 SG Sti 2 Jf 8 J",
+        },
+      },
+    },
+    "servers": [
+      {
+        "url": "https://google.com",
+      },
+    ],
+  },
+  "yamlSpec": "openapi: 3.0.0
+info:
+  title: HarToOpenApi
+  version: 1.0.0
+  description: >-
+    OpenAPI spec generated from HAR data for google.com on
+    2022-01-01T00:00:00.000Z
+paths:
+  /login/id/9zkhruw7w1zMWOC1J2SGSti2Jf8j:
+    parameters: []
+    post:
+      description: ''
+      operationId: postLoginId9Zkhruw7W1ZMwoc1J2SgSti2Jf8J
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            example:
+              meta: {}
+              params:
+                test: 'true'
+            schema:
+              additionalProperties: false
+              properties:
+                meta:
+                  additionalProperties: false
+                  title: Meta
+                  type: object
+                params:
+                  additionalProperties: false
+                  properties:
+                    test:
+                      format: boolean
+                      type: string
+                  required: []
+                  title: Params
+                  type: object
+              required: []
+              title: LoginId9Zkhruw7W1ZMwoc1J2SgSti2Jf8JPostRequest
+              type: object
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              example:
+                error: null
+                meta: {}
+                result:
+                  email: luis.tejeda@company.com
+                  id: 9zkhruw7w1zMWOC1J2SGSti2Jf8j
+                  name: Luis Tejeda Sanchez
+                  role: USER
+                  test: 'true'
+              schema:
+                additionalProperties: false
+                properties:
+                  error:
+                    nullable: true
+                  meta:
+                    additionalProperties: false
+                    title: Meta
+                    type: object
+                  result:
+                    additionalProperties: false
+                    properties:
+                      email:
+                        type: string
+                      id:
+                        type: string
+                      name:
+                        type: string
+                      role:
+                        type: string
+                      test:
+                        format: boolean
+                        type: string
+                    required: []
+                    title: Result
+                    type: object
+                required: []
+                title: LoginId9Zkhruw7W1ZMwoc1J2SgSti2Jf8JPostRequest
+                type: object
+          description: ''
+      summary: Post Login Id 9 Zkhruw 7 W 1 Z MWOC 1 J 2 SG Sti 2 Jf 8 J
+servers:
+  - url: /
+",
+}
+`;
+
 exports[`Snapshots and validity > Sample API post-data-conflict.har matches snapshot 1`] = `
 {
   "domain": "test.loadimpact.com",

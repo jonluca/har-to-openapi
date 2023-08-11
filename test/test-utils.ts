@@ -32,6 +32,7 @@ export const postDataConflict = () => readHar("post-data-conflict.har");
 export const loadImpact = () => readHar("load-impact.har");
 export const invalidUrl = () => readHar("invalid-url.har");
 export const parameterizedUrlHar = () => readHar("url.har");
+export const pathReplaceHar = () => readHar("pathReplace.har");
 export const formDataHar = () => readHar("formdata.har");
 export const noSuccessStatusHar = () => readHar("no-success-status.har");
 export const securityHar = () => readHar("security.har");

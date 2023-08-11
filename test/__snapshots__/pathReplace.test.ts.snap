@@ -1,0 +1,241 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`pathReplace URLs > Can parse pathReplace 1`] = `
+{
+  "domain": "google.com",
+  "spec": {
+    "info": {
+      "description": "OpenAPI spec generated from HAR data for google.com on 2022-01-01T00:00:00.000Z",
+      "title": "HarToOpenApi",
+      "version": "1.0.0",
+    },
+    "openapi": "3.0.0",
+    "paths": {
+      "/login/id/{uuid}": {
+        "parameters": [
+          {
+            "example": "6d554f25-b415-4f38-b990-a0efcea6fede",
+            "in": "path",
+            "name": "uuid",
+            "required": true,
+            "schema": {
+              "default": "6d554f25-b415-4f38-b990-a0efcea6fede",
+              "maxLength": 36,
+              "minLength": 36,
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+              "type": "string",
+            },
+          },
+        ],
+        "post": {
+          "description": "",
+          "operationId": "postLoginIdByUuid",
+          "parameters": [],
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "meta": {},
+                  "params": {
+                    "test": "true",
+                  },
+                },
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "meta": {
+                      "additionalProperties": false,
+                      "title": "Meta",
+                      "type": "object",
+                    },
+                    "params": {
+                      "additionalProperties": false,
+                      "properties": {
+                        "test": {
+                          "format": "boolean",
+                          "type": "string",
+                        },
+                      },
+                      "required": [],
+                      "title": "Params",
+                      "type": "object",
+                    },
+                  },
+                  "required": [],
+                  "title": "LoginIDUUIDPostRequest",
+                  "type": "object",
+                },
+              },
+            },
+            "required": true,
+          },
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "example": {
+                    "error": null,
+                    "meta": {},
+                    "result": {
+                      "email": "luis.tejeda@company.com",
+                      "id": "9zkhruw7w1zMWOC1J2SGSti2Jf8j",
+                      "name": "Luis Tejeda Sanchez",
+                      "role": "USER",
+                      "test": "true",
+                    },
+                  },
+                  "schema": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "error": {
+                        "nullable": true,
+                      },
+                      "meta": {
+                        "additionalProperties": false,
+                        "title": "Meta",
+                        "type": "object",
+                      },
+                      "result": {
+                        "additionalProperties": false,
+                        "properties": {
+                          "email": {
+                            "type": "string",
+                          },
+                          "id": {
+                            "type": "string",
+                          },
+                          "name": {
+                            "type": "string",
+                          },
+                          "role": {
+                            "type": "string",
+                          },
+                          "test": {
+                            "format": "boolean",
+                            "type": "string",
+                          },
+                        },
+                        "required": [],
+                        "title": "Result",
+                        "type": "object",
+                      },
+                    },
+                    "required": [],
+                    "title": "LoginIDUUIDPostRequest",
+                    "type": "object",
+                  },
+                },
+              },
+              "description": "",
+            },
+          },
+          "summary": "Post Login Id By UUID",
+        },
+      },
+    },
+    "servers": [
+      {
+        "url": "https://google.com",
+      },
+    ],
+  },
+  "yamlSpec": "openapi: 3.0.0
+info:
+  title: HarToOpenApi
+  version: 1.0.0
+  description: >-
+    OpenAPI spec generated from HAR data for google.com on
+    2022-01-01T00:00:00.000Z
+paths:
+  /login/id/{uuid}:
+    parameters:
+      - example: 6d554f25-b415-4f38-b990-a0efcea6fede
+        in: path
+        name: uuid
+        required: true
+        schema:
+          default: 6d554f25-b415-4f38-b990-a0efcea6fede
+          maxLength: 36
+          minLength: 36
+          pattern: ^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$
+          type: string
+    post:
+      description: ''
+      operationId: postLoginIdByUuid
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            example:
+              meta: {}
+              params:
+                test: 'true'
+            schema:
+              additionalProperties: false
+              properties:
+                meta:
+                  additionalProperties: false
+                  title: Meta
+                  type: object
+                params:
+                  additionalProperties: false
+                  properties:
+                    test:
+                      format: boolean
+                      type: string
+                  required: []
+                  title: Params
+                  type: object
+              required: []
+              title: LoginIDUUIDPostRequest
+              type: object
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              example:
+                error: null
+                meta: {}
+                result:
+                  email: luis.tejeda@company.com
+                  id: 9zkhruw7w1zMWOC1J2SGSti2Jf8j
+                  name: Luis Tejeda Sanchez
+                  role: USER
+                  test: 'true'
+              schema:
+                additionalProperties: false
+                properties:
+                  error:
+                    nullable: true
+                  meta:
+                    additionalProperties: false
+                    title: Meta
+                    type: object
+                  result:
+                    additionalProperties: false
+                    properties:
+                      email:
+                        type: string
+                      id:
+                        type: string
+                      name:
+                        type: string
+                      role:
+                        type: string
+                      test:
+                        format: boolean
+                        type: string
+                    required: []
+                    title: Result
+                    type: object
+                required: []
+                title: LoginIDUUIDPostRequest
+                type: object
+          description: ''
+      summary: Post Login Id By UUID
+servers:
+  - url: /
+",
+}
+`;

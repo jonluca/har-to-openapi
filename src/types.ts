@@ -51,6 +51,22 @@ export interface HarToOpenAPIConfig {
   /** when we encounter a path without a response or with a response that does not have 2xx, dont include it
    * @defaultValue `false` */
   dropPathsWithoutSuccessfulResponse?: boolean;
+  /** In the config file, you can set your API base path and any number of search/replace commands. For each parameter in
+   * ```ts
+   *     "pathReplace": {
+   *        "key": "value",
+   *        "key": "value",
+   *     }
+   * ```
+   * The program executes as:
+   * ```ts
+   *   path = path.replace(/key/g, value)
+   * ```
+   * Why would we want to do this? I'm glad you asked. There are various answers:
+   *  - Remove query string parameters from the path. Query string parameters are detected automatically and moved to path variables in the OAS file.
+   *  - Search and replace IDs in the path. A noisy OAS file will contain one endpoint definition for /account/1 and another endpoint definition for /account/2. By adding replace strings to config.json you can collapse duplicate paths into one endpoint definition and automatically move the path IDs into path parameters in the OAS file.
+   */
+  pathReplace?: Record<string, string>;
 }
 
 type Required<T, K extends keyof T> = T & { [P in K]-?: T[P] };
