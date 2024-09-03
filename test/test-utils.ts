@@ -36,6 +36,7 @@ export const pathReplaceHar = () => readHar("pathReplace.har");
 export const formDataHar = () => readHar("formdata.har");
 export const noSuccessStatusHar = () => readHar("no-success-status.har");
 export const securityHar = () => readHar("security.har");
+export const largeHar = () => readHar("large.har");
 export const basePath = () => readHar("base-path.har");
 export const invalidJson = () => readHar("post-json-invalid.har");
 export const htmlHar = () => readHar("html.har");

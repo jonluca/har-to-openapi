@@ -38,7 +38,7 @@ export const getTypenameFromPath = (path: string) => {
   // kind of heuristics, but we want to filter out things that are like uuids or just numbers
   return uniq(partsToKeep).join(" ");
 };
-export const parameterizeUrl = (path: string) => {
+export const parameterizeUrl = (path: string, minLengthForNumericPath = 3) => {
   const parts = path.split(/[/|${|-}]/g);
   const parameterizedParts = [];
   const parameters: ParameterObject[] = [];
@@ -80,7 +80,7 @@ export const parameterizeUrl = (path: string) => {
       continue;
     }
     // if its a number and greater than 3 digits, probably safe to skip?
-    if (part.length > 3 && !isNaN(Number(part))) {
+    if (part.length > minLengthForNumericPath && !isNaN(Number(part))) {
       addParameter("id", part, "integer");
       continue;
     }

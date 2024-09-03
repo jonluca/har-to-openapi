@@ -48,6 +48,15 @@ export interface HarToOpenAPIConfig {
    * GET /uuids/123e4567-e89b-12d3-a456-426655440000 becomes GET /uuids/{uuid}
    * @defaultValue `false` */
   attemptToParameterizeUrl?: boolean;
+
+  /** when we encounter a URL, and attemptToParameterizeUrl is true, for numeric path parts,
+   * we'll only parameterize the URL if it has at least this many numeric characters
+   * GET /category/123 becomes GET /category/{id} if it's set to 1
+   *
+   * Set it to 0 to always parameterize numeric paths
+   * @defaultValue `3` */
+  minLengthForNumericPath?: number;
+
   /** when we encounter a path without a response or with a response that does not have 2xx, dont include it
    * @defaultValue `false` */
   dropPathsWithoutSuccessfulResponse?: boolean;
@@ -77,6 +86,7 @@ export type InternalConfig = WithRequired<
   | "filterStandardHeaders"
   | "addServersToPaths"
   | "attemptToParameterizeUrl"
+  | "minLengthForNumericPath"
   | "relaxedMethods"
   | "guessAuthenticationHeaders"
   | "dropPathsWithoutSuccessfulResponse"

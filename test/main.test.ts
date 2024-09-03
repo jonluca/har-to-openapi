@@ -1,8 +1,9 @@
 import { afterAll, beforeAll, describe, test, vi } from "vitest";
-import { invalidJson, invalidUrl, securityHar } from "./test-utils";
+import { invalidJson, invalidUrl, largeHar, securityHar } from "./test-utils";
 import { generateSpec } from "../src";
 
 const securityHeader = securityHar();
+const largeHarBody = largeHar();
 const invalidJsonHar = invalidJson();
 const invalidUrlHar = invalidUrl();
 const original = console.error;
@@ -37,6 +38,12 @@ describe("Body and header tests", async () => {
   });
   test(`Logs errors for invalid urls`, async ({ expect }) => {
     const dataTwo = await generateSpec(invalidUrlHar, { logErrors: true });
+    expect(dataTwo).toBeDefined();
+    expect(console.error).toHaveBeenCalled();
+  });
+
+  test(`works on large hars`, async ({ expect }) => {
+    const dataTwo = await generateSpec(largeHarBody, { logErrors: true });
     expect(dataTwo).toBeDefined();
     expect(console.error).toHaveBeenCalled();
   });

@@ -41,6 +41,7 @@ const getConfig = (config?: HarToOpenAPIConfig): InternalConfig => {
   internalConfig.forceAllRequestsInSameSpec ??= false;
   internalConfig.dropPathsWithoutSuccessfulResponse ??= false;
   internalConfig.attemptToParameterizeUrl ??= false;
+  internalConfig.minLengthForNumericPath ??= 3;
   internalConfig.relaxedMethods ??= false;
   internalConfig.logErrors ??= false;
 
@@ -92,6 +93,7 @@ const generateSpecs = async <T extends Har>(har: T, config?: HarToOpenAPIConfig)
     relaxedMethods,
     logErrors,
     attemptToParameterizeUrl,
+    minLengthForNumericPath,
     dropPathsWithoutSuccessfulResponse,
     pathReplace,
   } = internalConfig;
@@ -137,7 +139,7 @@ const generateSpecs = async <T extends Har>(har: T, config?: HarToOpenAPIConfig)
           let urlPath = urlObj.pathname;
           let pathParams: ParameterObject[] = [];
           if (attemptToParameterizeUrl) {
-            const { path, parameters } = parameterizeUrl(urlPath);
+            const { path, parameters } = parameterizeUrl(urlPath, minLengthForNumericPath);
             urlPath = path;
             pathParams = parameters;
           }
