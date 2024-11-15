@@ -1340,7 +1340,7 @@ paths:
           description: ''
       summary: Post Login Uuid By UUID
 servers:
-  - url: /
+  - url: https://google.com
 ",
 }
 `;

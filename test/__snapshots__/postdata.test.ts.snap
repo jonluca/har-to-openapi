@@ -89,7 +89,7 @@ paths:
       responses: {}
       summary: Post Login
 servers:
-  - url: /
+  - url: http://test.loadimpact.com
 ",
 }
 `;
@@ -182,7 +182,7 @@ paths:
       responses: {}
       summary: Post Login
 servers:
-  - url: /
+  - url: http://test.loadimpact.com
 ",
 }
 `;

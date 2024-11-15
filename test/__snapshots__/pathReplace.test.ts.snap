@@ -235,7 +235,7 @@ paths:
           description: ''
       summary: Post Login Id By UUID
 servers:
-  - url: /
+  - url: https://google.com
 ",
 }
 `;

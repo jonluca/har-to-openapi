@@ -291,13 +291,13 @@ const generateSpecs = async <T extends Har>(har: T, config?: HarToOpenAPIConfig)
       }
       // sort paths
       spec.paths = sortJson(spec.paths, { depth: 200 });
-      const yamlSpec = YAML.dump(spec);
       const labeledDomain = tryGetHostname(firstUrl, logErrors, domain);
       const prefix = firstUrl?.startsWith("https://") ? "https://" : "http://";
       const server: ServerObject = {
         url: `${prefix}${labeledDomain}`,
       };
       spec.servers = [server];
+      const yamlSpec = YAML.dump(spec);
       specs.push({ spec, yamlSpec, domain: labeledDomain });
     } catch (err) {
       if (logErrors) {
