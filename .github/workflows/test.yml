@@ -34,7 +34,9 @@ jobs:
 
       - run: yarn test
 
-      - run: yarn pkg-pr-new publish
+      - name: pkg-pr-new
+        if: matrix.os == 'ubuntu-latest'
+        run: yarn pkg-pr-new publish
 
       - name: Coveralls
         uses: coverallsapp/github-action@master
