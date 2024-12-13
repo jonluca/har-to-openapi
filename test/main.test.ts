@@ -20,9 +20,9 @@ describe("Body and header tests", async () => {
     console.error = original;
   });
   test(`Crash on sort JSON`, async ({ expect }) => {
-    vi.mock("sort-json", () => {
+    vi.mock("../src/utils/sortObject", () => {
       return {
-        default: () => {
+        sortObject: () => {
           throw new Error("asdf");
         },
       };

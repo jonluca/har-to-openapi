@@ -10,7 +10,6 @@ import type {
 import { createEmptyApiSpec } from "@loopback/openapi-v3-types";
 import type { Cookie, Entry, Har, QueryString } from "har-format";
 import YAML from "js-yaml";
-import sortJson from "sort-json";
 import { addMethod, addQueryStringParams, addRequestHeaders, getBody, getResponseBody, getSecurity } from "./helpers";
 import type { HarToOpenAPIConfig, HarToOpenAPISpec, InternalConfig } from "./types";
 import { cloneDeep, groupBy } from "lodash";
@@ -18,6 +17,7 @@ import { addResponse } from "./utils/baseResponse";
 import { isStandardMethod } from "./utils/methods";
 import { DEFAULT_AUTH_HEADERS } from "./utils/headers";
 import { getCookieSecurityName, parameterizeUrl } from "./utils/string";
+import { sortObject } from "./utils/sortObject";
 
 const checkPathFromFilter = async (urlPath: string, harEntry: Entry, filter: HarToOpenAPIConfig["urlFilter"]) => {
   if (typeof filter === "string") {
@@ -290,7 +290,7 @@ const generateSpecs = async <T extends Har>(har: T, config?: HarToOpenAPIConfig)
         }
       }
       // sort paths
-      spec.paths = sortJson(spec.paths, { depth: 200 });
+      spec.paths = sortObject(spec.paths);
       const labeledDomain = tryGetHostname(firstUrl, logErrors, domain);
       const prefix = firstUrl?.startsWith("https://") ? "https://" : "http://";
       const server: ServerObject = {
