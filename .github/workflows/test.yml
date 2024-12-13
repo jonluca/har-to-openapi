@@ -34,9 +34,9 @@ jobs:
 
       - run: yarn test
 
+      - run: yarn pkg-pr-new publish
+
       - name: Coveralls
         uses: coverallsapp/github-action@master
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-
-      - run: pnpx pkg-pr-new publish
