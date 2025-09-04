@@ -319,3 +319,4 @@ const generateSpec = async <T extends Har>(har: T, config?: HarToOpenAPIConfig):
 };
 
 export { generateSpec, generateSpecs };
+export type { HarToOpenAPIConfig, HarToOpenAPISpec } from "./types";
