@@ -14,7 +14,6 @@ export default defineConfig({
     },
     deps: {
       interopDefault: true,
-      registerNodeLoader: true,
     },
     testTimeout: 60 * 1000 * 60,
   },

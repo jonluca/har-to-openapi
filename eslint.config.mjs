@@ -9,26 +9,12 @@ import promisePlugin from "eslint-plugin-promise";
 
 const globalToUse = {
   ...globals.browser,
-  ...globals.serviceworker,
   ...globals.es2021,
-  ...globals.worker,
   ...globals.node,
 };
 
 export default tseslint.config({
-  ignores: [
-    "client/cypress/plugins/index.js",
-    ".lintstagedrc.js",
-    ".next/**/*",
-    "public/js/*",
-    ".yarn/js/*",
-    "ui/out/**/*",
-    "apps/expo/ios/**/*",
-    "apps/expo/android/**/*",
-    "electron/build/**/*",
-    "public/*.js",
-    "public/*.map",
-  ],
+  ignores: ["dist/**/*", ".yarn/js/*", "coverage/**/*"],
 
   extends: [
     eslint.configs.recommended,
@@ -85,26 +71,5 @@ export default tseslint.config({
   },
   settings: {
     react: { version: "detect" },
-    "import-x/resolver": {
-      typescript: {
-        alwaysTryTypes: true, // always try to resolve types under `<root>@types` directory even it doesn't contain any source code, like `@types/unist`
-
-        // Choose from one of the "project" configs below or omit to use <root>/tsconfig.json by default
-
-        // // use <root>/path/to/folder/tsconfig.json
-        // project: "path/to/folder",
-        //
-        // // Multiple tsconfigs (Useful for monorepos)
-        //
-        // // use a glob pattern
-        // project: "packages/*/tsconfig.json",
-        //
-        // // use an array
-        // project: ["packages/module-a/tsconfig.json", "packages/module-b/tsconfig.json"],
-        //
-        // // use an array of glob patterns
-        // project: ["packages/*/tsconfig.json", "other-packages/*/tsconfig.json"],
-      },
-    },
   },
 });

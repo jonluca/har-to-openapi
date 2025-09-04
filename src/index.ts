@@ -301,7 +301,7 @@ const generateSpecs = async <T extends Har>(har: T, config?: HarToOpenAPIConfig)
       specs.push({ spec, yamlSpec, domain: labeledDomain });
     } catch (err) {
       if (logErrors) {
-        console.error(`Error creating spec for ${domain}`);
+        console.error(`Error creating spec for ${domain} - ${err}`);
       }
     }
   }

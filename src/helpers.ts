@@ -243,7 +243,7 @@ export const getBody = async (
             example: data,
           };
           return param;
-        } catch (err) {
+        } catch {
           // continue
         }
       }
@@ -278,7 +278,7 @@ export const getBody = async (
               schema,
               example: data,
             };
-          } catch (err) {
+          } catch {
             param.content[mimeEssence] = {
               schema: baseSchemaFallback,
               example: baseExample,
