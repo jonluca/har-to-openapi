@@ -31,7 +31,7 @@
   "scripts": {
     "prepublishOnly": "yarn build",
     "lint": "eslint src",
-    "build": "rimraf dist/* && tsc -p tsconfig.json",
+    "build": "rimraf dist && tsc -p tsconfig.json",
     "typecheck": "tsc --noEmit",
     "prettier": "prettier --write \"**/*.+(js|jsx|ts|tsx|har|json|css|md)\"",
     "test": "vitest --coverage",
