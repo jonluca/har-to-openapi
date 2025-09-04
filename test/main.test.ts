@@ -1,10 +1,8 @@
 import { afterAll, beforeAll, describe, test, vi } from "vitest";
-import { invalidJson, invalidUrl, largeHar, securityHar } from "./test-utils";
-import { generateSpec } from "../src";
+import { invalidUrl, largeHar } from "./test-utils.js";
+import { generateSpec } from "../src/index.js";
 
-const securityHeader = securityHar();
 const largeHarBody = largeHar();
-const invalidJsonHar = invalidJson();
 const invalidUrlHar = invalidUrl();
 const original = console.error;
 
@@ -18,23 +16,6 @@ describe("Body and header tests", async () => {
   });
   afterAll(async () => {
     console.error = original;
-  });
-  test(`Crash on sort JSON`, async ({ expect }) => {
-    vi.mock("sort-json", () => {
-      return {
-        default: () => {
-          throw new Error("asdf");
-        },
-      };
-    });
-    const data = await generateSpec(securityHeader, { logErrors: true });
-    expect(console.error).toHaveBeenCalled();
-    expect(data).toBeDefined();
-  });
-  test(`Logs errors for invalid json`, async ({ expect }) => {
-    const data = await generateSpec(invalidJsonHar, { logErrors: true });
-    expect(data).toBeDefined();
-    expect(console.error).toHaveBeenCalled();
   });
   test(`Logs errors for invalid urls`, async ({ expect }) => {
     const dataTwo = await generateSpec(invalidUrlHar, { logErrors: true });

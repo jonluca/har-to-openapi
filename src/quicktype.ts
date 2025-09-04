@@ -3,6 +3,7 @@ import type { JSONSchema } from "@apidevtools/json-schema-ref-parser";
 import RefParser from "@apidevtools/json-schema-ref-parser";
 import { InputData, jsonInputForTargetLanguage, quicktype } from "quicktype-core";
 import { cloneDeep } from "lodash";
+import type { LanguageName } from "quicktype-core/dist/types";
 
 /**
  * This is a hotfix and really only a partial solution as it does not cover all cases.
@@ -37,7 +38,7 @@ const handleRootReference = (input: Record<string, any>): JSONSchema => {
 };
 
 export const quicktypeJSON = async (
-  targetLanguage: string | TargetLanguage,
+  targetLanguage: LanguageName | TargetLanguage,
   typeName: string,
   sampleArray: string | string[],
 ) => {
