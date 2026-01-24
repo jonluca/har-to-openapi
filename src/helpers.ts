@@ -15,7 +15,19 @@ import { camelCase, startCase, uniqBy } from "lodash";
 import { shouldFilterHeader } from "./utils/headers";
 import { URLSearchParams } from "url";
 import { getCookieSecurityName, getTypenameFromPath } from "./utils/string";
-import MIMEType from "whatwg-mimetype";
+
+interface ParsedMimeType {
+  type: string;
+  subtype: string;
+  essence: string;
+}
+
+function parseMimeType(mimeString: string): ParsedMimeType {
+  // Extract essence (type/subtype) by removing parameters after semicolon
+  const essence = mimeString.split(";")[0].trim().toLowerCase();
+  const [type = "", subtype = ""] = essence.split("/");
+  return { type, subtype, essence };
+}
 
 export const addMethod = (method: string, url: URL, config: InternalConfig): OperationObject => {
   const path = url.pathname;
@@ -169,7 +181,7 @@ const getFormData = (postData: PostData | Content): SchemaObject | undefined => 
     return mapParams(params);
   }
 };
-const isBinaryMimeType = (mimeType: MIMEType): boolean => {
+const isBinaryMimeType = (mimeType: ParsedMimeType): boolean => {
   return (
     ["image", "audio", "video"].includes(mimeType.type) ||
     [
@@ -215,7 +227,7 @@ export const getBody = async (
     },
   } as Parameters<typeof toOpenApiSchema>[1];
   if (postData && text !== undefined) {
-    const mimeType = new MIMEType(postData.mimeType);
+    const mimeType = parseMimeType(postData.mimeType);
     const mimeEssence = mimeType.essence;
     const mime = mimeType.subtype;
 
