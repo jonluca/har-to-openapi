@@ -1964,6 +1964,8 @@ __metadata:
     typescript-eslint: "npm:^8.57.2"
     uuid: "npm:^13.0.0"
     vitest: "npm:^4.1.2"
+  bin:
+    har-to-openapi: ./bin/har-to-openapi.cjs
   languageName: unknown
   linkType: soft
 
