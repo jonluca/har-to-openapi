@@ -1,6 +1,6 @@
 import { describe, test } from "vitest";
-import { largeHar } from "./test-utils";
-import { generateSpec } from "../src";
+import { largeHar } from "./test-utils.js";
+import { generateSpec } from "../src/index.js";
 
 const largeHarBody = largeHar();
 

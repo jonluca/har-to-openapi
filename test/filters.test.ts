@@ -1,7 +1,7 @@
 import { describe, test } from "vitest";
-import { generateSpec } from "../src";
+import { generateSpec } from "../src/index.js";
 import type { OpenApiSpec, OperationObject, PathItemObject, ResponseObject } from "@loopback/openapi-v3-types";
-import { sampleHar } from "./test-utils";
+import { sampleHar } from "./test-utils.js";
 
 const har = sampleHar();
 const getResponses = (spec: OpenApiSpec): ResponseObject[] => {

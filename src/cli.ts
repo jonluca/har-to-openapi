@@ -2,8 +2,8 @@ import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import type { Har } from "har-format";
 import YAML from "js-yaml";
-import { generateSpec, generateSpecs } from "./index";
-import type { HarToOpenAPIConfig, HarToOpenAPISpec } from "./types";
+import { generateSpec, generateSpecs } from "./index.js";
+import type { HarToOpenAPIConfig, HarToOpenAPISpec } from "./types.js";
 
 type CliFormat = "json" | "yaml";
 

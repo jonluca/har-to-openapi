@@ -1,6 +1,6 @@
 import { describe, test } from "vitest";
-import { generateSpec } from "../src";
-import { basePath } from "./test-utils";
+import { generateSpec } from "../src/index.js";
+import { basePath } from "./test-utils.js";
 
 describe("Generated spec metadata", async () => {
   test("supports metadata templates with domain and timestamp placeholders", async ({ expect }) => {

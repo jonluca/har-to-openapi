@@ -1,6 +1,7 @@
 {
   "name": "har-to-openapi",
   "version": "0.0.0-development",
+  "type": "module",
   "license": "MIT",
   "author": "JonLuca DeCaro <hartoopenapi@jonlu.ca>",
   "description": "Convert a HAR object to an OpenAPI object",
@@ -15,6 +16,13 @@
   ],
   "sideEffects": false,
   "main": "dist/index.js",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
   "keywords": [
     "har",
     "openapi",
@@ -45,14 +53,13 @@
     "@loopback/openapi-v3-types": "^1.2.1",
     "@openapi-contrib/json-schema-to-openapi-schema": "^4.3.2",
     "js-yaml": "^4.1.1",
-    "lodash": "^4.17.23",
-    "quicktype-core": "^23.2.6",
-    "uuid": "^13.0.0"
+    "lodash-es": "^4.17.23",
+    "quicktype-core": "^23.2.6"
   },
   "devDependencies": {
     "@types/har-format": "^1.2.16",
     "@types/js-yaml": "^4.0.9",
-    "@types/lodash": "^4.17.24",
+    "@types/lodash-es": "^4.17.12",
     "@types/node": "^25.5.0",
     "@types/sort-json": "^2.0.3",
     "@vitest/coverage-v8": "^4.1.2",

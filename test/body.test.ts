@@ -1,7 +1,7 @@
 import { describe, test } from "vitest";
-import { generateSpec } from "../src";
-import { formDataHar, htmlHar, invalidJson, sameEndpointDiffPayloads, securityHar } from "./test-utils";
-import { getBody } from "../src/helpers";
+import { generateSpec } from "../src/index.js";
+import { formDataHar, htmlHar, invalidJson, sameEndpointDiffPayloads, securityHar } from "./test-utils.js";
+import { getBody } from "../src/helpers.js";
 
 const invalidHar = invalidJson();
 const har = sameEndpointDiffPayloads();

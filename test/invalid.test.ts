@@ -1,6 +1,6 @@
 import { describe, test } from "vitest";
-import { generateSpec } from "../src";
-import { invalidUrl } from "./test-utils";
+import { generateSpec } from "../src/index.js";
+import { invalidUrl } from "./test-utils.js";
 
 const invalidHar = invalidUrl();
 

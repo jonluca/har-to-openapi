@@ -1,9 +1,8 @@
-import type { TargetLanguage } from "quicktype-core/dist/TargetLanguage";
 import type { JSONSchema } from "@apidevtools/json-schema-ref-parser";
 import RefParser from "@apidevtools/json-schema-ref-parser";
 import { InputData, jsonInputForTargetLanguage, quicktype } from "quicktype-core";
-import { cloneDeep } from "lodash";
-import type { LanguageName } from "quicktype-core/dist/types";
+import type { LanguageName, TargetLanguage } from "quicktype-core";
+import { cloneDeep } from "lodash-es";
 
 /**
  * This is a hotfix and really only a partial solution as it does not cover all cases.

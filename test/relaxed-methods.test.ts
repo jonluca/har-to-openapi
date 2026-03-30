@@ -1,8 +1,8 @@
 import { describe, test } from "vitest";
-import { generateSpec } from "../src";
+import { generateSpec } from "../src/index.js";
 import type { OpenApiSpec, PathItemObject } from "@loopback/openapi-v3-types";
-import { customMethod } from "./test-utils";
-import { isStandardMethod } from "../src/utils/methods";
+import { customMethod } from "./test-utils.js";
+import { isStandardMethod } from "../src/utils/methods.js";
 
 const har = customMethod();
 const pathItemKeysNotMethods = ["$ref", "summary", "description", "parameters", "servers"];

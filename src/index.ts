@@ -10,14 +10,14 @@ import type {
 import { createEmptyApiSpec } from "@loopback/openapi-v3-types";
 import type { Cookie, Entry, Har, QueryString } from "har-format";
 import YAML from "js-yaml";
-import { addMethod, addQueryStringParams, addRequestHeaders, getBody, getResponseBody, getSecurity } from "./helpers";
-import type { HarToOpenAPIConfig, HarToOpenAPISpec, InternalConfig } from "./types";
-import { cloneDeep, groupBy } from "lodash";
-import { addResponse } from "./utils/baseResponse";
-import { isStandardMethod } from "./utils/methods";
-import { DEFAULT_AUTH_HEADERS } from "./utils/headers";
-import { getCookieSecurityName, parameterizeUrl } from "./utils/string";
-import { sortObject } from "./utils/sort-object";
+import { cloneDeep, groupBy } from "lodash-es";
+import { addMethod, addQueryStringParams, addRequestHeaders, getBody, getResponseBody, getSecurity } from "./helpers.js";
+import type { HarToOpenAPIConfig, HarToOpenAPISpec, InternalConfig } from "./types.js";
+import { addResponse } from "./utils/baseResponse.js";
+import { DEFAULT_AUTH_HEADERS } from "./utils/headers.js";
+import { isStandardMethod } from "./utils/methods.js";
+import { getCookieSecurityName, parameterizeUrl } from "./utils/string.js";
+import { sortObject } from "./utils/sort-object.js";
 
 const DEFAULT_INFO_TITLE = "HarToOpenApi";
 const DEFAULT_INFO_DESCRIPTION = "OpenAPI spec generated from HAR data for {domain} on {generatedAt}";
@@ -368,4 +368,4 @@ const generateSpec = async <T extends Har>(har: T, config?: HarToOpenAPIConfig):
 };
 
 export { generateSpec, generateSpecs };
-export type { HarToOpenAPIConfig, HarToOpenAPISpec } from "./types";
+export type { HarToOpenAPIConfig, HarToOpenAPISpec } from "./types.js";

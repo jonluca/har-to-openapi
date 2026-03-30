@@ -1,7 +1,7 @@
 import path from "node:path";
 import { describe, test } from "vitest";
-import { runCli } from "../src/cli";
-import { basePath, sampleHar } from "./test-utils";
+import { runCli } from "../src/cli.js";
+import { basePath, sampleHar } from "./test-utils.js";
 
 type HarnessOptions = {
   stdinIsTTY?: boolean;

@@ -1,7 +1,7 @@
 import { describe, test } from "vitest";
-import { generateSpec } from "../src";
-import { binaryHar, htmlHar } from "./test-utils";
-import type { HarToOpenAPISpec } from "../src/types";
+import { generateSpec } from "../src/index.js";
+import { binaryHar, htmlHar } from "./test-utils.js";
+import type { HarToOpenAPISpec } from "../src/types.js";
 import type { OperationObject } from "openapi3-ts/src/model/OpenApi";
 
 const har = htmlHar();

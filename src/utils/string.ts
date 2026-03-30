@@ -1,6 +1,6 @@
 import type { Cookie } from "har-format";
-import { camelCase, startCase, uniq } from "lodash";
 import type { ParameterObject, SchemaObject } from "@loopback/openapi-v3-types";
+import { camelCase, startCase, uniq } from "lodash-es";
 
 const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 

@@ -1,6 +1,6 @@
 import { describe, test } from "vitest";
-import { generateSpecs } from "../src";
-import { basePath } from "./test-utils";
+import { generateSpecs } from "../src/index.js";
+import { basePath } from "./test-utils.js";
 
 const har = basePath();
 

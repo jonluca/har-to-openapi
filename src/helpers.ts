@@ -1,4 +1,3 @@
-import type { InternalConfig } from "./types";
 import type {
   HeadersObject,
   OperationObject,
@@ -9,12 +8,13 @@ import type {
   SecurityRequirementObject,
 } from "@loopback/openapi-v3-types";
 import type { Content, Cookie, Header, PostData, PostDataParams, QueryString, Response } from "har-format";
-import toOpenApiSchema from "@openapi-contrib/json-schema-to-openapi-schema";
-import { quicktypeJSON } from "./quicktype";
-import { camelCase, startCase, uniqBy } from "lodash";
-import { shouldFilterHeader } from "./utils/headers";
+import { convert as toOpenApiSchema } from "@openapi-contrib/json-schema-to-openapi-schema";
+import { camelCase, startCase, uniqBy } from "lodash-es";
 import { URLSearchParams } from "url";
-import { getCookieSecurityName, getTypenameFromPath } from "./utils/string";
+import { quicktypeJSON } from "./quicktype.js";
+import type { InternalConfig } from "./types.js";
+import { shouldFilterHeader } from "./utils/headers.js";
+import { getCookieSecurityName, getTypenameFromPath } from "./utils/string.js";
 
 interface ParsedMimeType {
   type: string;

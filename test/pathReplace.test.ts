@@ -1,6 +1,6 @@
 import { describe, test } from "vitest";
-import { generateSpec } from "../src";
-import { OpenAPISchemaValidator, pathReplaceHar } from "./test-utils";
+import { generateSpec } from "../src/index.js";
+import { OpenAPISchemaValidator, pathReplaceHar } from "./test-utils.js";
 
 const har = pathReplaceHar();
 const validator = new OpenAPISchemaValidator({

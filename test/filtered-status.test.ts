@@ -1,6 +1,6 @@
 import { describe, test } from "vitest";
-import { generateSpec } from "../src";
-import { noSuccessStatusHar } from "./test-utils";
+import { generateSpec } from "../src/index.js";
+import { noSuccessStatusHar } from "./test-utils.js";
 
 const har = noSuccessStatusHar();
 
