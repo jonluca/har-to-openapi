@@ -2,12 +2,16 @@ name: CI
 
 on: [push, pull_request]
 
+permissions:
+  contents: read
+
 jobs:
   build:
+    name: Node ${{ matrix.node-version }} on ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        node-version: [24.x, "*"]
+        node-version: [24, latest]
         os: [ubuntu-latest, macos-latest, windows-latest]
 
     runs-on: ${{ matrix.os }}
@@ -17,24 +21,30 @@ jobs:
         if: matrix.os == 'windows-latest'
         run: git config --global core.autocrlf true
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: ${{ matrix.node-version }}
-          cache: "yarn"
+          cache: yarn
+          cache-dependency-path: yarn.lock
+
+      - name: Enable Corepack
+        run: corepack enable
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: yarn install --immutable
 
-      - name: Set debug on windows
+      - name: Enable DEBUG on Windows
         if: matrix.os == 'windows-latest'
-        run: set DEBUG=*
+        shell: pwsh
+        run: '"DEBUG=*" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append'
 
       - run: yarn test
 
       - name: Coveralls
-        uses: coverallsapp/github-action@master
+        if: matrix.os == 'ubuntu-latest' && matrix.node-version == 24
+        uses: coverallsapp/github-action@v2
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
