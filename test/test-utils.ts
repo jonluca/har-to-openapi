@@ -28,16 +28,20 @@ const readHar = (name: string): Har =>
   JSON.parse(fs.readFileSync(path.join(dataDir, name), { encoding: "utf8" })) as unknown as Har;
 
 export const sampleHar = () => readHar("request-generator-all-status-and-method.har");
+export const authVariantsHar = () => readHar("auth-variants.har");
 export const postDataConflict = () => readHar("post-data-conflict.har");
 export const loadImpact = () => readHar("load-impact.har");
 export const invalidUrl = () => readHar("invalid-url.har");
 export const parameterizedUrlHar = () => readHar("url.har");
 export const pathReplaceHar = () => readHar("pathReplace.har");
 export const formDataHar = () => readHar("formdata.har");
+export const mediaTypesHar = () => readHar("media-types.har");
+export const multipartMergeHar = () => readHar("multipart-merge.har");
 export const noSuccessStatusHar = () => readHar("no-success-status.har");
 export const securityHar = () => readHar("security.har");
 export const largeHar = () => readHar("large.har");
 export const basePath = () => readHar("base-path.har");
+export const typedParamsHar = () => readHar("typed-params.har");
 export const invalidJson = () => readHar("post-json-invalid.har");
 export const htmlHar = () => readHar("html.har");
 export const binaryHar = () => readHar("binary-json.har");
@@ -45,4 +49,20 @@ export const sameEndpointDiffPayloads = () => readHar("post-same-endpoint-diff-b
 export const customMethod = () => readHar("custom-method.har");
 
 export const allTestHars = () => readDirectory(path.join(__dirname, "data"));
-export const OpenAPISchemaValidator = OpenAPISchemaValidatorModule;
+type OpenApiValidatorCtor = new (args: { version: number | string; extensions?: Record<string, unknown> }) => {
+  validate: (doc: unknown) => { errors: unknown[] };
+};
+
+export const OpenAPISchemaValidator = OpenAPISchemaValidatorModule as unknown as OpenApiValidatorCtor;
+export const createOpenApiValidator = (openapiVersion: "3.0.0" | "3.1.0" = "3.0.0") => {
+  return new OpenAPISchemaValidator({
+    version: 3,
+    extensions: {
+      properties: {
+        openapi: {
+          const: openapiVersion,
+        },
+      },
+    },
+  });
+};

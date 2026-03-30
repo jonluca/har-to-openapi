@@ -37,6 +37,7 @@ const BOOLEAN_FLAG_MAP = {
   "force-all-requests-in-same-spec": "forceAllRequestsInSameSpec",
   "guess-authentication-headers": "guessAuthenticationHeaders",
   "include-non-json-example-responses": "includeNonJsonExampleResponses",
+  "infer-parameter-types": "inferParameterTypes",
   "log-errors": "logErrors",
   "relaxed-content-type-json-parse": "relaxedContentTypeJsonParse",
   "relaxed-methods": "relaxedMethods",
@@ -58,6 +59,7 @@ const STRING_FLAG_MAP = {
   "info-description": "infoDescription",
   "info-title": "infoTitle",
   "info-version": "infoVersion",
+  "openapi-version": "openapiVersion",
 } as const satisfies Record<string, keyof HarToOpenAPIConfig>;
 
 const HELP_TEXT = `Usage: har-to-openapi [input.har|-] [options]
@@ -78,6 +80,7 @@ Options:
       --info-title <text>                        Override info.title (supports {domain}, {generatedAt})
       --info-version <text>                      Override info.version (supports {domain}, {generatedAt})
       --info-description <text>                  Override info.description (supports {domain}, {generatedAt})
+      --openapi-version <3.0.0|3.1.0>           Generated OpenAPI version (default: 3.0.0)
       --add-servers-to-paths                     Add servers entries to operations
       --no-add-servers-to-paths                  Disable operation-level servers entries
       --guess-authentication-headers             Enable auth header detection
@@ -92,6 +95,8 @@ Options:
       --no-log-errors                            Disable parsing error logs
       --attempt-to-parameterize-url              Detect path parameters from URL segments
       --no-attempt-to-parameterize-url           Disable URL parameterization
+      --infer-parameter-types                    Infer scalar parameter types when values are unambiguous
+      --no-infer-parameter-types                 Keep inferred parameters as strings
       --drop-paths-without-successful-response   Exclude paths without 2xx responses
       --no-drop-paths-without-successful-response
                                                   Keep paths without successful responses
@@ -178,6 +183,14 @@ const parseNumericValue = (value: string) => {
     throw new Error(`Expected a number, received "${value}".`);
   }
   return parsed;
+};
+
+const parseOpenApiVersion = (value: string) => {
+  if (value === "3.0.0" || value === "3.1.0") {
+    return value;
+  }
+
+  throw new Error(`Unsupported OpenAPI version "${value}". Use "3.0.0" or "3.1.0".`);
 };
 
 const takeNextValue = (argv: string[], index: number, flag: string) => {
@@ -281,7 +294,12 @@ const parseCliArgs = (argv: string[]): ParsedCliArgs => {
 
       if (flag in STRING_FLAG_MAP) {
         const configKey = STRING_FLAG_MAP[flag as keyof typeof STRING_FLAG_MAP];
-        parsed.overrides[configKey] = takeNextValue(argv, index, argument);
+        const value = takeNextValue(argv, index, argument);
+        if (configKey === "openapiVersion") {
+          parsed.overrides.openapiVersion = parseOpenApiVersion(value);
+        } else {
+          parsed.overrides[configKey] = value;
+        }
         index += 1;
         continue;
       }

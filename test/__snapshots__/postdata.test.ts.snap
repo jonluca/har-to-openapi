@@ -12,7 +12,6 @@ exports[`har-to-openapi: Post data > HAR with request with postdata matches snap
     "openapi": "3.0.0",
     "paths": {
       "/login": {
-        "parameters": [],
         "post": {
           "description": "",
           "operationId": "postLogin",
@@ -63,7 +62,6 @@ info:
     2022-01-01T00:00:00.000Z
 paths:
   /login:
-    parameters: []
     post:
       description: ''
       operationId: postLogin
@@ -106,7 +104,6 @@ exports[`har-to-openapi: Post data > HAR with request with postdata with a misma
     "openapi": "3.0.0",
     "paths": {
       "/login": {
-        "parameters": [],
         "post": {
           "description": "",
           "operationId": "postLogin",
@@ -157,7 +154,6 @@ info:
     2022-01-01T00:00:00.000Z
 paths:
   /login:
-    parameters: []
     post:
       description: ''
       operationId: postLogin

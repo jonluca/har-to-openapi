@@ -231,6 +231,35 @@ export const DEFAULT_AUTH_HEADERS = [
   "apikey",
 ];
 
+const AUTH_COOKIE_ALLOWLIST = [
+  "access",
+  "api_key",
+  "apikey",
+  "auth",
+  "bearer",
+  "jwt",
+  "refresh",
+  "sess",
+  "session",
+  "sid",
+  "token",
+] as const;
+
+const AUTH_COOKIE_BLOCKLIST = ["csrf", "xsrf"] as const;
+
+export const isLikelyAuthCookieName = (cookieName: string) => {
+  const normalized = cookieName.trim().toLowerCase();
+  if (!normalized) {
+    return false;
+  }
+
+  if (AUTH_COOKIE_BLOCKLIST.some((token) => normalized.includes(token))) {
+    return false;
+  }
+
+  return AUTH_COOKIE_ALLOWLIST.some((token) => normalized.includes(token));
+};
+
 export const shouldFilterHeader = (header: string, headersToKeep: string[] | undefined): header is IStandardHeader => {
   const headerLower = header.trim().toLowerCase();
   return Boolean(headerLower) && headerSet.has(headerLower as IStandardHeader) && !headersToKeep?.includes(headerLower);

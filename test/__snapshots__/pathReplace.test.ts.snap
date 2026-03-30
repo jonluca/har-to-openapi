@@ -20,9 +20,7 @@ exports[`pathReplace URLs > Can parse pathReplace 1`] = `
             "required": true,
             "schema": {
               "default": "6d554f25-b415-4f38-b990-a0efcea6fede",
-              "maxLength": 36,
-              "minLength": 36,
-              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+              "format": "uuid",
               "type": "string",
             },
           },
@@ -121,12 +119,13 @@ exports[`pathReplace URLs > Can parse pathReplace 1`] = `
                       },
                     },
                     "required": [],
-                    "title": "LoginIDUUIDPostRequest",
+                    "title": "LoginIDUUIDPostResponse",
                     "type": "object",
                   },
                 },
               },
               "description": "",
+              "headers": {},
             },
           },
           "summary": "Post Login Id By UUID",
@@ -155,9 +154,7 @@ paths:
         required: true
         schema:
           default: 6d554f25-b415-4f38-b990-a0efcea6fede
-          maxLength: 36
-          minLength: 36
-          pattern: ^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$
+          format: uuid
           type: string
     post:
       description: ''
@@ -230,9 +227,10 @@ paths:
                     title: Result
                     type: object
                 required: []
-                title: LoginIDUUIDPostRequest
+                title: LoginIDUUIDPostResponse
                 type: object
           description: ''
+          headers: {}
       summary: Post Login Id By UUID
 servers:
   - url: https://google.com

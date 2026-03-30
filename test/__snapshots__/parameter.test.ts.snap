@@ -119,12 +119,13 @@ exports[`Parameterized URLs > Can parse the parameterized url properly 1`] = `
                       },
                     },
                     "required": [],
-                    "title": "LoginDatePostRequest",
+                    "title": "LoginDatePostResponse",
                     "type": "object",
                   },
                 },
               },
               "description": "",
+              "headers": {},
             },
           },
           "summary": "Post Login Date By Date",
@@ -144,12 +145,12 @@ exports[`Parameterized URLs > Can parse the parameterized url properly 1`] = `
             },
           },
           {
-            "example": "12345",
+            "example": 12345,
             "in": "path",
             "name": "id",
             "required": true,
             "schema": {
-              "default": "12345",
+              "default": 12345,
               "type": "integer",
             },
           },
@@ -160,9 +161,7 @@ exports[`Parameterized URLs > Can parse the parameterized url properly 1`] = `
             "required": true,
             "schema": {
               "default": "123e4567-e89b-12d3-a456-426655440000",
-              "maxLength": 36,
-              "minLength": 36,
-              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+              "format": "uuid",
               "type": "string",
             },
           },
@@ -261,12 +260,13 @@ exports[`Parameterized URLs > Can parse the parameterized url properly 1`] = `
                       },
                     },
                     "required": [],
-                    "title": "LoginDateIDUUIDPostRequest",
+                    "title": "LoginDateIDUUIDPostResponse",
                     "type": "object",
                   },
                 },
               },
               "description": "",
+              "headers": {},
             },
           },
           "summary": "Post Login Date By Date Id By ID Uuid By UUID",
@@ -275,12 +275,12 @@ exports[`Parameterized URLs > Can parse the parameterized url properly 1`] = `
       "/login/id/{id}": {
         "parameters": [
           {
-            "example": "1234567",
+            "example": 1234567,
             "in": "path",
             "name": "id",
             "required": true,
             "schema": {
-              "default": "1234567",
+              "default": 1234567,
               "type": "integer",
             },
           },
@@ -379,12 +379,13 @@ exports[`Parameterized URLs > Can parse the parameterized url properly 1`] = `
                       },
                     },
                     "required": [],
-                    "title": "LoginIDPostRequest",
+                    "title": "LoginIDPostResponse",
                     "type": "object",
                   },
                 },
               },
               "description": "",
+              "headers": {},
             },
           },
           "summary": "Post Login Id By ID",
@@ -393,22 +394,22 @@ exports[`Parameterized URLs > Can parse the parameterized url properly 1`] = `
       "/login/id/{id}/idTwo/{id1}": {
         "parameters": [
           {
-            "example": "1234567",
+            "example": 1234567,
             "in": "path",
             "name": "id",
             "required": true,
             "schema": {
-              "default": "1234567",
+              "default": 1234567,
               "type": "integer",
             },
           },
           {
-            "example": "1234567",
+            "example": 1234567,
             "in": "path",
             "name": "id1",
             "required": true,
             "schema": {
-              "default": "1234567",
+              "default": 1234567,
               "type": "integer",
             },
           },
@@ -507,12 +508,13 @@ exports[`Parameterized URLs > Can parse the parameterized url properly 1`] = `
                       },
                     },
                     "required": [],
-                    "title": "LoginIDIDTwoId1PostRequest",
+                    "title": "LoginIDIDTwoId1PostResponse",
                     "type": "object",
                   },
                 },
               },
               "description": "",
+              "headers": {},
             },
           },
           "summary": "Post Login Id By ID Id Two",
@@ -521,32 +523,32 @@ exports[`Parameterized URLs > Can parse the parameterized url properly 1`] = `
       "/login/id/{id}/idTwo/{id1}/{bool}": {
         "parameters": [
           {
-            "example": "1234567",
+            "example": 1234567,
             "in": "path",
             "name": "id",
             "required": true,
             "schema": {
-              "default": "1234567",
+              "default": 1234567,
               "type": "integer",
             },
           },
           {
-            "example": "1234567",
+            "example": 1234567,
             "in": "path",
             "name": "id1",
             "required": true,
             "schema": {
-              "default": "1234567",
+              "default": 1234567,
               "type": "integer",
             },
           },
           {
-            "example": "true",
+            "example": true,
             "in": "path",
             "name": "bool",
             "required": true,
             "schema": {
-              "default": "true",
+              "default": true,
               "type": "boolean",
             },
           },
@@ -645,12 +647,13 @@ exports[`Parameterized URLs > Can parse the parameterized url properly 1`] = `
                       },
                     },
                     "required": [],
-                    "title": "LoginIDIDTwoId1BoolPostRequest",
+                    "title": "LoginIDIDTwoId1BoolPostResponse",
                     "type": "object",
                   },
                 },
               },
               "description": "",
+              "headers": {},
             },
           },
           "summary": "Post Login Id By ID Id Two Set True",
@@ -665,9 +668,7 @@ exports[`Parameterized URLs > Can parse the parameterized url properly 1`] = `
             "required": true,
             "schema": {
               "default": "123e4567-e89b-12d3-a456-426655440000",
-              "maxLength": 36,
-              "minLength": 36,
-              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+              "format": "uuid",
               "type": "string",
             },
           },
@@ -766,12 +767,13 @@ exports[`Parameterized URLs > Can parse the parameterized url properly 1`] = `
                       },
                     },
                     "required": [],
-                    "title": "LoginUUIDPostRequest",
+                    "title": "LoginUUIDPostResponse",
                     "type": "object",
                   },
                 },
               },
               "description": "",
+              "headers": {},
             },
           },
           "summary": "Post Login Uuid By UUID",
@@ -873,9 +875,10 @@ paths:
                     title: Result
                     type: object
                 required: []
-                title: LoginDatePostRequest
+                title: LoginDatePostResponse
                 type: object
           description: ''
+          headers: {}
       summary: Post Login Date By Date
   /login/date/{date}/id/{id}/uuid/{uuid}:
     parameters:
@@ -887,12 +890,12 @@ paths:
           default: '2022-02-02'
           format: date
           type: string
-      - example: '12345'
+      - example: 12345
         in: path
         name: id
         required: true
         schema:
-          default: '12345'
+          default: 12345
           type: integer
       - example: 123e4567-e89b-12d3-a456-426655440000
         in: path
@@ -900,9 +903,7 @@ paths:
         required: true
         schema:
           default: 123e4567-e89b-12d3-a456-426655440000
-          maxLength: 36
-          minLength: 36
-          pattern: ^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$
+          format: uuid
           type: string
     post:
       description: ''
@@ -975,18 +976,19 @@ paths:
                     title: Result
                     type: object
                 required: []
-                title: LoginDateIDUUIDPostRequest
+                title: LoginDateIDUUIDPostResponse
                 type: object
           description: ''
+          headers: {}
       summary: Post Login Date By Date Id By ID Uuid By UUID
   /login/id/{id}:
     parameters:
-      - example: '1234567'
+      - example: 1234567
         in: path
         name: id
         required: true
         schema:
-          default: '1234567'
+          default: 1234567
           type: integer
     post:
       description: ''
@@ -1059,25 +1061,26 @@ paths:
                     title: Result
                     type: object
                 required: []
-                title: LoginIDPostRequest
+                title: LoginIDPostResponse
                 type: object
           description: ''
+          headers: {}
       summary: Post Login Id By ID
   /login/id/{id}/idTwo/{id1}:
     parameters:
-      - example: '1234567'
+      - example: 1234567
         in: path
         name: id
         required: true
         schema:
-          default: '1234567'
+          default: 1234567
           type: integer
-      - example: '1234567'
+      - example: 1234567
         in: path
         name: id1
         required: true
         schema:
-          default: '1234567'
+          default: 1234567
           type: integer
     post:
       description: ''
@@ -1150,32 +1153,33 @@ paths:
                     title: Result
                     type: object
                 required: []
-                title: LoginIDIDTwoId1PostRequest
+                title: LoginIDIDTwoId1PostResponse
                 type: object
           description: ''
+          headers: {}
       summary: Post Login Id By ID Id Two
   /login/id/{id}/idTwo/{id1}/{bool}:
     parameters:
-      - example: '1234567'
+      - example: 1234567
         in: path
         name: id
         required: true
         schema:
-          default: '1234567'
+          default: 1234567
           type: integer
-      - example: '1234567'
+      - example: 1234567
         in: path
         name: id1
         required: true
         schema:
-          default: '1234567'
+          default: 1234567
           type: integer
-      - example: 'true'
+      - example: true
         in: path
         name: bool
         required: true
         schema:
-          default: 'true'
+          default: true
           type: boolean
     post:
       description: ''
@@ -1248,9 +1252,10 @@ paths:
                     title: Result
                     type: object
                 required: []
-                title: LoginIDIDTwoId1BoolPostRequest
+                title: LoginIDIDTwoId1BoolPostResponse
                 type: object
           description: ''
+          headers: {}
       summary: Post Login Id By ID Id Two Set True
   /login/uuid/{uuid}:
     parameters:
@@ -1260,9 +1265,7 @@ paths:
         required: true
         schema:
           default: 123e4567-e89b-12d3-a456-426655440000
-          maxLength: 36
-          minLength: 36
-          pattern: ^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$
+          format: uuid
           type: string
     post:
       description: ''
@@ -1335,9 +1338,10 @@ paths:
                     title: Result
                     type: object
                 required: []
-                title: LoginUUIDPostRequest
+                title: LoginUUIDPostResponse
                 type: object
           description: ''
+          headers: {}
       summary: Post Login Uuid By UUID
 servers:
   - url: https://google.com

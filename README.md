@@ -82,6 +82,8 @@ The CLI supports common boolean and list options as flags, and advanced JSON-ser
 
 ```typescript
 export interface Config {
+  // generated OpenAPI document version
+  openapiVersion?: "3.0.0" | "3.1.0";
   // limit generation to exact hostnames from the HAR
   includeDomains?: string[];
   // skip exact hostnames from the HAR
@@ -110,6 +112,10 @@ export interface Config {
   tags?: ([string] | [string, string] | string)[] | ((url: string) => string | string[] | void);
   // response mime types to filter for
   mimeTypes?: string[];
+  // include examples in response objects for non-json text content
+  includeNonJsonExampleResponses?: boolean;
+  // infer scalar types for query/path/form parameters when values are unambiguous
+  inferParameterTypes?: boolean;
   // known security headers for this har, to add to security field in openapi (e.g. "X-Auth-Token")
   securityHeaders?: string[];
   // Whether to filter out all standard headers from the parameter list in openapi
@@ -121,8 +127,12 @@ export interface Config {
   // when we encounter a URL, try and parameterize it, such that something like
   // GET /uuids/123e4567-e89b-12d3-a456-426655440000 becomes GET /uuids/{uuid}
   attemptToParameterizeUrl?: boolean;
+  // minimum numeric length before numeric path segments become parameters
+  minLengthForNumericPath?: number;
   // when we encounter a path without a response or with a response that does not have 2xx, dont include it
   dropPathsWithoutSuccessfulResponse?: boolean;
+  // search/replace rules to normalize noisy paths before spec generation
+  pathReplace?: Record<string, string>;
 }
 ```
 
@@ -130,4 +140,6 @@ export interface Config {
 
 - Filter multi-domain captures without custom code via `--include-domains` and `--exclude-domains`.
 - Override `info.title`, `info.version`, and `info.description` with `{domain}` and `{generatedAt}` placeholders.
+- Choose between OpenAPI `3.0.0` and `3.1.0` from either the library config or `--openapi-version`.
+- Toggle scalar parameter inference from the CLI with `--infer-parameter-types` and `--no-infer-parameter-types`.
 - Load CLI config from either JSON or YAML.

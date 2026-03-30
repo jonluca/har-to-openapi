@@ -1,12 +1,20 @@
 import { describe, test } from "vitest";
 import { generateSpec } from "../src/index.js";
-import { formDataHar, htmlHar, invalidJson, sameEndpointDiffPayloads, securityHar } from "./test-utils.js";
+import {
+  formDataHar,
+  htmlHar,
+  invalidJson,
+  multipartMergeHar,
+  sameEndpointDiffPayloads,
+  securityHar,
+} from "./test-utils.js";
 import { getBody } from "../src/helpers.js";
 
 const invalidHar = invalidJson();
 const har = sameEndpointDiffPayloads();
 const securityHeader = securityHar();
 const html = htmlHar();
+const multipartMerge = multipartMergeHar();
 
 describe("Body and header tests", async () => {
   test(`Doesn't crash on invalid json`, async ({ expect }) => {
@@ -88,5 +96,30 @@ describe("Body and header tests", async () => {
       {} as any,
     );
     expect(data?.content).toBeDefined();
+  });
+
+  test(`Merges multipart form samples and infers required and scalar field types`, async ({ expect }) => {
+    const data = await generateSpec(multipartMerge);
+    const requestContent = data.spec.paths["/upload"].post.requestBody.content["multipart/form-data"];
+    expect(requestContent).toBeDefined();
+    expect(requestContent.schema).toEqual({
+      type: "object",
+      properties: {
+        count: {
+          type: "integer",
+        },
+        file: {
+          format: "binary",
+          type: "string",
+        },
+        publish: {
+          type: "boolean",
+        },
+        title: {
+          type: "string",
+        },
+      },
+      required: ["title", "file"],
+    });
   });
 });

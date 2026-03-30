@@ -2,7 +2,7 @@ import { describe, test } from "vitest";
 import { generateSpec } from "../src/index.js";
 import { binaryHar, htmlHar } from "./test-utils.js";
 import type { HarToOpenAPISpec } from "../src/types.js";
-import type { OperationObject } from "openapi3-ts/src/model/OpenApi";
+import type { ContentObject, OperationObject, ResponseObject } from "@loopback/openapi-v3-types";
 
 const har = htmlHar();
 const binary = binaryHar();
@@ -13,8 +13,9 @@ const getTextExamples = (output: HarToOpenAPISpec) => {
   const examples = operationObjects
     .filter(Boolean)
     .flatMap((l: OperationObject) => {
-      return Object.values(l.responses || {}).map((k) => k["content"]);
+      return Object.values(l.responses || {}).map((response) => (response as ResponseObject).content);
     })
+    .filter((content): content is ContentObject => Boolean(content))
     .flatMap((content) => {
       const keysToCheck = Object.keys(content).filter((l) => !l.includes("json"));
       return keysToCheck.map((key) => content[key].example);

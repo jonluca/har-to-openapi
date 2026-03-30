@@ -46,7 +46,6 @@ exports[`Spec generator > Returns one spec for a har with two domains and a call
             "responses": {},
             "summary": "Get Login",
           },
-          "parameters": [],
         },
       },
       "servers": [
@@ -87,7 +86,6 @@ paths:
         required: true
       responses: {}
       summary: Get Login
-    parameters: []
 servers:
   - url: http://example.com
 ",
@@ -141,7 +139,6 @@ exports[`Spec generator > Returns one spec for a har with two domains and a rege
             "responses": {},
             "summary": "Get Login",
           },
-          "parameters": [],
         },
       },
       "servers": [
@@ -182,7 +179,6 @@ paths:
         required: true
       responses: {}
       summary: Get Login
-    parameters: []
 servers:
   - url: http://example.com
 ",
@@ -236,7 +232,6 @@ exports[`Spec generator > Returns one spec for a har with two domains and a stri
             "responses": {},
             "summary": "Get Login",
           },
-          "parameters": [],
         },
       },
       "servers": [
@@ -277,7 +272,6 @@ paths:
         required: true
       responses: {}
       summary: Get Login
-    parameters: []
 servers:
   - url: http://example.com
 ",
@@ -331,7 +325,6 @@ exports[`Spec generator > Returns one spec for a har with two domains and an asy
             "responses": {},
             "summary": "Get Login",
           },
-          "parameters": [],
         },
       },
       "servers": [
@@ -372,7 +365,6 @@ paths:
         required: true
       responses: {}
       summary: Get Login
-    parameters: []
 servers:
   - url: http://example.com
 ",
@@ -426,7 +418,6 @@ exports[`Spec generator > Returns one spec for a har with two domains and forceA
             "responses": {},
             "summary": "Get Login",
           },
-          "parameters": [],
         },
       },
       "servers": [
@@ -467,7 +458,6 @@ paths:
         required: true
       responses: {}
       summary: Get Login
-    parameters: []
 servers:
   - url: http://example.com
 ",
@@ -526,7 +516,6 @@ exports[`Spec generator > Returns one spec for a har with two domains and forceA
             ],
             "summary": "Get Login",
           },
-          "parameters": [],
         },
       },
       "servers": [
@@ -569,7 +558,6 @@ paths:
       servers:
         - url: http://example.com
       summary: Get Login
-    parameters: []
 servers:
   - url: http://example.com
 ",
@@ -623,7 +611,6 @@ exports[`Spec generator > Returns two specs for a har with two domains 1`] = `
             "responses": {},
             "summary": "Get Login",
           },
-          "parameters": [],
         },
       },
       "servers": [
@@ -664,7 +651,6 @@ paths:
         required: true
       responses: {}
       summary: Get Login
-    parameters: []
 servers:
   - url: http://example.com
 ",
@@ -713,7 +699,6 @@ servers:
             "responses": {},
             "summary": "Get Login",
           },
-          "parameters": [],
         },
       },
       "servers": [
@@ -754,7 +739,6 @@ paths:
         required: true
       responses: {}
       summary: Get Login
-    parameters: []
 servers:
   - url: http://exampletwo.com
 ",
@@ -813,7 +797,6 @@ exports[`Spec generator > Returns two specs for a har with two domains and force
             ],
             "summary": "Get Login",
           },
-          "parameters": [],
         },
       },
       "servers": [
@@ -856,7 +839,6 @@ paths:
       servers:
         - url: http://example.com
       summary: Get Login
-    parameters: []
 servers:
   - url: http://example.com
 ",
@@ -910,7 +892,6 @@ servers:
             ],
             "summary": "Get Login",
           },
-          "parameters": [],
         },
       },
       "servers": [
@@ -953,7 +934,6 @@ paths:
       servers:
         - url: http://exampletwo.com
       summary: Get Login
-    parameters: []
 servers:
   - url: http://exampletwo.com
 ",

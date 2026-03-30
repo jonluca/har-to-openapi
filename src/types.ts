@@ -2,6 +2,9 @@ import type { OpenApiSpec } from "@loopback/openapi-v3-types";
 import type { Entry } from "har-format";
 
 export interface HarToOpenAPIConfig {
+  /** generated OpenAPI document version
+   * @defaultValue `"3.0.0"` */
+  openapiVersion?: "3.0.0" | "3.1.0";
   /** limit generation to exact hostnames from the HAR (for example `["api.example.com"]`) */
   includeDomains?: string[];
   /** skip exact hostnames from the HAR (for example `["static.example.com"]`) */
@@ -40,6 +43,9 @@ export interface HarToOpenAPIConfig {
   /** include examples in response objects for non-json text content
    * * @defaultValue `false` */
   includeNonJsonExampleResponses?: boolean;
+  /** infer scalar types for query/path/form parameters when values are unambiguous
+   * @defaultValue `true` */
+  inferParameterTypes?: boolean;
   /** known security headers for this har, to add to security field in openapi (e.g. "X-Auth-Token") */
   securityHeaders?: string[];
   /** Whether to filter out all standard headers from the parameter list in openapi
@@ -100,6 +106,8 @@ export type InternalConfig = WithRequired<
   | "addServersToPaths"
   | "attemptToParameterizeUrl"
   | "minLengthForNumericPath"
+  | "openapiVersion"
+  | "inferParameterTypes"
   | "relaxedMethods"
   | "guessAuthenticationHeaders"
   | "dropPathsWithoutSuccessfulResponse"

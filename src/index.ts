@@ -1,22 +1,30 @@
 import type {
+  OpenApiSpec,
   OperationObject,
   ParameterObject,
   PathItemObject,
   PathsObject,
-  SecurityRequirementObject,
-  SecuritySchemeObject,
+  ResponseObject,
   ServerObject,
 } from "@loopback/openapi-v3-types";
-import { createEmptyApiSpec } from "@loopback/openapi-v3-types";
-import type { Cookie, Entry, Har, QueryString } from "har-format";
+import type { Entry, Har, QueryString, Response } from "har-format";
 import YAML from "js-yaml";
 import { cloneDeep, groupBy } from "lodash-es";
-import { addMethod, addQueryStringParams, addRequestHeaders, getBody, getResponseBody, getSecurity } from "./helpers.js";
+import {
+  addMethod,
+  addQueryStringParams,
+  addRequestHeaders,
+  getBody,
+  getResponseBody,
+  getSecurity,
+} from "./helpers.js";
 import type { HarToOpenAPIConfig, HarToOpenAPISpec, InternalConfig } from "./types.js";
 import { addResponse } from "./utils/baseResponse.js";
 import { DEFAULT_AUTH_HEADERS } from "./utils/headers.js";
+import { mergeScalarSchemas } from "./utils/inference.js";
 import { isStandardMethod } from "./utils/methods.js";
-import { getCookieSecurityName, parameterizeUrl } from "./utils/string.js";
+import { createApiSpec } from "./utils/spec.js";
+import { parameterizeUrl } from "./utils/string.js";
 import { sortObject } from "./utils/sort-object.js";
 
 const DEFAULT_INFO_TITLE = "HarToOpenApi";
@@ -63,12 +71,104 @@ const fillInfoTemplate = (template: string, values: Record<string, string>) => {
   return template.replace(/\{(domain|generatedAt)\}/g, (_, key: "domain" | "generatedAt") => values[key]);
 };
 
+const getResponseMimeType = (response: Response | undefined) => {
+  if (!response) {
+    return undefined;
+  }
+
+  const explicitMimeType = response.content?.mimeType?.trim();
+  if (explicitMimeType) {
+    return explicitMimeType.split(";")[0].trim().toLowerCase();
+  }
+
+  const headerMimeType = response.headers
+    ?.find((header) => header.name.trim().toLowerCase() === "content-type")
+    ?.value?.trim();
+  return headerMimeType?.split(";")[0].trim().toLowerCase();
+};
+
+const mergePathParameters = (pathItem: PathItemObject, pathParams: ParameterObject[]) => {
+  if (!pathParams.length) {
+    return;
+  }
+
+  pathItem.parameters ??= [];
+  for (const nextParam of pathParams) {
+    const existingParam = pathItem.parameters.find(
+      (param) => "$ref" in param === false && "in" in param && param.in === "path" && param.name === nextParam.name,
+    );
+    if (existingParam && !("$ref" in existingParam)) {
+      const mergedSchema = mergeScalarSchemas(existingParam.schema as any, nextParam.schema as any);
+      const nextDefault = nextParam.schema && !("$ref" in nextParam.schema) ? nextParam.schema.default : undefined;
+      existingParam.schema = {
+        ...mergedSchema,
+        default: nextDefault,
+      } as ParameterObject["schema"];
+      existingParam.example = nextParam.example;
+      continue;
+    }
+
+    pathItem.parameters.push(nextParam);
+  }
+};
+
+const isOperationObject = (value: unknown): value is OperationObject => {
+  return Boolean(value && typeof value === "object" && "responses" in (value as Record<string, unknown>));
+};
+
+const mergeRequestBodies = (
+  current: OperationObject["requestBody"] | undefined,
+  next: OperationObject["requestBody"] | undefined,
+) => {
+  if (!next) {
+    return current;
+  }
+
+  if (!current || "$ref" in current || "$ref" in next) {
+    return next;
+  }
+
+  return {
+    ...current,
+    ...next,
+    content: {
+      ...(current.content ?? {}),
+      ...(next.content ?? {}),
+    },
+  };
+};
+
+const mergeResponseObjects = (current: ResponseObject | undefined, next: ResponseObject | undefined) => {
+  if (!next) {
+    return current;
+  }
+
+  if (!current || "$ref" in current) {
+    return next;
+  }
+
+  return {
+    ...current,
+    ...next,
+    headers: {
+      ...(current.headers ?? {}),
+      ...(next.headers ?? {}),
+    },
+    content: {
+      ...(current.content ?? {}),
+      ...(next.content ?? {}),
+    },
+  };
+};
+
 const getConfig = (config?: HarToOpenAPIConfig): InternalConfig => {
   const internalConfig = cloneDeep(config || {}) as InternalConfig;
   // set up some defaults
+  internalConfig.openapiVersion ??= "3.0.0";
   internalConfig.filterStandardHeaders ??= true;
   internalConfig.relaxedContentTypeJsonParse ??= true;
   internalConfig.guessAuthenticationHeaders ??= true;
+  internalConfig.inferParameterTypes ??= true;
   // default false
   internalConfig.forceAllRequestsInSameSpec ??= false;
   internalConfig.dropPathsWithoutSuccessfulResponse ??= false;
@@ -103,6 +203,17 @@ function tryGetHostname(url: string, logErrors?: boolean, fallback?: string): st
   return fallback;
 }
 
+const tryParseUrl = (url: string, logErrors: boolean | undefined) => {
+  try {
+    return new URL(url);
+  } catch {
+    if (logErrors) {
+      console.error(`Error parsing url ${url}`);
+    }
+  }
+  return undefined;
+};
+
 const generateSpecs = async <T extends Har>(har: T, config?: HarToOpenAPIConfig): Promise<HarToOpenAPISpec[]> => {
   if (!har?.log?.entries?.length) {
     return [];
@@ -133,32 +244,55 @@ const generateSpecs = async <T extends Har>(har: T, config?: HarToOpenAPIConfig)
     infoDescription,
     infoTitle,
     infoVersion,
+    inferParameterTypes,
+    openapiVersion,
   } = internalConfig;
 
-  const filteredEntries = har.log.entries.filter((entry) => {
-    const domain = tryGetHostname(entry.request.url, logErrors);
-    return shouldIncludeDomain(domain, internalConfig);
-  });
+  const filteredEntries = har.log.entries
+    .map((entry) => {
+      const parsedUrl = tryParseUrl(entry.request.url, logErrors);
+      if (!parsedUrl) {
+        return undefined;
+      }
 
-  const groupedByHostname = groupBy(filteredEntries, (entry: Entry) => {
+      const domain = parsedUrl.hostname;
+      if (!shouldIncludeDomain(domain, internalConfig)) {
+        return undefined;
+      }
+
+      return {
+        entry,
+        parsedUrl,
+        domain,
+      };
+    })
+    .filter(
+      (
+        item,
+      ): item is {
+        entry: Entry;
+        parsedUrl: URL;
+        domain: string;
+      } => Boolean(item),
+    );
+
+  const groupedByHostname = groupBy(filteredEntries, (entry) => {
     if (forceAllRequestsInSameSpec) {
       return "specs";
     }
-    return tryGetHostname(entry.request.url, logErrors);
+    return entry.domain;
   });
   const specs: HarToOpenAPISpec[] = [];
 
   for (const domain in groupedByHostname) {
     try {
-      // loop through har entries
-      const spec = createEmptyApiSpec();
+      const spec = createApiSpec(openapiVersion);
 
       const harEntriesForDomain = groupedByHostname[domain];
 
-      const securitySchemas: SecurityRequirementObject[] = [];
-      const cookies: Cookie[] = [];
-      const firstUrl = harEntriesForDomain[0].request.url;
-      const labeledDomain = tryGetHostname(firstUrl, logErrors, domain);
+      const securitySchemes: NonNullable<OpenApiSpec["components"]>["securitySchemes"] = {};
+      const firstUrl = harEntriesForDomain[0]?.parsedUrl;
+      const labeledDomain = firstUrl?.hostname ?? domain;
       const generatedAt = new Date().toISOString();
       const infoTemplateValues = {
         domain: labeledDomain ?? domain ?? "unknown-domain",
@@ -169,16 +303,9 @@ const generateSpecs = async <T extends Har>(har: T, config?: HarToOpenAPIConfig)
       spec.info.version = fillInfoTemplate(infoVersion ?? spec.info.version, infoTemplateValues);
       spec.info.description = fillInfoTemplate(infoDescription ?? DEFAULT_INFO_DESCRIPTION, infoTemplateValues);
 
-      for (const item of harEntriesForDomain) {
+      for (const { entry: item, parsedUrl: sourceUrl } of harEntriesForDomain) {
         try {
-          const url = item.request.url;
-
-          if (!url) {
-            continue;
-          }
-
-          // filter and collapse path urls
-          const urlObj = new URL(url);
+          const urlObj = new URL(sourceUrl.href);
 
           if (pathReplace) {
             for (const key in pathReplace) {
@@ -189,7 +316,7 @@ const generateSpecs = async <T extends Har>(har: T, config?: HarToOpenAPIConfig)
           let urlPath = urlObj.pathname;
           let pathParams: ParameterObject[] = [];
           if (attemptToParameterizeUrl) {
-            const { path, parameters } = parameterizeUrl(urlPath, minLengthForNumericPath);
+            const { path, parameters } = parameterizeUrl(urlPath, minLengthForNumericPath, inferParameterTypes);
             urlPath = path;
             pathParams = parameters;
           }
@@ -202,7 +329,7 @@ const generateSpecs = async <T extends Har>(har: T, config?: HarToOpenAPIConfig)
               continue;
             }
           }
-          const mimeType = item.response?.content?.mimeType;
+          const mimeType = getResponseMimeType(item.response);
           const isValidMimetype = !mimeTypes || (mimeType && mimeTypes.includes(mimeType));
           if (!isValidMimetype) {
             continue;
@@ -215,8 +342,9 @@ const generateSpecs = async <T extends Har>(har: T, config?: HarToOpenAPIConfig)
             continue;
           }
           // create path if it doesn't exist
-          spec.paths[urlPath] ??= { parameters: pathParams } as PathsObject;
+          spec.paths[urlPath] ??= {} as PathItemObject;
           const path = spec.paths[urlPath] as PathItemObject;
+          mergePathParameters(path, pathParams);
 
           path[method] ??= addMethod(method, urlObj, internalConfig);
           const specMethod = path[method] as OperationObject;
@@ -230,17 +358,14 @@ const generateSpecs = async <T extends Har>(har: T, config?: HarToOpenAPIConfig)
           if (securityHeaders?.length && requestHeaders?.length) {
             const security = getSecurity(requestHeaders, securityHeaders, item.request.cookies);
             if (security) {
-              securitySchemas.push(security);
-              if (security.cookie && item.request.cookies?.length) {
-                cookies.push(...item.request.cookies);
-              }
-              specMethod.security = [security];
+              Object.assign(securitySchemes, security.schemes);
+              specMethod.security = [security.requirement];
             }
           }
 
           // add query string parameters
           if (item.request.queryString?.length) {
-            addQueryStringParams(specMethod, item.request.queryString);
+            addQueryStringParams(specMethod, item.request.queryString, internalConfig);
           }
           if (queryParams) {
             // try and parse from the url if the har is malformed
@@ -248,7 +373,7 @@ const generateSpecs = async <T extends Har>(har: T, config?: HarToOpenAPIConfig)
             for (const entry of urlObj.searchParams.entries()) {
               queryStrings.push({ name: entry[0], value: entry[1] });
             }
-            addQueryStringParams(specMethod, queryStrings);
+            addQueryStringParams(specMethod, queryStrings, internalConfig);
           }
           if (requestHeaders?.length) {
             addRequestHeaders(specMethod, requestHeaders, internalConfig);
@@ -258,11 +383,18 @@ const generateSpecs = async <T extends Har>(har: T, config?: HarToOpenAPIConfig)
             !ignoreBodiesForStatusCodes || !ignoreBodiesForStatusCodes.includes(status);
           if (shouldUseRequestAndResponse && item.request.postData) {
             specMethod.examples ??= [];
-            specMethod.requestBody = await getBody(
+            const requestBody = await getBody(
               item.request.postData,
-              { urlPath, method, examples: specMethod.examples },
+              {
+                urlPath,
+                method,
+                examples: specMethod.examples,
+                headers: item.request.headers,
+                suffix: "request",
+              },
               internalConfig,
             );
+            specMethod.requestBody = mergeRequestBodies(specMethod.requestBody, requestBody);
           }
 
           if (status && isValidMimetype && shouldUseRequestAndResponse && item.response) {
@@ -274,7 +406,7 @@ const generateSpecs = async <T extends Har>(har: T, config?: HarToOpenAPIConfig)
               internalConfig,
             );
             if (body) {
-              specMethod.responses[status] = body;
+              specMethod.responses[status] = mergeResponseObjects(specMethod.responses[status], body) as any;
             }
           }
         } catch (e) {
@@ -309,41 +441,27 @@ const generateSpecs = async <T extends Har>(har: T, config?: HarToOpenAPIConfig)
         continue;
       }
 
-      if (securitySchemas.length) {
+      if (Object.keys(securitySchemes).length) {
         spec.components ||= {};
         spec.components.securitySchemes ??= {};
-        if (cookies.length) {
-          cookies.forEach((cookie) => {
-            const schemaName = getCookieSecurityName(cookie);
-            spec.components!.securitySchemes![schemaName] = {
-              type: "apiKey",
-              name: cookie.name,
-              in: "cookie",
-            } as SecuritySchemeObject;
-          });
-        }
-        securitySchemas.forEach((schema) => {
-          const schemaName = Object.keys(schema)[0];
-          spec.components!.securitySchemes![schemaName] = {
-            type: "apiKey",
-            name: schemaName,
-            in: "header",
-          } as SecuritySchemeObject;
-        });
+        Object.assign(spec.components.securitySchemes, securitySchemes);
       }
 
       // remove the examples that we used to build the superset schemas
       for (const path of Object.values(spec.paths)) {
-        for (const method of Object.values<OperationObject>(path)) {
-          delete method.responseExamples;
-          delete method.examples;
+        for (const maybeOperation of Object.values(path)) {
+          if (!isOperationObject(maybeOperation)) {
+            continue;
+          }
+          delete maybeOperation.responseExamples;
+          delete maybeOperation.examples;
         }
       }
       // sort paths
       spec.paths = sortObject(spec.paths);
-      const prefix = firstUrl?.startsWith("https://") ? "https://" : "http://";
+      const prefix = firstUrl?.protocol ?? "http:";
       const server: ServerObject = {
-        url: `${prefix}${labeledDomain}`,
+        url: `${prefix}//${labeledDomain}`,
       };
       spec.servers = [server];
       const yamlSpec = YAML.dump(spec);
@@ -362,7 +480,7 @@ const generateSpec = async <T extends Har>(har: T, config?: HarToOpenAPIConfig):
   if (specs.length) {
     return specs[0];
   }
-  const spec = createEmptyApiSpec();
+  const spec = createApiSpec(getConfig(config).openapiVersion);
   spec.info.title = "HarToOpenApi - no valid specs found";
   return { spec, yamlSpec: YAML.dump(spec), domain: undefined };
 };

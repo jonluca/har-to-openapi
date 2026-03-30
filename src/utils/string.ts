@@ -1,11 +1,16 @@
 import type { Cookie } from "har-format";
 import type { ParameterObject, SchemaObject } from "@loopback/openapi-v3-types";
 import { camelCase, startCase, uniq } from "lodash-es";
-
-const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-
-const dateRegex =
-  /(((20[012]\d|19\d\d)|(1\d|2[0123]))-((0[0-9])|(1[012]))-((0[1-9])|([12][0-9])|(3[01])))|(((0[1-9])|([12][0-9])|(3[01]))-((0[0-9])|(1[012]))-((20[012]\d|19\d\d)|(1\d|2[0123])))|(((20[012]\d|19\d\d)|(1\d|2[0123]))\/((0[0-9])|(1[012]))\/((0[1-9])|([12][0-9])|(3[01])))|(((0[0-9])|(1[012]))\/((0[1-9])|([12][0-9])|(3[01]))\/((20[012]\d|19\d\d)|(1\d|2[0123])))|(((0[1-9])|([12][0-9])|(3[01]))\/((0[0-9])|(1[012]))\/((20[012]\d|19\d\d)|(1\d|2[0123])))|(((0[1-9])|([12][0-9])|(3[01]))\.((0[0-9])|(1[012]))\.((20[012]\d|19\d\d)|(1\d|2[0123])))|(((20[012]\d|19\d\d)|(1\d|2[0123]))\.((0[0-9])|(1[012]))\.((0[1-9])|([12][0-9])|(3[01])))/;
+import {
+  coerceExampleValue,
+  getIntegerDigitCount,
+  getNumericParameterSchema,
+  inferScalarSchema,
+  isBooleanLike,
+  isDateLike,
+  isDateTimeLike,
+  isUuidLike,
+} from "./inference.js";
 
 export const getTypenameFromPath = (path: string) => {
   const parts = path.split(/[/|${|-}]/g);
@@ -16,20 +21,24 @@ export const getTypenameFromPath = (path: string) => {
       continue;
     }
     // if its a UUID, skip it
-    if (uuidRegex.test(part)) {
+    if (isUuidLike(part)) {
       partsToKeep.push("By UUID");
       continue;
     }
-    if (part.length > 3 && !isNaN(Number(part))) {
+    if (getIntegerDigitCount(part) >= 3 && !isNaN(Number(part))) {
       partsToKeep.push("By ID");
       continue;
     }
-    if (dateRegex.test(part)) {
+    if (isDateTimeLike(part)) {
+      partsToKeep.push("By Date Time");
+      continue;
+    }
+    if (isDateLike(part)) {
       partsToKeep.push("By Date");
       continue;
     }
 
-    if (part === "true" || part === "false") {
+    if (isBooleanLike(part)) {
       partsToKeep.push(`set${startCase(part)}`);
       continue;
     }
@@ -38,54 +47,44 @@ export const getTypenameFromPath = (path: string) => {
   // kind of heuristics, but we want to filter out things that are like uuids or just numbers
   return uniq(partsToKeep).join(" ");
 };
-export const parameterizeUrl = (path: string, minLengthForNumericPath = 3) => {
-  const parts = path.split(/[/|${|-}]/g);
+export const parameterizeUrl = (path: string, minLengthForNumericPath = 3, inferParameterTypes = true) => {
+  const parts = path.split("/").filter(Boolean);
   const parameterizedParts = [];
   const parameters: ParameterObject[] = [];
-  const addParameter = (
-    id: string,
-    part: string,
-    type: SchemaObject["type"] = "string",
-    extraSchemaParts?: Partial<SchemaObject>,
-  ) => {
+  const addParameter = (id: string, part: string, schema: SchemaObject) => {
     const prefix = id;
     const count = parameters.filter((p) => p.name.startsWith(prefix)).length;
     const suffix = count > 0 ? `${count}` : "";
     const name = `${prefix}${suffix}`;
+    const example = coerceExampleValue(part, schema);
     parameters.push({
       in: "path",
       name,
       required: true,
-      schema: { type, default: part, ...extraSchemaParts },
-      example: part,
+      schema: { ...schema, default: example },
+      example,
     } as ParameterObject);
     parameterizedParts.push(`{${name}}`);
   };
   for (const part of parts) {
-    // if its blank, skip
-    if (!part.length) {
+    if (isUuidLike(part)) {
+      addParameter("uuid", part, inferScalarSchema(part, inferParameterTypes));
       continue;
     }
-    // if its a UUID, skip it
-    if (uuidRegex.test(part)) {
-      addParameter("uuid", part, "string", {
-        pattern: "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-        minLength: 36,
-        maxLength: 36,
-      });
+    if (isDateTimeLike(part)) {
+      addParameter("dateTime", part, inferScalarSchema(part, inferParameterTypes));
       continue;
     }
-    if (dateRegex.test(part)) {
-      addParameter("date", part, "string", { format: "date" });
+    if (isDateLike(part)) {
+      addParameter("date", part, inferScalarSchema(part, inferParameterTypes));
       continue;
     }
-    // if its a number and greater than 3 digits, probably safe to skip?
-    if (part.length > minLengthForNumericPath && !isNaN(Number(part))) {
-      addParameter("id", part, "integer");
+    if (getIntegerDigitCount(part) >= minLengthForNumericPath && !isNaN(Number(part))) {
+      addParameter("id", part, getNumericParameterSchema(part, inferParameterTypes));
       continue;
     }
-    if (part === "true" || part === "false") {
-      addParameter("bool", part, "boolean");
+    if (isBooleanLike(part)) {
+      addParameter("bool", part, inferScalarSchema(part, inferParameterTypes));
       continue;
     }
     parameterizedParts.push(part);

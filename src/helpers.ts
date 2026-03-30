@@ -6,6 +6,7 @@ import type {
   ResponseObject,
   SchemaObject,
   SecurityRequirementObject,
+  SecuritySchemeObject,
 } from "@loopback/openapi-v3-types";
 import type { Content, Cookie, Header, PostData, PostDataParams, QueryString, Response } from "har-format";
 import { convert as toOpenApiSchema } from "@openapi-contrib/json-schema-to-openapi-schema";
@@ -13,21 +14,252 @@ import { camelCase, startCase, uniqBy } from "lodash-es";
 import { URLSearchParams } from "url";
 import { quicktypeJSON } from "./quicktype.js";
 import type { InternalConfig } from "./types.js";
-import { shouldFilterHeader } from "./utils/headers.js";
+import { isLikelyAuthCookieName, shouldFilterHeader } from "./utils/headers.js";
 import { getCookieSecurityName, getTypenameFromPath } from "./utils/string.js";
+import { coerceExampleValue, inferScalarSchema, mergeScalarSchemas } from "./utils/inference.js";
 
 interface ParsedMimeType {
   type: string;
   subtype: string;
   essence: string;
+  suffix?: string;
+  isJsonLike: boolean;
+  isXmlLike: boolean;
 }
 
 function parseMimeType(mimeString: string): ParsedMimeType {
-  // Extract essence (type/subtype) by removing parameters after semicolon
   const essence = mimeString.split(";")[0].trim().toLowerCase();
   const [type = "", subtype = ""] = essence.split("/");
-  return { type, subtype, essence };
+  const suffix = subtype.includes("+") ? subtype.split("+").at(-1) : undefined;
+  const isJsonLike =
+    essence === "text/json" ||
+    subtype === "json" ||
+    subtype === "x-json" ||
+    subtype.endsWith("+json") ||
+    suffix === "json";
+  const isXmlLike = essence === "application/xml" || essence === "text/xml" || subtype === "xml" || suffix === "xml";
+  return { type, subtype, essence, suffix, isJsonLike, isXmlLike };
 }
+
+interface FormFieldObservation {
+  name: string;
+  value: string;
+  isBinary: boolean;
+}
+
+interface FormSample {
+  kind: "form";
+  fields: FormFieldObservation[];
+}
+
+interface SecurityExtraction {
+  requirement: SecurityRequirementObject;
+  schemes: Record<string, SecuritySchemeObject>;
+}
+
+const getHeaderValue = (headers: Header[] | undefined, headerName: string) => {
+  const normalized = headerName.trim().toLowerCase();
+  return headers?.find((header) => header.name.trim().toLowerCase() === normalized)?.value;
+};
+
+const getMimeType = (
+  postData: PostData | Content,
+  headers: Header[] | undefined,
+  config: InternalConfig,
+): string | undefined => {
+  const postDataMime = "mimeType" in postData ? postData.mimeType?.trim() : undefined;
+  if (postDataMime) {
+    return postDataMime;
+  }
+
+  const headerMime = getHeaderValue(headers, "content-type")?.trim();
+  if (headerMime) {
+    return headerMime;
+  }
+
+  const hasParams = "params" in postData && Boolean(postData.params?.length);
+  if (hasParams) {
+    const hasBinaryField = Boolean(
+      postData.params?.some((param) => {
+        return Boolean(param.fileName || param.contentType || param.value === "(binary)");
+      }),
+    );
+    return hasBinaryField ? "multipart/form-data" : "application/x-www-form-urlencoded";
+  }
+
+  if ("text" in postData && typeof postData.text === "string") {
+    if (config.relaxedContentTypeJsonParse) {
+      try {
+        JSON.parse(postData.text);
+        return "application/json";
+      } catch {
+        // fall through to text/plain
+      }
+    }
+
+    return "text/plain";
+  }
+
+  return undefined;
+};
+
+const isBinaryMimeType = (mimeType: ParsedMimeType): boolean => {
+  return (
+    ["image", "audio", "video"].includes(mimeType.type) ||
+    [
+      "octet-stream",
+      "x-octet-stream",
+      "pdf",
+      "png",
+      "jpeg",
+      "msword",
+      "vnd.ms-excel",
+      "vnd.ms-powerpoint",
+      "zip",
+      "rar",
+      "x-tar",
+      "x-7z-compressed",
+    ].includes(mimeType.subtype)
+  );
+};
+
+const isFormLikeMimeType = (mimeType: ParsedMimeType) => {
+  return mimeType.essence === "multipart/form-data" || mimeType.essence === "application/x-www-form-urlencoded";
+};
+
+const getDecodedText = (postData: PostData | Content) => {
+  if (postData.text === undefined) {
+    return undefined;
+  }
+
+  const isBase64Encoded = "encoding" in postData && (<any>postData).encoding === "base64";
+  return isBase64Encoded ? Buffer.from(postData.text, "base64").toString() : postData.text;
+};
+
+const getBaseSchemaFallback = (mimeType: ParsedMimeType, isBase64Encoded: boolean): SchemaObject => {
+  return {
+    type: "string",
+    format: isBase64Encoded || isBinaryMimeType(mimeType) ? "binary" : undefined,
+  };
+};
+
+const getJsonSamples = (examples: any[]) => {
+  return examples.filter((example): example is string => typeof example === "string");
+};
+
+const getFormSamples = (examples: any[]) => {
+  return examples.filter((example): example is FormSample => example?.kind === "form");
+};
+
+const mapFormText = (text: string) => {
+  const searchParams = new URLSearchParams(text);
+  const fields: FormFieldObservation[] = [];
+  searchParams.forEach((value, key) => {
+    fields.push({
+      name: key,
+      value,
+      isBinary: false,
+    });
+  });
+  return fields;
+};
+
+const getFormFields = (postData: PostData | Content): FormFieldObservation[] => {
+  if ("params" in postData && postData.params?.length) {
+    return postData.params.map((param) => ({
+      name: param.name,
+      value: param.value ?? "",
+      isBinary: Boolean(param.fileName || param.contentType || param.value === "(binary)"),
+    }));
+  }
+
+  if ("text" in postData && typeof postData.text === "string") {
+    return mapFormText(postData.text);
+  }
+
+  return [];
+};
+
+const mergeFormSamples = (samples: FormSample[], inferParameterTypes: boolean): SchemaObject | undefined => {
+  if (!samples.length) {
+    return undefined;
+  }
+
+  const fieldsByName = new Map<
+    string,
+    {
+      schema: SchemaObject | undefined;
+      count: number;
+    }
+  >();
+
+  for (const sample of samples) {
+    const seenInSample = new Set<string>();
+    for (const field of sample.fields) {
+      const existing = fieldsByName.get(field.name) ?? { schema: undefined, count: 0 };
+      const nextSchema = field.isBinary
+        ? ({ type: "string", format: "binary" } as SchemaObject)
+        : inferScalarSchema(field.value, inferParameterTypes);
+      existing.schema = mergeScalarSchemas(existing.schema, nextSchema);
+      if (!seenInSample.has(field.name)) {
+        existing.count += 1;
+        seenInSample.add(field.name);
+      }
+      fieldsByName.set(field.name, existing);
+    }
+  }
+
+  const properties: NonNullable<SchemaObject["properties"]> = {};
+  const required: string[] = [];
+  for (const [fieldName, fieldInfo] of fieldsByName.entries()) {
+    properties[fieldName] = fieldInfo.schema ?? { type: "string" };
+    if (fieldInfo.count === samples.length) {
+      required.push(fieldName);
+    }
+  }
+
+  const schema: SchemaObject = {
+    type: "object",
+    properties,
+  };
+  if (required.length) {
+    schema.required = required;
+  }
+  return schema;
+};
+
+const buildJsonSchema = async (samples: string[], urlPath: string, method: string, suffix: "request" | "response") => {
+  const options = {
+    cloneSchema: true,
+    dereference: true,
+    dereferenceOptions: {
+      dereference: {
+        circular: "ignore",
+      },
+    },
+  } as Parameters<typeof toOpenApiSchema>[1];
+  const typeName = camelCase([getTypenameFromPath(urlPath), method, suffix].join(" "));
+  const jsonSchema = await quicktypeJSON("schema", typeName, samples);
+  return toOpenApiSchema(jsonSchema, options);
+};
+
+const parseCookiesFromHeader = (value: string): Cookie[] => {
+  return value
+    .split(";")
+    .map((part) => part.trim())
+    .filter(Boolean)
+    .map((part) => {
+      const separatorIndex = part.indexOf("=");
+      if (separatorIndex === -1) {
+        return undefined;
+      }
+      return {
+        name: part.slice(0, separatorIndex).trim(),
+        value: part.slice(separatorIndex + 1).trim(),
+      } as Cookie;
+    })
+    .filter((cookie): cookie is Cookie => Boolean(cookie?.name));
+};
 
 export const addMethod = (method: string, url: URL, config: InternalConfig): OperationObject => {
   const path = url.pathname;
@@ -94,28 +326,41 @@ export const addRequestHeaders = (specMethod: OperationObject, headers: Header[]
   });
 };
 
-export const addQueryStringParams = (specMethod: OperationObject, harParams: QueryString[]) => {
-  const methodQueryParameters: string[] = [];
+export const addQueryStringParams = (
+  specMethod: OperationObject,
+  harParams: QueryString[],
+  config: Pick<InternalConfig, "inferParameterTypes">,
+) => {
   const parameters = (specMethod.parameters ??= []);
-  parameters.forEach((param) => {
-    if ("in" in param && param.in === "query") {
-      methodQueryParameters.push(param.name);
-    }
-  });
   harParams?.forEach((param) => {
-    if (!methodQueryParameters.includes(param.name)) {
-      // add query parameter
-      parameters.push({
-        schema: {
-          type: "string",
-          default: decodeURIComponent(param.value),
-          example: decodeURIComponent(param.value),
-        },
-        in: "query",
-        name: param.name,
-        description: param.name,
-      });
+    const decodedValue = decodeURIComponent(param.value);
+    const schema = inferScalarSchema(decodedValue, config.inferParameterTypes);
+    const example = coerceExampleValue(decodedValue, schema);
+    const existing = parameters.find(
+      (parameter) => "in" in parameter && parameter.in === "query" && parameter.name === param.name,
+    );
+    if (existing && "schema" in existing) {
+      existing.schema = mergeScalarSchemas(existing.schema as SchemaObject | undefined, schema);
+      existing.example = coerceExampleValue(decodedValue, existing.schema as SchemaObject);
+      if (existing.schema?.type !== "string" || !existing.schema.format) {
+        existing.schema = {
+          ...(existing.schema as SchemaObject),
+          default: coerceExampleValue(decodedValue, existing.schema as SchemaObject),
+        };
+      }
+      return;
     }
+
+    parameters.push({
+      schema: {
+        ...schema,
+        default: example,
+      },
+      in: "query",
+      name: param.name,
+      description: param.name,
+      example,
+    });
   });
 };
 
@@ -123,209 +368,181 @@ export const getSecurity = (
   headers: Header[],
   securityHeaders: string[],
   cookies: Cookie[] | undefined,
-): SecurityRequirementObject | undefined => {
-  const security: SecurityRequirementObject = {};
-  headers.forEach(function (header) {
+): SecurityExtraction | undefined => {
+  const requirement: SecurityRequirementObject = {};
+  const schemes: Record<string, SecuritySchemeObject> = {};
+  headers.forEach((header) => {
     const headerName = header.name.trim().toLowerCase();
-    if (securityHeaders.includes(headerName)) {
-      security[header.name] = [];
-      if (headerName === "cookie" && cookies?.length) {
-        cookies.forEach((cookie) => {
-          const securityName = getCookieSecurityName(cookie);
+    if (!securityHeaders.includes(headerName)) {
+      return;
+    }
 
-          security["cookie"]?.push(securityName);
-        });
+    if (headerName === "authorization") {
+      if (/^bearer\s+/i.test(header.value)) {
+        requirement.bearerAuth = [];
+        schemes.bearerAuth = {
+          type: "http",
+          scheme: "bearer",
+        };
+        return;
+      }
+
+      if (/^basic\s+/i.test(header.value)) {
+        requirement.basicAuth = [];
+        schemes.basicAuth = {
+          type: "http",
+          scheme: "basic",
+        };
+        return;
       }
     }
+
+    if (headerName === "cookie") {
+      const cookieValues = (cookies?.length ? cookies : parseCookiesFromHeader(header.value)).filter((cookie) =>
+        isLikelyAuthCookieName(cookie.name),
+      );
+      if (!cookieValues.length) {
+        return;
+      }
+      cookieValues.forEach((cookie) => {
+        const securityName = getCookieSecurityName(cookie);
+        requirement[securityName] = [];
+        schemes[securityName] = {
+          type: "apiKey",
+          name: cookie.name,
+          in: "cookie",
+        };
+      });
+      return;
+    }
+
+    requirement[header.name] = [];
+    schemes[header.name] = {
+      type: "apiKey",
+      name: header.name,
+      in: "header",
+    };
   });
-  if (Object.keys(security).length === 0) {
+  if (Object.keys(requirement).length === 0) {
     return undefined;
   }
-  return security;
-};
-
-const mapParams = (params: PostDataParams["params"]): SchemaObject => {
-  const properties: SchemaObject["properties"] = {};
-  const required: SchemaObject["required"] = params.map((query) => {
-    if (query.value == "" || query.value == "(binary)") {
-      properties[query.name] = {
-        type: "string",
-        format: "binary",
-      };
-      return query.name;
-    }
-    properties[query.name] = {
-      type: "string",
-    };
-    return query.name;
-  });
-  const response: SchemaObject = {
-    type: "object",
-    properties,
-  };
-  if (required.length) {
-    response.required = required;
-  }
-  return response;
-};
-const getFormData = (postData: PostData | Content): SchemaObject | undefined => {
-  if (postData && "params" in postData && postData?.params?.length && postData.params.length > 0) {
-    return mapParams(postData.params);
-  }
-  if (postData && "text" in postData) {
-    const searchParams = new URLSearchParams(postData.text);
-    const params: PostDataParams["params"] = [];
-    searchParams.forEach((value, key) => {
-      params.push({ value, name: key });
-    });
-    return mapParams(params);
-  }
-};
-const isBinaryMimeType = (mimeType: ParsedMimeType): boolean => {
-  return (
-    ["image", "audio", "video"].includes(mimeType.type) ||
-    [
-      "octet-stream",
-      "x-octet-stream",
-      "pdf",
-      "png",
-      "jpeg",
-      "msword",
-      "vnd.ms-excel",
-      "vnd.ms-powerpoint",
-      "zip",
-      "rar",
-      "x-tar",
-      "x-7z-compressed",
-    ].includes(mimeType.subtype)
-  );
+  return { requirement, schemes };
 };
 
 export const getBody = async (
   postData: PostData | Content | undefined,
-  details: { urlPath: string; method: string; examples: any[] },
+  details: { urlPath: string; method: string; examples: any[]; headers?: Header[]; suffix?: "request" | "response" },
   config: InternalConfig,
 ): Promise<RequestBodyObject | undefined> => {
-  if (!postData || !postData.mimeType) {
+  if (!postData) {
     return undefined;
   }
 
-  const { urlPath, method, examples } = details;
+  const { urlPath, method, examples, headers, suffix = "request" } = details;
+  const mimeTypeValue = getMimeType(postData, headers, config);
+  if (!mimeTypeValue) {
+    return undefined;
+  }
 
   const param: RequestBodyObject = {
     required: true,
     content: {},
   };
-  const text = postData.text;
-  const options = {
-    cloneSchema: true,
-    dereference: true,
-    dereferenceOptions: {
-      dereference: {
-        circular: "ignore",
-      },
-    },
-  } as Parameters<typeof toOpenApiSchema>[1];
-  if (postData && text !== undefined) {
-    const mimeType = parseMimeType(postData.mimeType);
-    const mimeEssence = mimeType.essence;
-    const mime = mimeType.subtype;
+  const mimeType = parseMimeType(mimeTypeValue);
+  const mimeEssence = mimeType.essence;
+  const text = getDecodedText(postData);
+  const isBase64Encoded = "encoding" in postData && (<any>postData).encoding === "base64";
+  const baseSchemaFallback = getBaseSchemaFallback(mimeType, isBase64Encoded);
+  const baseExample = config.includeNonJsonExampleResponses ? text : undefined;
 
-    // do nothing on json parse failures - just take the mime type and say its a string
-    const isBase64Encoded = "encoding" in postData && (<any>postData).encoding == "base64";
-    const isBinary = isBinaryMimeType(mimeType);
-    const baseSchemaFallback = { type: "string", format: isBase64Encoded || isBinary ? "binary" : undefined };
-    const baseExample = config.includeNonJsonExampleResponses ? text : undefined;
-
-    // first check for binary types
-    const tryParseJson = async () => {
-      const data = JSON.parse(isBase64Encoded ? Buffer.from(text, "base64").toString() : text);
-      examples.push(JSON.stringify(data));
-      const typeName = camelCase([getTypenameFromPath(urlPath), method, "request"].join(" "));
-      const jsonSchema = await quicktypeJSON("schema", typeName, examples);
-      const schema = await toOpenApiSchema(jsonSchema, options);
-      return { schema, data };
-    };
-    if (isBinary) {
-      if (config.relaxedContentTypeJsonParse) {
-        try {
-          const { schema, data } = await tryParseJson();
-          param.content[mimeEssence] = {
-            schema,
-            example: data,
-          };
-          return param;
-        } catch {
-          // continue
-        }
+  if (isFormLikeMimeType(mimeType)) {
+    const formFields = getFormFields(postData);
+    if (formFields.length) {
+      examples.push({
+        kind: "form",
+        fields: formFields,
+      } satisfies FormSample);
+      const formSchema = mergeFormSamples(getFormSamples(examples), config.inferParameterTypes);
+      if (formSchema) {
+        param.content[mimeEssence] = {
+          schema: formSchema,
+        };
       }
+    } else if (!config.mimeTypes || config.mimeTypes.includes(mimeEssence)) {
       param.content[mimeEssence] = {
-        schema: baseSchemaFallback,
-      };
-      return param;
-    }
-    // We run the risk of circular references down below
-    const mimeLower = mime!.toLocaleLowerCase();
-    switch (mimeLower) {
-      case "form-data":
-      case "x-www-form-urlencoded":
-        const formSchema = getFormData(postData);
-        if (formSchema) {
-          const schema = await toOpenApiSchema(formSchema, options);
-          if (schema) {
-            param.content[mimeEssence] = {
-              schema,
-            };
-          }
-        }
-        break;
-      case "plain":
-      case "text":
-      case "json":
-      default: {
-        if (mimeLower === "json" || config.relaxedContentTypeJsonParse) {
-          try {
-            const { schema, data } = await tryParseJson();
-            param.content[mimeEssence] = {
-              schema,
-              example: data,
-            };
-          } catch {
-            param.content[mimeEssence] = {
-              schema: baseSchemaFallback,
-              example: baseExample,
-            };
-          }
-        }
-        break;
-      }
-    }
-    if (!param.content[mimeEssence]) {
-      param.content[mimeEssence] = {
-        schema: baseSchemaFallback,
-        example: baseExample,
-      };
-    }
-  } else {
-    const multipartMimeType = "multipart/form-data";
-    // Don't apply the fallback to if there is a filter and it doesn't include it
-    if (!config.mimeTypes || config.mimeTypes.includes(multipartMimeType)) {
-      param.content = {
-        [multipartMimeType]: {
-          schema: {
-            properties: {
-              filename: {
-                description: "",
-                format: "binary",
-                type: "string",
-              },
+        schema: {
+          type: "object",
+          properties: {
+            filename: {
+              description: "",
+              format: "binary",
+              type: "string",
             },
-            type: "object",
           },
         },
       };
     }
+    return Object.keys(param.content).length ? param : undefined;
   }
+
+  if (text === undefined) {
+    return undefined;
+  }
+
+  const tryParseJson = async () => {
+    const data = JSON.parse(text);
+    examples.push(JSON.stringify(data));
+    const schema = await buildJsonSchema(getJsonSamples(examples), urlPath, method, suffix);
+    return { schema, data };
+  };
+
+  if (mimeType.isXmlLike) {
+    param.content[mimeEssence] = {
+      schema: { type: "string" },
+      example: baseExample,
+    };
+    return param;
+  }
+
+  if (isBinaryMimeType(mimeType)) {
+    if (config.relaxedContentTypeJsonParse) {
+      try {
+        const { schema, data } = await tryParseJson();
+        param.content[mimeEssence] = {
+          schema,
+          example: data,
+        };
+        return param;
+      } catch {
+        // fall back to binary handling below
+      }
+    }
+
+    param.content[mimeEssence] = {
+      schema: baseSchemaFallback,
+      example: baseExample,
+    };
+    return param;
+  }
+
+  const shouldParseAsJson = mimeType.isJsonLike || config.relaxedContentTypeJsonParse;
+  if (shouldParseAsJson) {
+    try {
+      const { schema, data } = await tryParseJson();
+      param.content[mimeEssence] = {
+        schema,
+        example: data,
+      };
+      return param;
+    } catch {
+      // fall through to string fallback below
+    }
+  }
+
+  param.content[mimeEssence] = {
+    schema: baseSchemaFallback,
+    example: baseExample,
+  };
   return param;
 };
 
@@ -334,7 +551,15 @@ export const getResponseBody = async (
   details: { urlPath: string; method: string; examples: any[] },
   config: InternalConfig,
 ): Promise<ResponseObject | undefined> => {
-  const body = await getBody(response.content, details, config);
+  const body = await getBody(
+    response.content,
+    {
+      ...details,
+      headers: response.headers,
+      suffix: "response",
+    },
+    config,
+  );
 
   const { filterStandardHeaders, securityHeaders } = config;
   const param: ResponseObject = {
