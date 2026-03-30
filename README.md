@@ -64,6 +64,19 @@ const { spec, yamlSpec } = openapi;
 // yamlSpec = string, "info: ..."
 ```
 
+## CLI
+
+The package can now also be used as a CLI without changing the existing library API.
+
+```bash
+bunx har-to-openapi capture.har > openapi.yaml
+bunx har-to-openapi capture.har --format json --output openapi.json
+bunx har-to-openapi test/data/base-path.har --multi-spec --output-dir generated
+cat capture.har | bunx har-to-openapi --config har-to-openapi.config.json
+```
+
+The CLI supports common boolean and list options as flags, and advanced JSON-serializable configuration through `--config`.
+
 ## Options
 
 ```typescript
