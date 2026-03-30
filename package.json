@@ -5,6 +5,9 @@
   "author": "Jonluca DeCaro <hartoopenapi@jonlu.ca>",
   "description": "Convert a HAR object to an OpenAPI object",
   "types": "dist/index.d.ts",
+  "bin": {
+    "har-to-openapi": "./bin/har-to-openapi.cjs"
+  },
   "files": [
     "dist",
     "src",
