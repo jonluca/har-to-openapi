@@ -8,9 +8,9 @@ import type {
   SecurityRequirementObject,
   SecuritySchemeObject,
 } from "@loopback/openapi-v3-types";
-import type { Content, Cookie, Header, PostData, PostDataParams, QueryString, Response } from "har-format";
+import type { Content, Cookie, Header, PostData, QueryString, Response } from "har-format";
 import { convert as toOpenApiSchema } from "@openapi-contrib/json-schema-to-openapi-schema";
-import { camelCase, startCase, uniqBy } from "lodash-es";
+import { camelCase, startCase } from "lodash-es";
 import { URLSearchParams } from "url";
 import { quicktypeJSON } from "./quicktype.js";
 import type { InternalConfig } from "./types.js";
@@ -52,10 +52,35 @@ interface FormSample {
   fields: FormFieldObservation[];
 }
 
+interface BodySample {
+  postData: PostData | Content;
+  headers?: Header[];
+}
+
+type FinalizedBodyContentState =
+  | {
+      kind: "json";
+      sampleCount: number;
+      example: unknown;
+    }
+  | {
+      kind: "form";
+      sampleCount: number;
+    }
+  | {
+      kind: "raw";
+      schema: SchemaObject;
+      example: unknown;
+      omitExample?: boolean;
+    };
+
 interface SecurityExtraction {
   requirement: SecurityRequirementObject;
   schemes: Record<string, SecuritySchemeObject>;
 }
+
+const jsonSchemaCache = new Map<string, Promise<SchemaObject>>();
+const JSON_SCHEMA_CACHE_LIMIT = 256;
 
 const getHeaderValue = (headers: Header[] | undefined, headerName: string) => {
   const normalized = headerName.trim().toLowerCase();
@@ -141,14 +166,6 @@ const getBaseSchemaFallback = (mimeType: ParsedMimeType, isBase64Encoded: boolea
     type: "string",
     format: isBase64Encoded || isBinaryMimeType(mimeType) ? "binary" : undefined,
   };
-};
-
-const getJsonSamples = (examples: any[]) => {
-  return examples.filter((example): example is string => typeof example === "string");
-};
-
-const getFormSamples = (examples: any[]) => {
-  return examples.filter((example): example is FormSample => example?.kind === "form");
 };
 
 const mapFormText = (text: string) => {
@@ -239,8 +256,269 @@ const buildJsonSchema = async (samples: string[], urlPath: string, method: strin
     },
   } as Parameters<typeof toOpenApiSchema>[1];
   const typeName = camelCase([getTypenameFromPath(urlPath), method, suffix].join(" "));
-  const jsonSchema = await quicktypeJSON("schema", typeName, samples);
-  return toOpenApiSchema(jsonSchema, options);
+  const cacheKey = JSON.stringify([typeName, samples]);
+  const cachedSchema = jsonSchemaCache.get(cacheKey);
+  if (cachedSchema) {
+    return cachedSchema;
+  }
+
+  if (jsonSchemaCache.size >= JSON_SCHEMA_CACHE_LIMIT) {
+    jsonSchemaCache.clear();
+  }
+
+  const nextSchema = (async () => {
+    const jsonSchema = await quicktypeJSON("schema", typeName, samples);
+    return toOpenApiSchema(jsonSchema, options);
+  })().catch((error) => {
+    jsonSchemaCache.delete(cacheKey);
+    throw error;
+  });
+
+  jsonSchemaCache.set(cacheKey, nextSchema);
+  return nextSchema;
+};
+
+const getEmptyMultipartFallbackSchema = (): SchemaObject => {
+  return {
+    type: "object",
+    properties: {
+      filename: {
+        description: "",
+        format: "binary",
+        type: "string",
+      },
+    },
+  };
+};
+
+const buildBodyContentFromSamples = async (
+  samples: BodySample[],
+  details: { urlPath: string; method: string; suffix: "request" | "response" },
+  config: InternalConfig,
+): Promise<NonNullable<RequestBodyObject["content"]> | undefined> => {
+  const jsonSamples: string[] = [];
+  const formSamples: FormSample[] = [];
+  const contentStates = new Map<string, FinalizedBodyContentState>();
+
+  for (const sample of samples) {
+    const mimeTypeValue = getMimeType(sample.postData, sample.headers, config);
+    if (!mimeTypeValue) {
+      continue;
+    }
+
+    const mimeType = parseMimeType(mimeTypeValue);
+    const mimeEssence = mimeType.essence;
+    const text = getDecodedText(sample.postData);
+    const isBase64Encoded = "encoding" in sample.postData && (<any>sample.postData).encoding === "base64";
+    const baseSchemaFallback = getBaseSchemaFallback(mimeType, isBase64Encoded);
+    const baseExample = config.includeNonJsonExampleResponses ? text : undefined;
+
+    if (isFormLikeMimeType(mimeType)) {
+      const fields = getFormFields(sample.postData);
+      if (fields.length) {
+        formSamples.push({
+          kind: "form",
+          fields,
+        });
+        contentStates.set(mimeEssence, {
+          kind: "form",
+          sampleCount: formSamples.length,
+        });
+      } else if (!config.mimeTypes || config.mimeTypes.includes(mimeEssence)) {
+        contentStates.set(mimeEssence, {
+          kind: "raw",
+          schema: getEmptyMultipartFallbackSchema(),
+          example: undefined,
+          omitExample: true,
+        });
+      }
+      continue;
+    }
+
+    if (text === undefined) {
+      continue;
+    }
+
+    const decodedText = text;
+    const setJsonState = () => {
+      const data = JSON.parse(decodedText);
+      jsonSamples.push(JSON.stringify(data));
+      contentStates.set(mimeEssence, {
+        kind: "json",
+        sampleCount: jsonSamples.length,
+        example: data,
+      });
+    };
+
+    if (mimeType.isXmlLike) {
+      contentStates.set(mimeEssence, {
+        kind: "raw",
+        schema: { type: "string" },
+        example: baseExample,
+      });
+      continue;
+    }
+
+    if (isBinaryMimeType(mimeType)) {
+      if (config.relaxedContentTypeJsonParse) {
+        try {
+          setJsonState();
+          continue;
+        } catch {
+          // fall through to binary handling below
+        }
+      }
+
+      contentStates.set(mimeEssence, {
+        kind: "raw",
+        schema: baseSchemaFallback,
+        example: baseExample,
+      });
+      continue;
+    }
+
+    const shouldParseAsJson = mimeType.isJsonLike || config.relaxedContentTypeJsonParse;
+    if (shouldParseAsJson) {
+      try {
+        setJsonState();
+        continue;
+      } catch {
+        // fall through to string fallback below
+      }
+    }
+
+    contentStates.set(mimeEssence, {
+      kind: "raw",
+      schema: baseSchemaFallback,
+      example: baseExample,
+    });
+  }
+
+  if (!contentStates.size) {
+    return undefined;
+  }
+
+  const content: NonNullable<RequestBodyObject["content"]> = {};
+  for (const [mimeEssence, state] of contentStates.entries()) {
+    if (state.kind === "json") {
+      content[mimeEssence] = {
+        schema: await buildJsonSchema(jsonSamples.slice(0, state.sampleCount), details.urlPath, details.method, details.suffix),
+        example: state.example,
+      };
+      continue;
+    }
+
+    if (state.kind === "form") {
+      const schema = mergeFormSamples(formSamples.slice(0, state.sampleCount), config.inferParameterTypes);
+      if (schema) {
+        content[mimeEssence] = {
+          schema,
+        };
+      }
+      continue;
+    }
+
+    content[mimeEssence] = state.omitExample
+      ? {
+          schema: state.schema,
+        }
+      : {
+          schema: state.schema,
+          example: state.example,
+        };
+  }
+
+  return Object.keys(content).length ? content : undefined;
+};
+
+const getCustomResponseHeaders = (headers: Header[] | undefined, config: InternalConfig): HeadersObject | undefined => {
+  const responseHeaders = headers || [];
+  const customHeaders = config.filterStandardHeaders
+    ? responseHeaders.filter((header) => {
+        return !shouldFilterHeader(header.name, config.securityHeaders);
+      })
+    : responseHeaders;
+
+  if (!customHeaders.length) {
+    return undefined;
+  }
+
+  return customHeaders.reduce<HeadersObject>((acc, header) => {
+    acc[header.name] = {
+      description: `Custom header ${header.name}`,
+      schema: {
+        type: "string",
+      },
+    };
+    return acc;
+  }, {} as HeadersObject);
+};
+
+export const buildRequestBodyFromSamples = async (
+  samples: BodySample[],
+  details: { urlPath: string; method: string; suffix?: "request" | "response" },
+  config: InternalConfig,
+): Promise<RequestBodyObject | undefined> => {
+  const content = await buildBodyContentFromSamples(
+    samples,
+    {
+      ...details,
+      suffix: details.suffix ?? "request",
+    },
+    config,
+  );
+  if (!content) {
+    return undefined;
+  }
+
+  return {
+    required: true,
+    content,
+  };
+};
+
+export const buildResponseBodyFromSamples = async (
+  responses: Response[],
+  details: { urlPath: string; method: string },
+  config: InternalConfig,
+): Promise<ResponseObject | undefined> => {
+  const content = await buildBodyContentFromSamples(
+    responses.map((response) => ({
+      postData: response.content,
+      headers: response.headers,
+    })),
+    {
+      ...details,
+      suffix: "response",
+    },
+    config,
+  );
+
+  const mergedHeaders = responses.reduce<HeadersObject | undefined>((acc, response) => {
+    const nextHeaders = getCustomResponseHeaders(response.headers, config);
+    if (!nextHeaders) {
+      return acc;
+    }
+    return {
+      ...acc,
+      ...nextHeaders,
+    };
+  }, undefined);
+
+  if (!content && !mergedHeaders) {
+    return undefined;
+  }
+
+  const responseObject: ResponseObject = {
+    description: "",
+  };
+  if (content) {
+    responseObject.content = content;
+  }
+  if (mergedHeaders) {
+    responseObject.headers = mergedHeaders;
+  }
+  return responseObject;
 };
 
 const parseCookiesFromHeader = (value: string): Cookie[] => {
@@ -304,12 +582,21 @@ export const addMethod = (method: string, url: URL, config: InternalConfig): Ope
 export const addRequestHeaders = (specMethod: OperationObject, headers: Header[], config: InternalConfig) => {
   const parameters = (specMethod.parameters ??= []);
   const { filterStandardHeaders, securityHeaders = [] } = config;
+  const existingParameterKeys = new Set(
+    parameters.map((parameter: any) => `${parameter.name}:${parameter.in}:${parameter.$ref}`),
+  );
   const customHeaders = filterStandardHeaders
     ? headers.filter((header) => {
         return !shouldFilterHeader(header.name, securityHeaders);
       })
     : headers;
   customHeaders.forEach((header) => {
+    const parameterKey = `${header.name}:header:undefined`;
+    if (existingParameterKeys.has(parameterKey)) {
+      return;
+    }
+
+    existingParameterKeys.add(parameterKey);
     parameters.push({
       schema: {
         type: "string",
@@ -320,9 +607,6 @@ export const addRequestHeaders = (specMethod: OperationObject, headers: Header[]
       name: header.name,
       description: header.name,
     } as ParameterObject);
-  });
-  specMethod.parameters = uniqBy(parameters, (elem: any) => {
-    return `${elem.name}:${elem.in}:${elem.$ref}`;
   });
 };
 
@@ -437,113 +721,16 @@ export const getBody = async (
   if (!postData) {
     return undefined;
   }
-
-  const { urlPath, method, examples, headers, suffix = "request" } = details;
-  const mimeTypeValue = getMimeType(postData, headers, config);
-  if (!mimeTypeValue) {
-    return undefined;
-  }
-
-  const param: RequestBodyObject = {
-    required: true,
-    content: {},
-  };
-  const mimeType = parseMimeType(mimeTypeValue);
-  const mimeEssence = mimeType.essence;
-  const text = getDecodedText(postData);
-  const isBase64Encoded = "encoding" in postData && (<any>postData).encoding === "base64";
-  const baseSchemaFallback = getBaseSchemaFallback(mimeType, isBase64Encoded);
-  const baseExample = config.includeNonJsonExampleResponses ? text : undefined;
-
-  if (isFormLikeMimeType(mimeType)) {
-    const formFields = getFormFields(postData);
-    if (formFields.length) {
-      examples.push({
-        kind: "form",
-        fields: formFields,
-      } satisfies FormSample);
-      const formSchema = mergeFormSamples(getFormSamples(examples), config.inferParameterTypes);
-      if (formSchema) {
-        param.content[mimeEssence] = {
-          schema: formSchema,
-        };
-      }
-    } else if (!config.mimeTypes || config.mimeTypes.includes(mimeEssence)) {
-      param.content[mimeEssence] = {
-        schema: {
-          type: "object",
-          properties: {
-            filename: {
-              description: "",
-              format: "binary",
-              type: "string",
-            },
-          },
-        },
-      };
-    }
-    return Object.keys(param.content).length ? param : undefined;
-  }
-
-  if (text === undefined) {
-    return undefined;
-  }
-
-  const tryParseJson = async () => {
-    const data = JSON.parse(text);
-    examples.push(JSON.stringify(data));
-    const schema = await buildJsonSchema(getJsonSamples(examples), urlPath, method, suffix);
-    return { schema, data };
-  };
-
-  if (mimeType.isXmlLike) {
-    param.content[mimeEssence] = {
-      schema: { type: "string" },
-      example: baseExample,
-    };
-    return param;
-  }
-
-  if (isBinaryMimeType(mimeType)) {
-    if (config.relaxedContentTypeJsonParse) {
-      try {
-        const { schema, data } = await tryParseJson();
-        param.content[mimeEssence] = {
-          schema,
-          example: data,
-        };
-        return param;
-      } catch {
-        // fall back to binary handling below
-      }
-    }
-
-    param.content[mimeEssence] = {
-      schema: baseSchemaFallback,
-      example: baseExample,
-    };
-    return param;
-  }
-
-  const shouldParseAsJson = mimeType.isJsonLike || config.relaxedContentTypeJsonParse;
-  if (shouldParseAsJson) {
-    try {
-      const { schema, data } = await tryParseJson();
-      param.content[mimeEssence] = {
-        schema,
-        example: data,
-      };
-      return param;
-    } catch {
-      // fall through to string fallback below
-    }
-  }
-
-  param.content[mimeEssence] = {
-    schema: baseSchemaFallback,
-    example: baseExample,
-  };
-  return param;
+  return buildRequestBodyFromSamples(
+    [
+      {
+        postData,
+        headers: details.headers,
+      },
+    ],
+    details,
+    config,
+  );
 };
 
 export const getResponseBody = async (
@@ -551,42 +738,5 @@ export const getResponseBody = async (
   details: { urlPath: string; method: string; examples: any[] },
   config: InternalConfig,
 ): Promise<ResponseObject | undefined> => {
-  const body = await getBody(
-    response.content,
-    {
-      ...details,
-      headers: response.headers,
-      suffix: "response",
-    },
-    config,
-  );
-
-  const { filterStandardHeaders, securityHeaders } = config;
-  const param: ResponseObject = {
-    description: "",
-  };
-  if (body?.content) {
-    param.content = body.content;
-  }
-
-  const headers = response.headers || [];
-  const customHeaders = filterStandardHeaders
-    ? headers.filter((header) => {
-        return !shouldFilterHeader(header.name, securityHeaders);
-      })
-    : headers;
-  if (customHeaders.length) {
-    param.headers = customHeaders.reduce<HeadersObject>((acc, header) => {
-      acc[header.name] = {
-        description: `Custom header ${header.name}`,
-        schema: {
-          type: "string",
-        },
-      };
-      return acc;
-    }, {} as HeadersObject);
-  }
-  if (param.headers || param.content) {
-    return param;
-  }
+  return buildResponseBodyFromSamples([response], details, config);
 };

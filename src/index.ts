@@ -14,8 +14,8 @@ import {
   addMethod,
   addQueryStringParams,
   addRequestHeaders,
-  getBody,
-  getResponseBody,
+  buildRequestBodyFromSamples,
+  buildResponseBodyFromSamples,
   getSecurity,
 } from "./helpers.js";
 import type { HarToOpenAPIConfig, HarToOpenAPISpec, InternalConfig } from "./types.js";
@@ -132,8 +132,8 @@ const mergeRequestBodies = (
     ...current,
     ...next,
     content: {
-      ...(current.content ?? {}),
-      ...(next.content ?? {}),
+      ...current.content,
+      ...next.content,
     },
   };
 };
@@ -151,12 +151,12 @@ const mergeResponseObjects = (current: ResponseObject | undefined, next: Respons
     ...current,
     ...next,
     headers: {
-      ...(current.headers ?? {}),
-      ...(next.headers ?? {}),
+      ...current.headers,
+      ...next.headers,
     },
     content: {
-      ...(current.content ?? {}),
-      ...(next.content ?? {}),
+      ...current.content,
+      ...next.content,
     },
   };
 };
@@ -189,19 +189,6 @@ const getConfig = (config?: HarToOpenAPIConfig): InternalConfig => {
 
   return Object.freeze(internalConfig);
 };
-
-function tryGetHostname(url: string, logErrors: boolean | undefined, fallback: string): string;
-function tryGetHostname(url: string, logErrors: boolean | undefined): string | undefined;
-function tryGetHostname(url: string, logErrors?: boolean, fallback?: string): string | undefined {
-  try {
-    return new URL(url).hostname;
-  } catch {
-    if (logErrors) {
-      console.error(`Error parsing url ${url}`);
-    }
-  }
-  return fallback;
-}
 
 const tryParseUrl = (url: string, logErrors: boolean | undefined) => {
   try {
@@ -247,6 +234,9 @@ const generateSpecs = async <T extends Har>(har: T, config?: HarToOpenAPIConfig)
     inferParameterTypes,
     openapiVersion,
   } = internalConfig;
+  const pathReplacements = pathReplace
+    ? Object.entries(pathReplace).map(([pattern, replacement]) => [new RegExp(pattern, "g"), replacement] as const)
+    : undefined;
 
   const filteredEntries = har.log.entries
     .map((entry) => {
@@ -289,6 +279,14 @@ const generateSpecs = async <T extends Har>(har: T, config?: HarToOpenAPIConfig)
       const spec = createApiSpec(openapiVersion);
 
       const harEntriesForDomain = groupedByHostname[domain];
+      const requestBodySamples = new WeakMap<
+        OperationObject,
+        Array<{
+          postData: NonNullable<Entry["request"]["postData"]>;
+          headers?: Entry["request"]["headers"];
+        }>
+      >();
+      const responseBodySamples = new WeakMap<OperationObject, Map<number, Response[]>>();
 
       const securitySchemes: NonNullable<OpenApiSpec["components"]>["securitySchemes"] = {};
       const firstUrl = harEntriesForDomain[0]?.parsedUrl;
@@ -305,11 +303,11 @@ const generateSpecs = async <T extends Har>(har: T, config?: HarToOpenAPIConfig)
 
       for (const { entry: item, parsedUrl: sourceUrl } of harEntriesForDomain) {
         try {
-          const urlObj = new URL(sourceUrl.href);
+          const urlObj = pathReplacements?.length ? new URL(sourceUrl.href) : sourceUrl;
 
-          if (pathReplace) {
-            for (const key in pathReplace) {
-              urlObj.pathname = urlObj.pathname.replace(new RegExp(key, "g"), pathReplace[key]);
+          if (pathReplacements?.length) {
+            for (const [matcher, replacement] of pathReplacements) {
+              urlObj.pathname = urlObj.pathname.replace(matcher, replacement);
             }
           }
 
@@ -382,32 +380,20 @@ const generateSpecs = async <T extends Har>(har: T, config?: HarToOpenAPIConfig)
           const shouldUseRequestAndResponse =
             !ignoreBodiesForStatusCodes || !ignoreBodiesForStatusCodes.includes(status);
           if (shouldUseRequestAndResponse && item.request.postData) {
-            specMethod.examples ??= [];
-            const requestBody = await getBody(
-              item.request.postData,
-              {
-                urlPath,
-                method,
-                examples: specMethod.examples,
-                headers: item.request.headers,
-                suffix: "request",
-              },
-              internalConfig,
-            );
-            specMethod.requestBody = mergeRequestBodies(specMethod.requestBody, requestBody);
+            const samples = requestBodySamples.get(specMethod) ?? [];
+            samples.push({
+              postData: item.request.postData,
+              headers: item.request.headers,
+            });
+            requestBodySamples.set(specMethod, samples);
           }
 
           if (status && isValidMimetype && shouldUseRequestAndResponse && item.response) {
-            specMethod.responseExamples ??= {};
-            specMethod.responseExamples[status] ??= [];
-            const body = await getResponseBody(
-              item.response,
-              { urlPath, method, examples: specMethod.responseExamples[status] },
-              internalConfig,
-            );
-            if (body) {
-              specMethod.responses[status] = mergeResponseObjects(specMethod.responses[status], body) as any;
-            }
+            const samplesByStatus = responseBodySamples.get(specMethod) ?? new Map<number, Response[]>();
+            const samples = samplesByStatus.get(status) ?? [];
+            samples.push(item.response);
+            samplesByStatus.set(status, samples);
+            responseBodySamples.set(specMethod, samplesByStatus);
           }
         } catch (e) {
           if (logErrors) {
@@ -436,6 +422,42 @@ const generateSpecs = async <T extends Har>(har: T, config?: HarToOpenAPIConfig)
           }
         }
       }
+
+      for (const [pathKey, pathItem] of Object.entries<PathItemObject>(spec.paths)) {
+        for (const [maybeMethod, maybeOperation] of Object.entries(pathItem)) {
+          if (!isStandardMethod(maybeMethod) || !isOperationObject(maybeOperation)) {
+            continue;
+          }
+
+          const requestSamples = requestBodySamples.get(maybeOperation);
+          if (requestSamples?.length) {
+            maybeOperation.requestBody = mergeRequestBodies(
+              maybeOperation.requestBody,
+              await buildRequestBodyFromSamples(requestSamples, { urlPath: pathKey, method: maybeMethod }, internalConfig),
+            );
+          }
+
+          const responsesByStatus = responseBodySamples.get(maybeOperation);
+          if (!responsesByStatus?.size) {
+            continue;
+          }
+
+          for (const [status, responseSamples] of responsesByStatus.entries()) {
+            const responseBody = await buildResponseBodyFromSamples(
+              responseSamples,
+              { urlPath: pathKey, method: maybeMethod },
+              internalConfig,
+            );
+            if (responseBody) {
+              maybeOperation.responses[status] = mergeResponseObjects(
+                maybeOperation.responses[status],
+                responseBody,
+              ) as any;
+            }
+          }
+        }
+      }
+
       // If there were no valid paths, bail
       if (!Object.keys(spec.paths).length) {
         continue;
