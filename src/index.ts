@@ -19,6 +19,9 @@ import { DEFAULT_AUTH_HEADERS } from "./utils/headers";
 import { getCookieSecurityName, parameterizeUrl } from "./utils/string";
 import { sortObject } from "./utils/sort-object";
 
+const DEFAULT_INFO_TITLE = "HarToOpenApi";
+const DEFAULT_INFO_DESCRIPTION = "OpenAPI spec generated from HAR data for {domain} on {generatedAt}";
+
 const checkPathFromFilter = async (urlPath: string, harEntry: Entry, filter: HarToOpenAPIConfig["urlFilter"]) => {
   if (typeof filter === "string") {
     return urlPath.includes(filter);
@@ -29,6 +32,35 @@ const checkPathFromFilter = async (urlPath: string, harEntry: Entry, filter: Har
   if (typeof filter === "function") {
     return filter(urlPath, harEntry);
   }
+};
+
+const normalizeDomains = (domains: string[] | undefined) => {
+  if (!domains?.length) {
+    return undefined;
+  }
+
+  return Array.from(new Set(domains.map((domain) => domain.trim().toLowerCase()).filter(Boolean)));
+};
+
+const shouldIncludeDomain = (domain: string | undefined, config: InternalConfig) => {
+  if (config.includeDomains?.length) {
+    if (!domain) {
+      return false;
+    }
+    if (!config.includeDomains.includes(domain.toLowerCase())) {
+      return false;
+    }
+  }
+
+  if (domain && config.excludeDomains?.includes(domain.toLowerCase())) {
+    return false;
+  }
+
+  return true;
+};
+
+const fillInfoTemplate = (template: string, values: Record<string, string>) => {
+  return template.replace(/\{(domain|generatedAt)\}/g, (_, key: "domain" | "generatedAt") => values[key]);
 };
 
 const getConfig = (config?: HarToOpenAPIConfig): InternalConfig => {
@@ -44,6 +76,8 @@ const getConfig = (config?: HarToOpenAPIConfig): InternalConfig => {
   internalConfig.minLengthForNumericPath ??= 3;
   internalConfig.relaxedMethods ??= false;
   internalConfig.logErrors ??= false;
+  internalConfig.includeDomains = normalizeDomains(internalConfig.includeDomains);
+  internalConfig.excludeDomains = normalizeDomains(internalConfig.excludeDomains);
 
   if (internalConfig.guessAuthenticationHeaders) {
     internalConfig.securityHeaders ??= [];
@@ -96,9 +130,17 @@ const generateSpecs = async <T extends Har>(har: T, config?: HarToOpenAPIConfig)
     minLengthForNumericPath,
     dropPathsWithoutSuccessfulResponse,
     pathReplace,
+    infoDescription,
+    infoTitle,
+    infoVersion,
   } = internalConfig;
 
-  const groupedByHostname = groupBy(har.log.entries, (entry: Entry) => {
+  const filteredEntries = har.log.entries.filter((entry) => {
+    const domain = tryGetHostname(entry.request.url, logErrors);
+    return shouldIncludeDomain(domain, internalConfig);
+  });
+
+  const groupedByHostname = groupBy(filteredEntries, (entry: Entry) => {
     if (forceAllRequestsInSameSpec) {
       return "specs";
     }
@@ -110,14 +152,22 @@ const generateSpecs = async <T extends Har>(har: T, config?: HarToOpenAPIConfig)
     try {
       // loop through har entries
       const spec = createEmptyApiSpec();
-      spec.info.title = "HarToOpenApi";
-      spec.info.description = `OpenAPI spec generated from HAR data for ${domain} on ${new Date().toISOString()}`;
 
       const harEntriesForDomain = groupedByHostname[domain];
 
       const securitySchemas: SecurityRequirementObject[] = [];
       const cookies: Cookie[] = [];
       const firstUrl = harEntriesForDomain[0].request.url;
+      const labeledDomain = tryGetHostname(firstUrl, logErrors, domain);
+      const generatedAt = new Date().toISOString();
+      const infoTemplateValues = {
+        domain: labeledDomain ?? domain ?? "unknown-domain",
+        generatedAt,
+      };
+
+      spec.info.title = fillInfoTemplate(infoTitle ?? DEFAULT_INFO_TITLE, infoTemplateValues);
+      spec.info.version = fillInfoTemplate(infoVersion ?? spec.info.version, infoTemplateValues);
+      spec.info.description = fillInfoTemplate(infoDescription ?? DEFAULT_INFO_DESCRIPTION, infoTemplateValues);
 
       for (const item of harEntriesForDomain) {
         try {
@@ -291,7 +341,6 @@ const generateSpecs = async <T extends Har>(har: T, config?: HarToOpenAPIConfig)
       }
       // sort paths
       spec.paths = sortObject(spec.paths);
-      const labeledDomain = tryGetHostname(firstUrl, logErrors, domain);
       const prefix = firstUrl?.startsWith("https://") ? "https://" : "http://";
       const server: ServerObject = {
         url: `${prefix}${labeledDomain}`,

@@ -1,4 +1,4 @@
-const STANDARD_HEADERS = [
+export const STANDARD_HEADERS = [
   ":authority",
   ":method",
   ":path",
@@ -206,7 +206,7 @@ const STANDARD_HEADERS = [
   "x-wap-profile",
   "x-xss-protection",
 ] as const;
-type IStandardHeader = typeof STANDARD_HEADERS[number];
+export type IStandardHeader = (typeof STANDARD_HEADERS)[number];
 const headerSet = new Set(STANDARD_HEADERS);
 
 export const DEFAULT_AUTH_HEADERS = [

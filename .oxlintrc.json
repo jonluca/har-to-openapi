@@ -1,0 +1,48 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["typescript", "oxc", "unicorn", "import", "promise"],
+  "env": {
+    "browser": true,
+    "node": true,
+    "es2021": true
+  },
+  "ignorePatterns": ["dist/**/*", ".yarn/js/*", "coverage/**/*"],
+  "rules": {
+    "no-constant-condition": ["error", { "checkLoops": false }],
+    "no-prototype-builtins": "off",
+    "no-use-before-define": "off",
+    "prefer-const": "error",
+    "curly": ["error", "all"],
+    "no-empty": "off",
+    "no-case-declarations": "off",
+    "no-unused-expressions": "off",
+    "no-control-regex": "off",
+    "promise/always-return": "off",
+    "promise/catch-or-return": "off",
+    "promise/param-names": "off",
+    "@typescript-eslint/no-namespace": "off",
+    "@typescript-eslint/no-empty-interface": "off",
+    "@typescript-eslint/consistent-type-definitions": ["error", "interface"],
+    "@typescript-eslint/consistent-type-imports": [
+      "error",
+      {
+        "prefer": "type-imports"
+      }
+    ],
+    "@typescript-eslint/ban-ts-comment": "off",
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/no-non-null-assertion": "off",
+    "no-unused-vars": [
+      "error",
+      {
+        "varsIgnorePattern": "^_",
+        "argsIgnorePattern": "^_",
+        "ignoreRestSiblings": true,
+        "fix": {
+          "imports": "safe-fix",
+          "variables": "off"
+        }
+      }
+    ]
+  }
+}

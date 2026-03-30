@@ -1,12 +1,13 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import type { Har } from "har-format";
+import YAML from "js-yaml";
 import { generateSpec, generateSpecs } from "./index";
 import type { HarToOpenAPIConfig, HarToOpenAPISpec } from "./types";
 
 type CliFormat = "json" | "yaml";
 
-type CliDependencies = {
+interface CliDependencies {
   cwd: string;
   stdinIsTTY: boolean;
   readStdin: () => Promise<string>;
@@ -15,9 +16,9 @@ type CliDependencies = {
   ensureDir: (directoryPath: string) => Promise<void>;
   stdout: (text: string) => void;
   stderr: (text: string) => void;
-};
+}
 
-type ParsedCliArgs = {
+interface ParsedCliArgs {
   configPath?: string;
   format: CliFormat;
   inputPath?: string;
@@ -26,7 +27,7 @@ type ParsedCliArgs = {
   outputPath?: string;
   overrides: Partial<HarToOpenAPIConfig>;
   showHelp: boolean;
-};
+}
 
 const BOOLEAN_FLAG_MAP = {
   "add-servers-to-paths": "addServersToPaths",
@@ -42,13 +43,21 @@ const BOOLEAN_FLAG_MAP = {
 } as const satisfies Record<string, keyof HarToOpenAPIConfig>;
 
 const LIST_FLAG_MAP = {
+  "exclude-domains": "excludeDomains",
   "ignore-bodies-for-status-codes": "ignoreBodiesForStatusCodes",
+  "include-domains": "includeDomains",
   "mime-types": "mimeTypes",
   "security-headers": "securityHeaders",
 } as const satisfies Record<string, keyof HarToOpenAPIConfig>;
 
 const NUMBER_FLAG_MAP = {
   "min-length-for-numeric-path": "minLengthForNumericPath",
+} as const satisfies Record<string, keyof HarToOpenAPIConfig>;
+
+const STRING_FLAG_MAP = {
+  "info-description": "infoDescription",
+  "info-title": "infoTitle",
+  "info-version": "infoVersion",
 } as const satisfies Record<string, keyof HarToOpenAPIConfig>;
 
 const HELP_TEXT = `Usage: har-to-openapi [input.har|-] [options]
@@ -60,10 +69,15 @@ Options:
   -f, --format <yaml|json>                       Output format (default: yaml)
   -o, --output <file>                            Write a single generated spec to a file
       --output-dir <dir>                         Write multi-spec output files into a directory
-      --config <file>                            Load HarToOpenAPIConfig from a JSON file
+      --config <file>                            Load HarToOpenAPIConfig from a JSON or YAML file
       --multi-spec                               Generate one spec per detected domain
+      --include-domains <list>                   Only include exact hostnames
+      --exclude-domains <list>                   Skip exact hostnames
       --force-all-requests-in-same-spec          Collapse all requests into one spec
       --no-force-all-requests-in-same-spec       Disable collapsed single-spec generation
+      --info-title <text>                        Override info.title (supports {domain}, {generatedAt})
+      --info-version <text>                      Override info.version (supports {domain}, {generatedAt})
+      --info-description <text>                  Override info.description (supports {domain}, {generatedAt})
       --add-servers-to-paths                     Add servers entries to operations
       --no-add-servers-to-paths                  Disable operation-level servers entries
       --guess-authentication-headers             Enable auth header detection
@@ -89,6 +103,7 @@ Options:
       --min-length-for-numeric-path <number>     Minimum length before numeric path parts become params
 
 Advanced options like tags, urlFilter, and pathReplace can be passed through --config.
+Config files can be JSON or YAML.
 
 Examples:
   har-to-openapi capture.har > openapi.yaml
@@ -237,8 +252,14 @@ const parseCliArgs = (argv: string[]): ParsedCliArgs => {
         const configKey = LIST_FLAG_MAP[flag as keyof typeof LIST_FLAG_MAP];
         const value = takeNextValue(argv, index, argument);
         switch (configKey) {
+          case "excludeDomains":
+            parsed.overrides.excludeDomains = parseStringList(value);
+            break;
           case "ignoreBodiesForStatusCodes":
             parsed.overrides.ignoreBodiesForStatusCodes = parseNumberList(value);
+            break;
+          case "includeDomains":
+            parsed.overrides.includeDomains = parseStringList(value);
             break;
           case "mimeTypes":
             parsed.overrides.mimeTypes = parseStringList(value);
@@ -254,6 +275,13 @@ const parseCliArgs = (argv: string[]): ParsedCliArgs => {
       if (flag in NUMBER_FLAG_MAP) {
         const configKey = NUMBER_FLAG_MAP[flag as keyof typeof NUMBER_FLAG_MAP];
         parsed.overrides[configKey] = parseNumericValue(takeNextValue(argv, index, argument));
+        index += 1;
+        continue;
+      }
+
+      if (flag in STRING_FLAG_MAP) {
+        const configKey = STRING_FLAG_MAP[flag as keyof typeof STRING_FLAG_MAP];
+        parsed.overrides[configKey] = takeNextValue(argv, index, argument);
         index += 1;
         continue;
       }
@@ -289,10 +317,16 @@ const loadConfig = async (
 
   const resolvedPath = resolveFromCwd(dependencies.cwd, configPath);
   const rawConfig = await dependencies.readTextFile(resolvedPath);
-  const parsedConfig = JSON.parse(rawConfig) as unknown;
+  let parsedConfig: unknown;
+
+  try {
+    parsedConfig = JSON.parse(rawConfig) as unknown;
+  } catch {
+    parsedConfig = YAML.load(rawConfig);
+  }
 
   if (!parsedConfig || typeof parsedConfig !== "object" || Array.isArray(parsedConfig)) {
-    throw new Error(`Expected ${configPath} to contain a JSON object.`);
+    throw new Error(`Expected ${configPath} to contain a JSON or YAML object.`);
   }
 
   return parsedConfig as Partial<HarToOpenAPIConfig>;
@@ -370,7 +404,15 @@ export const runCli = async (argv = process.argv.slice(2), overrides?: Partial<C
           }),
         );
       } else if (parsedArgs.format === "json") {
-        dependencies.stdout(withTrailingNewline(JSON.stringify(specs.map((spec) => spec.spec), null, 2)));
+        dependencies.stdout(
+          withTrailingNewline(
+            JSON.stringify(
+              specs.map((spec) => spec.spec),
+              null,
+              2,
+            ),
+          ),
+        );
       } else {
         const yamlOutput = specs.map((spec) => spec.yamlSpec.trimEnd()).join("\n---\n");
         dependencies.stdout(withTrailingNewline(yamlOutput));

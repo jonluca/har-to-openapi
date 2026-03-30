@@ -68,7 +68,10 @@ describe("CLI", async () => {
     });
     const outputPath = path.join("/virtual", "openapi.json");
 
-    const exitCode = await runCli(["capture.har", "--format", "json", "--output", "openapi.json"], harness.dependencies);
+    const exitCode = await runCli(
+      ["capture.har", "--format", "json", "--output", "openapi.json"],
+      harness.dependencies,
+    );
 
     expect(exitCode).toBe(0);
     expect(harness.readOutput()).toBe("");
@@ -110,12 +113,62 @@ describe("CLI", async () => {
       },
     );
 
-    const exitCode = await runCli(["--config", "har-to-openapi.config.json", "--multi-spec", "--format", "json"], harness.dependencies);
+    const exitCode = await runCli(
+      ["--config", "har-to-openapi.config.json", "--multi-spec", "--format", "json"],
+      harness.dependencies,
+    );
     const output = JSON.parse(harness.readOutput());
 
     expect(exitCode).toBe(0);
     expect(harness.readErrors()).toBe("");
     expect(output).toHaveLength(1);
+  });
+
+  test("supports YAML config files for domain filtering and metadata", async ({ expect }) => {
+    const harness = createHarness({
+      [path.join("/virtual", "capture.har")]: JSON.stringify(basePath()),
+      [path.join("/virtual", "har-to-openapi.config.yaml")]: `includeDomains:
+  - exampletwo.com
+infoTitle: "Captured {domain}"
+`,
+    });
+
+    const exitCode = await runCli(
+      ["capture.har", "--config", "har-to-openapi.config.yaml", "--multi-spec", "--format", "json"],
+      harness.dependencies,
+    );
+    const output = JSON.parse(harness.readOutput());
+
+    expect(exitCode).toBe(0);
+    expect(harness.readErrors()).toBe("");
+    expect(output).toHaveLength(1);
+    expect(output[0].info.title).toBe("Captured exampletwo.com");
+  });
+
+  test("supports metadata and domain filters from CLI flags", async ({ expect }) => {
+    const harness = createHarness({
+      [path.join("/virtual", "capture.har")]: JSON.stringify(basePath()),
+    });
+
+    const exitCode = await runCli(
+      [
+        "capture.har",
+        "--multi-spec",
+        "--format",
+        "json",
+        "--include-domains",
+        "example.com",
+        "--info-title",
+        "CLI {domain}",
+      ],
+      harness.dependencies,
+    );
+    const output = JSON.parse(harness.readOutput());
+
+    expect(exitCode).toBe(0);
+    expect(harness.readErrors()).toBe("");
+    expect(output).toHaveLength(1);
+    expect(output[0].info.title).toBe("CLI example.com");
   });
 
   test("rejects incompatible output options", async ({ expect }) => {

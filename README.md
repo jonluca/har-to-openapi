@@ -72,18 +72,29 @@ The package can now also be used as a CLI without changing the existing library 
 bunx har-to-openapi capture.har > openapi.yaml
 bunx har-to-openapi capture.har --format json --output openapi.json
 bunx har-to-openapi test/data/base-path.har --multi-spec --output-dir generated
-cat capture.har | bunx har-to-openapi --config har-to-openapi.config.json
+bunx har-to-openapi test/data/base-path.har --multi-spec --include-domains example.com
+cat capture.har | bunx har-to-openapi --config har-to-openapi.config.yaml
 ```
 
-The CLI supports common boolean and list options as flags, and advanced JSON-serializable configuration through `--config`.
+The CLI supports common boolean and list options as flags, and advanced JSON-serializable configuration through `--config`. Config files can be JSON or YAML.
 
 ## Options
 
 ```typescript
 export interface Config {
+  // limit generation to exact hostnames from the HAR
+  includeDomains?: string[];
+  // skip exact hostnames from the HAR
+  excludeDomains?: string[];
   // if true, we'll treat every url as having the same domain, regardless of what its actual domain is
   // the first domain we see is the domain we'll use
   forceAllRequestsInSameSpec?: boolean;
+  // custom info.title template. Supports {domain} and {generatedAt}
+  infoTitle?: string;
+  // custom info.version template. Supports {domain} and {generatedAt}
+  infoVersion?: string;
+  // custom info.description template. Supports {domain} and {generatedAt}
+  infoDescription?: string;
   // if true, every path object will have its own servers entry, defining its base path. This is useful when
   // forceAllRequestsInSameSpec is set
   addServersToPaths?: boolean;
@@ -114,3 +125,9 @@ export interface Config {
   dropPathsWithoutSuccessfulResponse?: boolean;
 }
 ```
+
+## Newer CLI Additions
+
+- Filter multi-domain captures without custom code via `--include-domains` and `--exclude-domains`.
+- Override `info.title`, `info.version`, and `info.description` with `{domain}` and `{generatedAt}` placeholders.
+- Load CLI config from either JSON or YAML.

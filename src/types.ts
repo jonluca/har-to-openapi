@@ -2,10 +2,23 @@ import type { OpenApiSpec } from "@loopback/openapi-v3-types";
 import type { Entry } from "har-format";
 
 export interface HarToOpenAPIConfig {
+  /** limit generation to exact hostnames from the HAR (for example `["api.example.com"]`) */
+  includeDomains?: string[];
+  /** skip exact hostnames from the HAR (for example `["static.example.com"]`) */
+  excludeDomains?: string[];
   /** if true, we'll treat every url as having the same domain, regardless of what its actual domain is
    * the first domain we see is the domain we'll use
    * @defaultValue `false` */
   forceAllRequestsInSameSpec?: boolean;
+  /** custom `info.title` template for generated specs. Supports `{domain}` and `{generatedAt}` placeholders.
+   * @defaultValue `"HarToOpenApi"` */
+  infoTitle?: string;
+  /** custom `info.version` template for generated specs. Supports `{domain}` and `{generatedAt}` placeholders.
+   * @defaultValue `"1.0.0"` */
+  infoVersion?: string;
+  /** custom `info.description` template for generated specs. Supports `{domain}` and `{generatedAt}` placeholders.
+   * @defaultValue `"OpenAPI spec generated from HAR data for {domain} on {generatedAt}"` */
+  infoDescription?: string;
   /** if true, every path object will have its own servers entry, defining its base path. This is useful when
    * forceAllRequestsInSameSpec is set */
   addServersToPaths?: boolean;

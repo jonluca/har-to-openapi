@@ -30,6 +30,16 @@ describe("Spec generator", async () => {
     expect(data).toHaveLength(1);
     expect(data).toMatchSnapshot();
   });
+  test(`Returns one spec when includeDomains matches a single hostname`, async ({ expect }) => {
+    const data = await generateSpecs(har, { includeDomains: ["exampletwo.com"] });
+    expect(data).toHaveLength(1);
+    expect(data[0].domain).toBe("exampletwo.com");
+  });
+  test(`Returns one spec when excludeDomains removes a hostname`, async ({ expect }) => {
+    const data = await generateSpecs(har, { excludeDomains: ["example.com"] });
+    expect(data).toHaveLength(1);
+    expect(data[0].domain).toBe("exampletwo.com");
+  });
   test(`Returns one spec for a har with two domains and forceAllRequestsInSameSpec set to true`, async ({ expect }) => {
     const data = await generateSpecs(har, { forceAllRequestsInSameSpec: true });
     expect(data).toHaveLength(1);
