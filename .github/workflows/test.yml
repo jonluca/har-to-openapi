@@ -42,6 +42,10 @@ jobs:
         run: '"DEBUG=*" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append'
 
       - run: yarn test
+        if: matrix.os != 'ubuntu-latest' || matrix.node-version != 24
+
+      - run: yarn test:coverage
+        if: matrix.os == 'ubuntu-latest' && matrix.node-version == 24
 
       - name: Coveralls
         if: matrix.os == 'ubuntu-latest' && matrix.node-version == 24

@@ -45,8 +45,9 @@
     "typecheck": "tsc --noEmit",
     "format": "oxfmt \"**/*.{js,jsx,ts,tsx,json,css,md}\"",
     "format:check": "oxfmt --check \"**/*.{js,jsx,ts,tsx,json,css,md}\"",
-    "test": "vitest --coverage",
-    "test:update": "vitest -u",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "test:update": "vitest run -u",
     "test:watch": "vitest -w"
   },
   "dependencies": {
