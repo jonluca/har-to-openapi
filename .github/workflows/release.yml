@@ -29,14 +29,17 @@ jobs:
           ref: ${{ github.event.workflow_run.head_sha }}
       - name: Restore main branch context for semantic-release
         run: git checkout -B main ${{ github.event.workflow_run.head_sha }}
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.5.0
       - uses: actions/setup-node@v6
         with:
           node-version: 24
-          cache: yarn
-          cache-dependency-path: yarn.lock
-      - run: corepack enable
-      - run: yarn install --immutable
-      - run: yarn build
-      - run: npx semantic-release --branches main
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - run: pnpm dlx semantic-release --branches main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

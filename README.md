@@ -11,7 +11,7 @@ _This library is loosely based on [har2openapi](https://github.com/dcarr178/har2
 # Getting Started
 
 ```
-yarn add har-to-openapi
+pnpm add har-to-openapi
 ```
 
 or
