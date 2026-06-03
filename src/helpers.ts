@@ -402,7 +402,12 @@ const buildBodyContentFromSamples = async (
   for (const [mimeEssence, state] of contentStates.entries()) {
     if (state.kind === "json") {
       content[mimeEssence] = {
-        schema: await buildJsonSchema(jsonSamples.slice(0, state.sampleCount), details.urlPath, details.method, details.suffix),
+        schema: await buildJsonSchema(
+          jsonSamples.slice(0, state.sampleCount),
+          details.urlPath,
+          details.method,
+          details.suffix,
+        ),
         example: state.example,
       };
       continue;

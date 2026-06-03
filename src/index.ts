@@ -433,7 +433,11 @@ const generateSpecs = async <T extends Har>(har: T, config?: HarToOpenAPIConfig)
           if (requestSamples?.length) {
             maybeOperation.requestBody = mergeRequestBodies(
               maybeOperation.requestBody,
-              await buildRequestBodyFromSamples(requestSamples, { urlPath: pathKey, method: maybeMethod }, internalConfig),
+              await buildRequestBodyFromSamples(
+                requestSamples,
+                { urlPath: pathKey, method: maybeMethod },
+                internalConfig,
+              ),
             );
           }
 

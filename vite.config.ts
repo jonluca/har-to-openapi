@@ -8,6 +8,10 @@ export default defineConfig({
     watch: false,
     passWithNoTests: true,
     reporters: ["verbose"],
+    // These snapshots also include the complete YAML spec, so keep the object view compact.
+    snapshotFormat: {
+      maxOutputLength: 1_000_000,
+    },
     coverage: {
       reporter: ["json", "text", "html", "lcov"],
       provider: "v8",
