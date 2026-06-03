@@ -51,6 +51,7 @@
     "test:watch": "vitest -w"
   },
   "dependencies": {
+    "@apidevtools/json-schema-ref-parser": "^15.3.5",
     "@loopback/openapi-v3-types": "^1.2.1",
     "@openapi-contrib/json-schema-to-openapi-schema": "^4.3.2",
     "js-yaml": "^4.2.0",

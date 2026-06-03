@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@apidevtools/json-schema-ref-parser':
+        specifier: ^15.3.5
+        version: 15.3.5(@types/json-schema@7.0.15)
       '@loopback/openapi-v3-types':
         specifier: ^1.2.1
         version: 1.2.1
