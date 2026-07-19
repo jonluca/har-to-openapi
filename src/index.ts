@@ -371,7 +371,7 @@ const generateSpecs = async <T extends Har>(har: T, config?: HarToOpenAPIConfig)
             for (const entry of urlObj.searchParams.entries()) {
               queryStrings.push({ name: entry[0], value: entry[1] });
             }
-            addQueryStringParams(specMethod, queryStrings, internalConfig);
+            addQueryStringParams(specMethod, queryStrings, internalConfig, true);
           }
           if (requestHeaders?.length) {
             addRequestHeaders(specMethod, requestHeaders, internalConfig);
@@ -409,8 +409,9 @@ const generateSpecs = async <T extends Har>(har: T, config?: HarToOpenAPIConfig)
           const pathKeys = Object.keys(entry);
           let hadSuccessfulResponse = false;
           for (const maybeMethod of pathKeys) {
-            if (isStandardMethod(maybeMethod)) {
-              const responses = Object.keys(entry[maybeMethod].responses);
+            const maybeOperation = entry[maybeMethod];
+            if (isOperationObject(maybeOperation)) {
+              const responses = Object.keys(maybeOperation.responses);
               for (const maybeStatus of responses) {
                 // check if any of the responses had a valid status (2xx)
                 hadSuccessfulResponse ||= String(maybeStatus).startsWith("2");
@@ -425,7 +426,7 @@ const generateSpecs = async <T extends Har>(har: T, config?: HarToOpenAPIConfig)
 
       for (const [pathKey, pathItem] of Object.entries<PathItemObject>(spec.paths)) {
         for (const [maybeMethod, maybeOperation] of Object.entries(pathItem)) {
-          if (!isStandardMethod(maybeMethod) || !isOperationObject(maybeOperation)) {
+          if ((!relaxedMethods && !isStandardMethod(maybeMethod)) || !isOperationObject(maybeOperation)) {
             continue;
           }
 

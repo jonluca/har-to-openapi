@@ -619,22 +619,23 @@ export const addQueryStringParams = (
   specMethod: OperationObject,
   harParams: QueryString[],
   config: Pick<InternalConfig, "inferParameterTypes">,
+  valuesAreDecoded = false,
 ) => {
   const parameters = (specMethod.parameters ??= []);
   harParams?.forEach((param) => {
-    const decodedValue = decodeURIComponent(param.value);
-    const schema = inferScalarSchema(decodedValue, config.inferParameterTypes);
-    const example = coerceExampleValue(decodedValue, schema);
+    const value = valuesAreDecoded ? param.value : decodeURIComponent(param.value);
+    const schema = inferScalarSchema(value, config.inferParameterTypes);
+    const example = coerceExampleValue(value, schema);
     const existing = parameters.find(
       (parameter) => "in" in parameter && parameter.in === "query" && parameter.name === param.name,
     );
     if (existing && "schema" in existing) {
       existing.schema = mergeScalarSchemas(existing.schema as SchemaObject | undefined, schema);
-      existing.example = coerceExampleValue(decodedValue, existing.schema as SchemaObject);
+      existing.example = coerceExampleValue(value, existing.schema as SchemaObject);
       if (existing.schema?.type !== "string" || !existing.schema.format) {
         existing.schema = {
           ...(existing.schema as SchemaObject),
-          default: coerceExampleValue(decodedValue, existing.schema as SchemaObject),
+          default: coerceExampleValue(value, existing.schema as SchemaObject),
         };
       }
       return;

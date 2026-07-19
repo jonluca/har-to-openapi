@@ -7,12 +7,6 @@ const BOOLEAN_REGEX = /^(?:true|false)$/i;
 const INTEGER_REGEX = /^[+-]?\d+$/;
 const NUMBER_REGEX = /^[+-]?(?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?$/;
 
-const getIntegerDigits = (value: string) => {
-  const normalized = value.replace(/^[+-]/, "");
-  const [integerPart = normalized] = normalized.split(/[.eE]/);
-  return integerPart.replace(/\D/g, "");
-};
-
 const hasLeadingZeroes = (value: string) => {
   const normalized = value.replace(/^[+-]/, "");
   if (!normalized.length) {
@@ -162,5 +156,5 @@ export const getNumericParameterSchema = (rawValue: string, inferParameterTypes:
 };
 
 export const getIntegerDigitCount = (value: string) => {
-  return getIntegerDigits(value).length;
+  return getNumericCharacterCount(value);
 };

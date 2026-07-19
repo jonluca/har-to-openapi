@@ -393,6 +393,23 @@ const getSpecFilename = (spec: HarToOpenAPISpec, index: number, format: CliForma
   return `${basename}.${extension}`;
 };
 
+const getSpecFilenames = (specs: HarToOpenAPISpec[], format: CliFormat) => {
+  const filenames = specs.map((spec, index) => getSpecFilename(spec, index, format));
+  const filenameCounts = new Map<string, number>();
+  for (const filename of filenames) {
+    filenameCounts.set(filename, (filenameCounts.get(filename) ?? 0) + 1);
+  }
+
+  return filenames.map((filename, index) => {
+    if (filenameCounts.get(filename) === 1) {
+      return filename;
+    }
+    const extension = path.extname(filename);
+    const basename = filename.slice(0, -extension.length);
+    return `${basename}-${index + 1}${extension}`;
+  });
+};
+
 export const runCli = async (argv = process.argv.slice(2), overrides?: Partial<CliDependencies>): Promise<number> => {
   const dependencies = getDependencies(overrides);
 
@@ -414,10 +431,11 @@ export const runCli = async (argv = process.argv.slice(2), overrides?: Partial<C
       if (parsedArgs.outputDir) {
         const resolvedOutputDir = resolveFromCwd(dependencies.cwd, parsedArgs.outputDir);
         await dependencies.ensureDir(resolvedOutputDir);
+        const filenames = getSpecFilenames(specs, parsedArgs.format);
 
         await Promise.all(
           specs.map(async (spec, index) => {
-            const destination = path.join(resolvedOutputDir, getSpecFilename(spec, index, parsedArgs.format));
+            const destination = path.join(resolvedOutputDir, filenames[index]);
             await dependencies.writeTextFile(destination, renderSpec(spec, parsedArgs.format));
           }),
         );
