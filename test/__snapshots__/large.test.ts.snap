@@ -50866,7 +50866,7 @@ Einsendungen a la &quot;<strong>50 Fragen zu Gabelstaplern</strong>&quot;. Wir w
       "/api/v1/news/articles/8582": {
         "get": {
           "description": "",
-          "operationId": "getApiV1NewsArticlesById",
+          "operationId": "getApiV1NewsArticlesById_2",
           "parameters": [
             {
               "description": "Authorization",
@@ -59855,7 +59855,7 @@ Einsendungen a la &quot;<strong>50 Fragen zu Gabelstaplern</strong>&quot;. Wir w
       "/api/v1/users/62188/notifications/105b7413-d050-4d2f-813f-f196394aa2d7": {
         "patch": {
           "description": "",
-          "operationId": "patchApiV1UsersByIdNotificationsByUuid",
+          "operationId": "patchApiV1UsersByIdNotificationsByUuid_2",
           "parameters": [
             {
               "description": "Authorization",
@@ -60185,7 +60185,7 @@ Einsendungen a la &quot;<strong>50 Fragen zu Gabelstaplern</strong>&quot;. Wir w
       "/api/v1/users/62188/notifications/179ce19a-97f1-4db9-a4fb-7ee2a8b7c511": {
         "patch": {
           "description": "",
-          "operationId": "patchApiV1UsersByIdNotificationsByUuid",
+          "operationId": "patchApiV1UsersByIdNotificationsByUuid_3",
           "parameters": [
             {
               "description": "Authorization",
@@ -60515,7 +60515,7 @@ Einsendungen a la &quot;<strong>50 Fragen zu Gabelstaplern</strong>&quot;. Wir w
       "/api/v1/users/62188/notifications/4e5a3a72-ed95-4a8e-8d19-a7155572f951": {
         "patch": {
           "description": "",
-          "operationId": "patchApiV1UsersByIdNotificationsByUuid",
+          "operationId": "patchApiV1UsersByIdNotificationsByUuid_4",
           "parameters": [
             {
               "description": "Authorization",
@@ -68398,7 +68398,7 @@ paths:
   /api/v1/news/articles/8582:
     get:
       description: ''
-      operationId: getApiV1NewsArticlesById
+      operationId: getApiV1NewsArticlesById_2
       parameters:
         - description: Authorization
           in: header
@@ -75767,7 +75767,7 @@ paths:
   /api/v1/users/62188/notifications/105b7413-d050-4d2f-813f-f196394aa2d7:
     patch:
       description: ''
-      operationId: patchApiV1UsersByIdNotificationsByUuid
+      operationId: patchApiV1UsersByIdNotificationsByUuid_2
       parameters:
         - description: Authorization
           in: header
@@ -76013,7 +76013,7 @@ paths:
   /api/v1/users/62188/notifications/179ce19a-97f1-4db9-a4fb-7ee2a8b7c511:
     patch:
       description: ''
-      operationId: patchApiV1UsersByIdNotificationsByUuid
+      operationId: patchApiV1UsersByIdNotificationsByUuid_3
       parameters:
         - description: Authorization
           in: header
@@ -76259,7 +76259,7 @@ paths:
   /api/v1/users/62188/notifications/4e5a3a72-ed95-4a8e-8d19-a7155572f951:
     patch:
       description: ''
-      operationId: patchApiV1UsersByIdNotificationsByUuid
+      operationId: patchApiV1UsersByIdNotificationsByUuid_4
       parameters:
         - description: Authorization
           in: header
@@ -83859,7 +83859,7 @@ paths:
   /api/v1/videos/79576:
     get:
       description: ''
-      operationId: getApiV1VideosById
+      operationId: getApiV1VideosById_2
       parameters:
         - description: include[]
           example: playlist
@@ -84600,7 +84600,7 @@ paths:
   /api/v1/videos/79644:
     get:
       description: ''
-      operationId: getApiV1VideosById
+      operationId: getApiV1VideosById_3
       parameters:
         - description: include[]
           example: playlist
@@ -84890,7 +84890,7 @@ paths:
   /api/v1/videos/79644/next:
     get:
       description: ''
-      operationId: getApiV1VideosByIdNext
+      operationId: getApiV1VideosByIdNext_2
       parameters:
         - description: channel
           example: 12
@@ -85252,7 +85252,7 @@ paths:
   /api/v1/videos/79656:
     get:
       description: ''
-      operationId: getApiV1VideosById
+      operationId: getApiV1VideosById_4
       parameters:
         - description: include[]
           example: playlist
@@ -85542,7 +85542,7 @@ paths:
   /api/v1/videos/79656/next:
     get:
       description: ''
-      operationId: getApiV1VideosByIdNext
+      operationId: getApiV1VideosByIdNext_3
       parameters:
         - description: Authorization
           in: header

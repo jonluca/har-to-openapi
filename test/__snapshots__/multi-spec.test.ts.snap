@@ -424,6 +424,9 @@ exports[`Spec generator > Returns one spec for a har with two domains and forceA
         {
           "url": "http://example.com",
         },
+        {
+          "url": "http://exampletwo.com",
+        },
       ],
     },
     "yamlSpec": "openapi: 3.0.0
@@ -460,6 +463,7 @@ paths:
       summary: Get Login
 servers:
   - url: http://example.com
+  - url: http://exampletwo.com
 ",
   },
 ]
@@ -522,6 +526,9 @@ exports[`Spec generator > Returns one spec for a har with two domains and forceA
         {
           "url": "http://example.com",
         },
+        {
+          "url": "http://exampletwo.com",
+        },
       ],
     },
     "yamlSpec": "openapi: 3.0.0
@@ -560,6 +567,7 @@ paths:
       summary: Get Login
 servers:
   - url: http://example.com
+  - url: http://exampletwo.com
 ",
   },
 ]

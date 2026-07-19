@@ -116,6 +116,35 @@ const isOperationObject = (value: unknown): value is OperationObject => {
   return Boolean(value && typeof value === "object" && "responses" in (value as Record<string, unknown>));
 };
 
+const ensureUniqueOperationIds = (paths: PathsObject) => {
+  const usedOperationIds = new Set<string>();
+
+  for (const pathKey of Object.keys(paths).sort()) {
+    const pathItem = paths[pathKey];
+    if (!pathItem) {
+      continue;
+    }
+
+    for (const method of Object.keys(pathItem).sort()) {
+      const operation = pathItem[method as keyof PathItemObject];
+      if (!isOperationObject(operation) || !operation.operationId) {
+        continue;
+      }
+
+      const baseOperationId = operation.operationId;
+      let operationId = baseOperationId;
+      let suffix = 2;
+      while (usedOperationIds.has(operationId)) {
+        operationId = `${baseOperationId}_${suffix}`;
+        suffix += 1;
+      }
+
+      operation.operationId = operationId;
+      usedOperationIds.add(operationId);
+    }
+  }
+};
+
 const mergeRequestBodies = (
   current: OperationObject["requestBody"] | undefined,
   next: OperationObject["requestBody"] | undefined,
@@ -361,17 +390,17 @@ const generateSpecs = async <T extends Har>(har: T, config?: HarToOpenAPIConfig)
             }
           }
 
-          // add query string parameters
-          if (item.request.queryString?.length) {
-            addQueryStringParams(specMethod, item.request.queryString, internalConfig);
-          }
           if (queryParams) {
-            // try and parse from the url if the har is malformed
+            // URLSearchParams performs exactly one standards-compliant decode.
+            // Prefer it when the request URL contains the query, since HAR
+            // producers disagree about whether queryString values are encoded.
             const queryStrings: QueryString[] = [];
             for (const entry of urlObj.searchParams.entries()) {
               queryStrings.push({ name: entry[0], value: entry[1] });
             }
             addQueryStringParams(specMethod, queryStrings, internalConfig);
+          } else if (item.request.queryString?.length) {
+            addQueryStringParams(specMethod, item.request.queryString, internalConfig);
           }
           if (requestHeaders?.length) {
             addRequestHeaders(specMethod, requestHeaders, internalConfig);
@@ -485,11 +514,9 @@ const generateSpecs = async <T extends Har>(har: T, config?: HarToOpenAPIConfig)
       }
       // sort paths
       spec.paths = sortObject(spec.paths);
-      const prefix = firstUrl?.protocol ?? "http:";
-      const server: ServerObject = {
-        url: `${prefix}//${labeledDomain}`,
-      };
-      spec.servers = [server];
+      ensureUniqueOperationIds(spec.paths);
+      const serverUrls = Array.from(new Set(harEntriesForDomain.map(({ parsedUrl }) => parsedUrl.origin)));
+      spec.servers = serverUrls.map((url): ServerObject => ({ url }));
       const yamlSpec = YAML.dump(spec);
       specs.push({ spec, yamlSpec, domain: labeledDomain });
     } catch (err) {

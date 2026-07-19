@@ -389,7 +389,9 @@ const sanitizeFileSegment = (value: string) => {
 
 const getSpecFilename = (spec: HarToOpenAPISpec, index: number, format: CliFormat) => {
   const extension = format === "json" ? "json" : "yaml";
-  const basename = sanitizeFileSegment(spec.domain || `spec-${index + 1}`);
+  // URL encoding is reversible, so distinct domains cannot collapse to the
+  // same filename as they can when punctuation is replaced with hyphens.
+  const basename = spec.domain ? encodeURIComponent(spec.domain) : sanitizeFileSegment(`spec-${index + 1}`);
   return `${basename}.${extension}`;
 };
 

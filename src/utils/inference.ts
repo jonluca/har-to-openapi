@@ -98,7 +98,7 @@ export const inferScalarSchema = (rawValue: string, inferParameterTypes = true):
   }
 
   if (isIntegerLike(value) && !hasLeadingZeroes(value)) {
-    return { type: "integer" };
+    return Number.isSafeInteger(Number(value)) ? { type: "integer" } : { type: "string" };
   }
 
   if (isNumberLike(value) && !hasLeadingZeroes(value)) {

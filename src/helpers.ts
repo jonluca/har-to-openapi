@@ -622,7 +622,10 @@ export const addQueryStringParams = (
 ) => {
   const parameters = (specMethod.parameters ??= []);
   harParams?.forEach((param) => {
-    const decodedValue = decodeURIComponent(param.value);
+    // The caller normalizes URL query values before they reach this helper.
+    // Decoding again corrupts literal percent escapes and can throw for values
+    // such as "%", causing the entire HAR entry to be discarded.
+    const decodedValue = param.value;
     const schema = inferScalarSchema(decodedValue, config.inferParameterTypes);
     const example = coerceExampleValue(decodedValue, schema);
     const existing = parameters.find(
