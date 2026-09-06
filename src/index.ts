@@ -8,7 +8,7 @@ import type {
   ServerObject,
 } from "@loopback/openapi-v3-types";
 import type { Entry, Har, QueryString, Response } from "har-format";
-import YAML from "js-yaml";
+import * as YAML from "js-yaml";
 import { cloneDeep, groupBy } from "lodash-es";
 import {
   addMethod,
@@ -18,7 +18,18 @@ import {
   buildResponseBodyFromSamples,
   getSecurity,
 } from "./helpers.js";
-import type { HarToOpenAPIConfig, HarToOpenAPISpec, InternalConfig } from "./types.js";
+import type {
+  CaptureSource,
+  ConversionDiagnostic,
+  ConversionReport,
+  HarToOpenAPIConfig,
+  HarToOpenAPISpec,
+  InternalConfig,
+} from "./types.js";
+import { postprocessSpec } from "./postprocess.js";
+import { validateSpec } from "./validation.js";
+import { validateConfig } from "./config.js";
+import { ConversionError } from "./diagnostics.js";
 import { addResponse } from "./utils/baseResponse.js";
 import { DEFAULT_AUTH_HEADERS } from "./utils/headers.js";
 import { mergeScalarSchemas } from "./utils/inference.js";
@@ -191,6 +202,7 @@ const mergeResponseObjects = (current: ResponseObject | undefined, next: Respons
 };
 
 const getConfig = (config?: HarToOpenAPIConfig): InternalConfig => {
+  validateConfig(config);
   const internalConfig = cloneDeep(config || {}) as InternalConfig;
   // set up some defaults
   internalConfig.openapiVersion ??= "3.0.0";
@@ -219,32 +231,103 @@ const getConfig = (config?: HarToOpenAPIConfig): InternalConfig => {
   return Object.freeze(internalConfig);
 };
 
-const tryParseUrl = (url: string, logErrors: boolean | undefined) => {
-  try {
-    return new URL(url);
-  } catch {
-    if (logErrors) {
-      console.error(`Error parsing url ${url}`);
-    }
-  }
-  return undefined;
+type CapturedResponse = Response & { source?: CaptureSource };
+interface CapturedEntry {
+  entry: Entry;
+  parsedUrl: URL;
+  domain: string;
+  source: CaptureSource;
+}
+
+const validNameValues = (value: unknown, optionalValue = false): boolean =>
+  value === undefined ||
+  (Array.isArray(value) &&
+    value.every(
+      (item) =>
+        item &&
+        typeof item === "object" &&
+        typeof item.name === "string" &&
+        (typeof item.value === "string" || (optionalValue && item.value === undefined)),
+    ));
+
+const validEntryData = (entry: Entry): boolean => {
+  const request = entry.request;
+  const response = entry.response;
+  const postData = request.postData;
+  const content = response?.content;
+  return (
+    validNameValues(request.headers) &&
+    validNameValues(request.queryString) &&
+    validNameValues(request.cookies) &&
+    validNameValues(response?.headers) &&
+    validNameValues(response?.cookies) &&
+    (postData === undefined ||
+      (postData !== null &&
+        typeof postData === "object" &&
+        !Array.isArray(postData) &&
+        validNameValues(postData.params, true) &&
+        (postData.text === undefined || typeof postData.text === "string") &&
+        (postData.mimeType === undefined || typeof postData.mimeType === "string"))) &&
+    (content === undefined ||
+      (content !== null &&
+        typeof content === "object" &&
+        !Array.isArray(content) &&
+        (content.text === undefined || typeof content.text === "string") &&
+        (content.mimeType === undefined || typeof content.mimeType === "string")))
+  );
 };
 
-const generateSpecs = async <T extends Har>(har: T, config?: HarToOpenAPIConfig): Promise<HarToOpenAPISpec[]> => {
-  if (!har?.log?.entries?.length) {
-    return [];
-  }
-
-  // decode base64 now
-  har.log.entries.forEach((item) => {
-    const response = item.response;
-    if (response && response.content?.encoding === "base64") {
-      response.content.text = Buffer.from(response.content.text || "", "base64").toString();
-      delete response.content.encoding;
+/** Merge observations from one or more captures and retain a report even when output is empty. */
+const generateSpecsWithReport = async <T extends Har>(
+  har: T | readonly T[],
+  config?: HarToOpenAPIConfig,
+): Promise<{ specs: HarToOpenAPISpec[]; report: ConversionReport }> => {
+  const inputs: readonly T[] = Array.isArray(har) ? har : [har as T];
+  const report: ConversionReport = {
+    inputCount: inputs.length,
+    totalEntries: 0,
+    processedEntries: 0,
+    filteredEntries: 0,
+    failedEntries: 0,
+    operations: 0,
+    specs: 0,
+    diagnostics: [],
+  };
+  const diagnose = (diagnostic: ConversionDiagnostic) => {
+    report.diagnostics.push(diagnostic);
+  };
+  const finishReport = () => {
+    for (const diagnostic of report.diagnostics) {
+      if (typeof config?.onDiagnostic === "function") {
+        config.onDiagnostic(diagnostic);
+      }
+      if (config?.logErrors && diagnostic.level !== "info") {
+        console.error(`[${diagnostic.code}] ${diagnostic.message}`);
+      }
     }
-  });
-
-  const internalConfig = getConfig(config);
+    if (typeof config?.onReport === "function") {
+      config.onReport(report);
+    }
+  };
+  let internalConfig: InternalConfig;
+  let pathReplacements: Array<readonly [RegExp, string]> | undefined;
+  try {
+    validateConfig(config);
+    internalConfig = getConfig({ ...config, onDiagnostic: diagnose });
+    pathReplacements = internalConfig.pathReplace
+      ? Object.entries(internalConfig.pathReplace).map(
+          ([pattern, replacement]) => [new RegExp(pattern, "g"), replacement] as const,
+        )
+      : undefined;
+  } catch (error) {
+    diagnose({
+      level: "error",
+      code: "invalid-config",
+      message: error instanceof Error ? error.message : "Invalid configuration.",
+    });
+    finishReport();
+    throw new ConversionError(report);
+  }
   const {
     ignoreBodiesForStatusCodes,
     mimeTypes,
@@ -252,291 +335,470 @@ const generateSpecs = async <T extends Har>(har: T, config?: HarToOpenAPIConfig)
     forceAllRequestsInSameSpec,
     urlFilter,
     relaxedMethods,
-    logErrors,
     attemptToParameterizeUrl,
     minLengthForNumericPath,
     dropPathsWithoutSuccessfulResponse,
-    pathReplace,
     infoDescription,
     infoTitle,
     infoVersion,
     inferParameterTypes,
     openapiVersion,
   } = internalConfig;
-  const pathReplacements = pathReplace
-    ? Object.entries(pathReplace).map(([pattern, replacement]) => [new RegExp(pattern, "g"), replacement] as const)
-    : undefined;
 
-  const filteredEntries = har.log.entries
-    .map((entry) => {
-      const parsedUrl = tryParseUrl(entry.request.url, logErrors);
-      if (!parsedUrl) {
-        return undefined;
+  const entries: CapturedEntry[] = [];
+  inputs.forEach((input, inputIndex) => {
+    if (!input || !Array.isArray(input.log?.entries)) {
+      diagnose({
+        level: "error",
+        code: "invalid-har",
+        message: `Input ${inputIndex} must contain a log.entries array.`,
+      });
+      return;
+    }
+    report.totalEntries += input.log.entries.length;
+    input.log.entries.forEach((original, entryIndex) => {
+      const source: CaptureSource = {
+        inputIndex,
+        entryIndex,
+        ...(config?.sourceNames?.[inputIndex] ? { sourceName: config.sourceNames[inputIndex] } : {}),
+      };
+      if (
+        !original?.request ||
+        typeof original.request.url !== "string" ||
+        typeof original.request.method !== "string" ||
+        !original.request.method.trim()
+      ) {
+        report.failedEntries++;
+        diagnose({
+          level: "error",
+          code: "invalid-entry",
+          message: "Entry is missing a request URL or method.",
+          source,
+        });
+        return;
       }
-
+      if (!validEntryData(original)) {
+        report.failedEntries++;
+        diagnose({
+          level: "error",
+          code: "invalid-entry",
+          message: "Entry contains malformed headers, parameters, cookies, or body data.",
+          source,
+        });
+        return;
+      }
+      let parsedUrl: URL;
+      try {
+        parsedUrl = new URL(original.request.url);
+        if (!["http:", "https:"].includes(parsedUrl.protocol)) {
+          throw new Error("Unsupported protocol");
+        }
+      } catch {
+        report.failedEntries++;
+        diagnose({
+          level: "error",
+          code: "invalid-url",
+          message: "Request URL must be an absolute HTTP or HTTPS URL.",
+          source,
+        });
+        return;
+      }
       const domain = parsedUrl.hostname;
       if (!shouldIncludeDomain(domain, internalConfig)) {
-        return undefined;
+        report.filteredEntries++;
+        diagnose({ level: "info", code: "domain-filtered", message: "Entry excluded by domain filters.", source });
+        return;
       }
-
-      return {
-        entry,
-        parsedUrl,
-        domain,
-      };
-    })
-    .filter(
-      (
-        item,
-      ): item is {
-        entry: Entry;
-        parsedUrl: URL;
-        domain: string;
-      } => Boolean(item),
-    );
-
-  const groupedByHostname = groupBy(filteredEntries, (entry) => {
-    if (forceAllRequestsInSameSpec) {
-      return "specs";
-    }
-    return entry.domain;
+      // Inference and user callbacks may inspect/mutate entries; never mutate the supplied captures.
+      const entry = cloneDeep(original);
+      entries.push({ entry, parsedUrl, domain, source });
+    });
   });
+
+  const groups = groupBy(entries, (item) => (forceAllRequestsInSameSpec ? "specs" : item.domain));
   const specs: HarToOpenAPISpec[] = [];
+  let transformationFailed = false;
+  for (const harEntriesForDomain of Object.values(groups)) {
+    const spec = createApiSpec(openapiVersion);
+    const requestBodySamples = new WeakMap<
+      OperationObject,
+      Array<{
+        postData: NonNullable<Entry["request"]["postData"]>;
+        headers?: Entry["request"]["headers"];
+        source: CaptureSource;
+      }>
+    >();
+    const responseBodySamples = new WeakMap<OperationObject, Map<number, CapturedResponse[]>>();
+    const observations = new WeakMap<
+      OperationObject,
+      {
+        sampleCount: number;
+        requestBodyCount: number;
+        parameterSamples: Array<{ query: Set<string>; header: Set<string> }>;
+      }
+    >();
+    const securitySchemes: NonNullable<OpenApiSpec["components"]>["securitySchemes"] = {};
+    const origins = new Set<string>();
+    const labeledDomain = harEntriesForDomain[0].domain;
+    const infoValues = { domain: labeledDomain, generatedAt: new Date().toISOString() };
+    spec.info.title = fillInfoTemplate(infoTitle ?? DEFAULT_INFO_TITLE, infoValues);
+    spec.info.version = fillInfoTemplate(infoVersion ?? spec.info.version, infoValues);
+    spec.info.description = fillInfoTemplate(infoDescription ?? DEFAULT_INFO_DESCRIPTION, infoValues);
 
-  for (const domain in groupedByHostname) {
-    try {
-      const spec = createApiSpec(openapiVersion);
-
-      const harEntriesForDomain = groupedByHostname[domain];
-      const requestBodySamples = new WeakMap<
-        OperationObject,
-        Array<{
-          postData: NonNullable<Entry["request"]["postData"]>;
-          headers?: Entry["request"]["headers"];
-        }>
-      >();
-      const responseBodySamples = new WeakMap<OperationObject, Map<number, Response[]>>();
-
-      const securitySchemes: NonNullable<OpenApiSpec["components"]>["securitySchemes"] = {};
-      const firstUrl = harEntriesForDomain[0]?.parsedUrl;
-      const labeledDomain = firstUrl?.hostname ?? domain;
-      const generatedAt = new Date().toISOString();
-      const infoTemplateValues = {
-        domain: labeledDomain ?? domain ?? "unknown-domain",
-        generatedAt,
-      };
-
-      spec.info.title = fillInfoTemplate(infoTitle ?? DEFAULT_INFO_TITLE, infoTemplateValues);
-      spec.info.version = fillInfoTemplate(infoVersion ?? spec.info.version, infoTemplateValues);
-      spec.info.description = fillInfoTemplate(infoDescription ?? DEFAULT_INFO_DESCRIPTION, infoTemplateValues);
-
-      for (const { entry: item, parsedUrl: sourceUrl } of harEntriesForDomain) {
-        try {
-          const urlObj = pathReplacements?.length ? new URL(sourceUrl.href) : sourceUrl;
-
-          if (pathReplacements?.length) {
-            for (const [matcher, replacement] of pathReplacements) {
-              urlObj.pathname = urlObj.pathname.replace(matcher, replacement);
-            }
+    for (const { entry: item, parsedUrl: sourceUrl, source } of harEntriesForDomain) {
+      try {
+        const urlObj = pathReplacements?.length ? new URL(sourceUrl.href) : sourceUrl;
+        for (const [matcher, replacement] of pathReplacements ?? []) {
+          urlObj.pathname = urlObj.pathname.replace(matcher, replacement);
+        }
+        let urlPath = urlObj.pathname;
+        let pathParams: ParameterObject[] = [];
+        if (attemptToParameterizeUrl) {
+          const parameterized = parameterizeUrl(urlPath, minLengthForNumericPath, inferParameterTypes);
+          urlPath = parameterized.path;
+          pathParams = parameterized.parameters;
+        }
+        const skip = (code: string, message: string) => {
+          report.filteredEntries++;
+          diagnose({ level: "info", code, message, source });
+        };
+        if (urlFilter && !(await checkPathFromFilter(urlObj.href, item, urlFilter))) {
+          skip("url-filtered", "Entry excluded by URL filter.");
+          continue;
+        }
+        const mimeType = getResponseMimeType(item.response);
+        if (mimeTypes && (!mimeType || !mimeTypes.includes(mimeType))) {
+          skip("mime-filtered", "Entry excluded by response media type filter.");
+          continue;
+        }
+        const method = item.request.method.toLowerCase();
+        if (
+          (!relaxedMethods && !isStandardMethod(method)) ||
+          ["__proto__", "prototype", "constructor", "parameters", "servers", "$ref", "summary", "description"].includes(
+            method,
+          )
+        ) {
+          skip("method-filtered", "Entry excluded because its HTTP method is unsupported.");
+          continue;
+        }
+        const queryStrings: QueryString[] = urlObj.search
+          ? Array.from(urlObj.searchParams, ([name, value]) => ({ name, value }))
+          : (item.request.queryString ?? []);
+        const requestHeaders = item.request.headers;
+        // Invalid producer data should fail this entry before creating an operation.
+        if (!Array.isArray(queryStrings) || (requestHeaders !== undefined && !Array.isArray(requestHeaders))) {
+          throw new Error("Invalid parameters");
+        }
+        spec.paths[urlPath] ??= {} as PathItemObject;
+        const path = spec.paths[urlPath] as PathItemObject;
+        mergePathParameters(path, pathParams);
+        path[method] ??= addMethod(method, urlObj, internalConfig);
+        const operation = path[method] as OperationObject;
+        const status = item.response?.status;
+        if (Number.isInteger(status) && status >= 100 && status <= 599) {
+          operation.responses[status] ??= addResponse(status, method);
+        } else {
+          diagnose({
+            level: "warning",
+            code: "response-missing",
+            message: "No completed HTTP response was captured.",
+            source,
+            path: urlPath,
+            method,
+          });
+        }
+        if (securityHeaders?.length && requestHeaders?.length) {
+          const security = getSecurity(requestHeaders, securityHeaders, item.request.cookies);
+          if (security) {
+            Object.assign(securitySchemes, security.schemes);
+            operation.security = [security.requirement];
           }
+        }
+        if (queryStrings.length) {
+          addQueryStringParams(operation, queryStrings, internalConfig);
+        }
+        if (requestHeaders?.length) {
+          addRequestHeaders(operation, requestHeaders, internalConfig);
+        }
+        const observation = observations.get(operation) ?? {
+          sampleCount: 0,
+          requestBodyCount: 0,
+          parameterSamples: [],
+        };
+        observation.sampleCount++;
+        if (item.request.postData) {
+          observation.requestBodyCount++;
+        }
+        observation.parameterSamples.push({
+          query: new Set(queryStrings.map((parameter) => parameter.name)),
+          header: new Set(requestHeaders?.map((header) => header.name.toLowerCase())),
+        });
+        observations.set(operation, observation);
 
-          let urlPath = urlObj.pathname;
-          let pathParams: ParameterObject[] = [];
-          if (attemptToParameterizeUrl) {
-            const { path, parameters } = parameterizeUrl(urlPath, minLengthForNumericPath, inferParameterTypes);
-            urlPath = path;
-            pathParams = parameters;
+        const useBodies = !ignoreBodiesForStatusCodes?.includes(status);
+        if (!useBodies) {
+          diagnose({
+            level: "info",
+            code: "bodies-filtered",
+            message: "Bodies excluded by status code filter.",
+            source,
+            path: urlPath,
+            method,
+            status,
+          });
+        }
+        if (useBodies && item.request.postData) {
+          const samples = requestBodySamples.get(operation) ?? [];
+          samples.push({ postData: item.request.postData, headers: requestHeaders, source });
+          requestBodySamples.set(operation, samples);
+        }
+        if (status && useBodies && item.response) {
+          const samplesByStatus = responseBodySamples.get(operation) ?? new Map<number, CapturedResponse[]>();
+          const samples = samplesByStatus.get(status) ?? [];
+          // Response content is optional in real-world partial HAR exports.
+          if (item.response.content) {
+            samples.push({ ...item.response, source });
+          } else if (method !== "head" && status !== 204 && status !== 304) {
+            diagnose({
+              level: "warning",
+              code: "body-missing",
+              message: "Response content was not captured.",
+              source,
+              path: urlPath,
+              method,
+              status,
+            });
           }
+          samplesByStatus.set(status, samples);
+          responseBodySamples.set(operation, samplesByStatus);
+        }
+        origins.add(sourceUrl.origin);
+        report.processedEntries++;
+      } catch {
+        report.failedEntries++;
+        diagnose({
+          level: "error",
+          code: "entry-failed",
+          message: "Entry could not be converted because its request or response data is invalid.",
+          source,
+        });
+      }
+    }
 
-          const queryParams = urlObj.search;
-
-          if (urlFilter) {
-            const isValid = await checkPathFromFilter(urlObj.href, item, urlFilter);
-            if (!isValid) {
+    if (dropPathsWithoutSuccessfulResponse) {
+      for (const [path, pathItem] of Object.entries(spec.paths)) {
+        const success = Object.values(pathItem).some(
+          (value) => isOperationObject(value) && Object.keys(value.responses).some((status) => status.startsWith("2")),
+        );
+        if (!success) {
+          delete spec.paths[path];
+          diagnose({
+            level: "info",
+            code: "path-filtered",
+            message: "Path excluded because no successful response was captured.",
+            path,
+          });
+        }
+      }
+    }
+    for (const [pathKey, pathItem] of Object.entries(spec.paths)) {
+      for (const [method, operation] of Object.entries(pathItem)) {
+        if (!isOperationObject(operation)) {
+          continue;
+        }
+        const observation = observations.get(operation);
+        if (observation) {
+          if (internalConfig.includeInferenceEvidence) {
+            operation["x-har-observations"] = {
+              sampleCount: observation.sampleCount,
+              requestBodyCount: observation.requestBodyCount,
+            };
+          }
+          for (const parameter of operation.parameters ?? []) {
+            if ("$ref" in parameter || parameter.in === "path") {
               continue;
             }
-          }
-          const mimeType = getResponseMimeType(item.response);
-          const isValidMimetype = !mimeTypes || (mimeType && mimeTypes.includes(mimeType));
-          if (!isValidMimetype) {
-            continue;
-          }
-
-          // create method
-          const method = item.request.method.toLowerCase();
-          // if its not standard and we're not in relaxed mode, skip it
-          if (!relaxedMethods && !isStandardMethod(method)) {
-            continue;
-          }
-          // create path if it doesn't exist
-          spec.paths[urlPath] ??= {} as PathItemObject;
-          const path = spec.paths[urlPath] as PathItemObject;
-          mergePathParameters(path, pathParams);
-
-          path[method] ??= addMethod(method, urlObj, internalConfig);
-          const specMethod = path[method] as OperationObject;
-          // generate response
-          const status = item.response?.status;
-          if (status) {
-            specMethod.responses[status] ??= addResponse(status, method);
-          }
-
-          const requestHeaders = item.request.headers;
-          if (securityHeaders?.length && requestHeaders?.length) {
-            const security = getSecurity(requestHeaders, securityHeaders, item.request.cookies);
-            if (security) {
-              Object.assign(securitySchemes, security.schemes);
-              specMethod.security = [security.requirement];
+            const literalArrayNameExists = operation.parameters?.some(
+              (p) => !("$ref" in p) && p.in === "query" && p.name === `${parameter.name}[]`,
+            );
+            const present = observation.parameterSamples.filter((sample) => {
+              if (parameter.in === "header") {
+                return sample.header.has(parameter.name.toLowerCase());
+              }
+              if (parameter.in !== "query") {
+                return false;
+              }
+              if (sample.query.has(parameter.name)) {
+                return true;
+              }
+              if (!internalConfig.parseBracketParameters) {
+                return false;
+              }
+              if (parameter.style === "deepObject") {
+                return Array.from(sample.query).some((name) => name.startsWith(`${parameter.name}[`));
+              }
+              return !literalArrayNameExists && sample.query.has(`${parameter.name}[]`);
+            }).length;
+            if (internalConfig.requiredness === "observed") {
+              parameter.required = present === observation.sampleCount;
+            }
+            if (internalConfig.requiredness === "optional") {
+              parameter.required = false;
+            }
+            if (internalConfig.includeInferenceEvidence) {
+              (parameter as ParameterObject & Record<string, unknown>)["x-har-observations"] = {
+                sampleCount: observation.sampleCount,
+                present,
+                ratio: present / observation.sampleCount,
+              };
             }
           }
-
-          if (queryParams) {
-            // URLSearchParams performs exactly one standards-compliant decode.
-            // Prefer it when the request URL contains the query, since HAR
-            // producers disagree about whether queryString values are encoded.
-            const queryStrings: QueryString[] = [];
-            for (const entry of urlObj.searchParams.entries()) {
-              queryStrings.push({ name: entry[0], value: entry[1] });
-            }
-            addQueryStringParams(specMethod, queryStrings, internalConfig);
-          } else if (item.request.queryString?.length) {
-            addQueryStringParams(specMethod, item.request.queryString, internalConfig);
-          }
-          if (requestHeaders?.length) {
-            addRequestHeaders(specMethod, requestHeaders, internalConfig);
-          }
-
-          const shouldUseRequestAndResponse =
-            !ignoreBodiesForStatusCodes || !ignoreBodiesForStatusCodes.includes(status);
-          if (shouldUseRequestAndResponse && item.request.postData) {
-            const samples = requestBodySamples.get(specMethod) ?? [];
-            samples.push({
-              postData: item.request.postData,
-              headers: item.request.headers,
-            });
-            requestBodySamples.set(specMethod, samples);
-          }
-
-          if (status && isValidMimetype && shouldUseRequestAndResponse && item.response) {
-            const samplesByStatus = responseBodySamples.get(specMethod) ?? new Map<number, Response[]>();
-            const samples = samplesByStatus.get(status) ?? [];
-            samples.push(item.response);
-            samplesByStatus.set(status, samples);
-            responseBodySamples.set(specMethod, samplesByStatus);
-          }
-        } catch (e) {
-          if (logErrors) {
-            console.error(`Error parsing ${item.request}`);
-            console.error(e);
-          }
-          // error parsing one entry, move on
         }
-      }
-
-      if (dropPathsWithoutSuccessfulResponse) {
-        for (const [path, entry] of Object.entries<PathsObject>(spec.paths)) {
-          const pathKeys = Object.keys(entry);
-          let hadSuccessfulResponse = false;
-          for (const maybeMethod of pathKeys) {
-            if (isStandardMethod(maybeMethod)) {
-              const responses = Object.keys(entry[maybeMethod].responses);
-              for (const maybeStatus of responses) {
-                // check if any of the responses had a valid status (2xx)
-                hadSuccessfulResponse ||= String(maybeStatus).startsWith("2");
+        const requestSamples = requestBodySamples.get(operation);
+        if (requestSamples?.length) {
+          try {
+            operation.requestBody = mergeRequestBodies(
+              operation.requestBody,
+              await buildRequestBodyFromSamples(requestSamples, { urlPath: pathKey, method }, internalConfig),
+            );
+            if (operation.requestBody && !("$ref" in operation.requestBody)) {
+              if (internalConfig.requiredness === "optional") {
+                operation.requestBody.required = false;
+              }
+              if (internalConfig.requiredness === "observed" && observation) {
+                operation.requestBody.required = observation.requestBodyCount === observation.sampleCount;
               }
             }
-          }
-          if (!hadSuccessfulResponse) {
-            delete spec.paths[path];
+          } catch {
+            diagnose({
+              level: "error",
+              code: "schema-failed",
+              message: "Request schema inference failed.",
+              source: requestSamples[0].source,
+              path: pathKey,
+              method,
+            });
           }
         }
-      }
-
-      for (const [pathKey, pathItem] of Object.entries<PathItemObject>(spec.paths)) {
-        for (const [maybeMethod, maybeOperation] of Object.entries(pathItem)) {
-          if (!isStandardMethod(maybeMethod) || !isOperationObject(maybeOperation)) {
+        for (const [status, samples] of responseBodySamples.get(operation) ?? []) {
+          if (!samples.length) {
             continue;
           }
-
-          const requestSamples = requestBodySamples.get(maybeOperation);
-          if (requestSamples?.length) {
-            maybeOperation.requestBody = mergeRequestBodies(
-              maybeOperation.requestBody,
-              await buildRequestBodyFromSamples(
-                requestSamples,
-                { urlPath: pathKey, method: maybeMethod },
-                internalConfig,
-              ),
-            );
-          }
-
-          const responsesByStatus = responseBodySamples.get(maybeOperation);
-          if (!responsesByStatus?.size) {
-            continue;
-          }
-
-          for (const [status, responseSamples] of responsesByStatus.entries()) {
-            const responseBody = await buildResponseBodyFromSamples(
-              responseSamples,
-              { urlPath: pathKey, method: maybeMethod },
-              internalConfig,
-            );
-            if (responseBody) {
-              maybeOperation.responses[status] = mergeResponseObjects(
-                maybeOperation.responses[status],
-                responseBody,
-              ) as any;
+          try {
+            const body = await buildResponseBodyFromSamples(samples, { urlPath: pathKey, method }, internalConfig);
+            if (body) {
+              operation.responses[status] = mergeResponseObjects(operation.responses[status], body) as ResponseObject;
             }
+          } catch {
+            diagnose({
+              level: "error",
+              code: "schema-failed",
+              message: "Response schema inference failed.",
+              source: samples[0].source,
+              path: pathKey,
+              method,
+              status,
+            });
           }
         }
-      }
-
-      // If there were no valid paths, bail
-      if (!Object.keys(spec.paths).length) {
-        continue;
-      }
-
-      if (Object.keys(securitySchemes).length) {
-        spec.components ||= {};
-        spec.components.securitySchemes ??= {};
-        Object.assign(spec.components.securitySchemes, securitySchemes);
-      }
-
-      // remove the examples that we used to build the superset schemas
-      for (const path of Object.values(spec.paths)) {
-        for (const maybeOperation of Object.values(path)) {
-          if (!isOperationObject(maybeOperation)) {
-            continue;
-          }
-          delete maybeOperation.responseExamples;
-          delete maybeOperation.examples;
-        }
-      }
-      // sort paths
-      spec.paths = sortObject(spec.paths);
-      ensureUniqueOperationIds(spec.paths);
-      const serverUrls = Array.from(new Set(harEntriesForDomain.map(({ parsedUrl }) => parsedUrl.origin)));
-      spec.servers = serverUrls.map((url): ServerObject => ({ url }));
-      const yamlSpec = YAML.dump(spec);
-      specs.push({ spec, yamlSpec, domain: labeledDomain });
-    } catch (err) {
-      if (logErrors) {
-        console.error(`Error creating spec for ${domain} - ${err}`);
       }
     }
+    for (const [path, item] of Object.entries(spec.paths)) {
+      if (!Object.values(item).some(isOperationObject)) {
+        delete spec.paths[path];
+      }
+    }
+    if (!Object.keys(spec.paths).length) {
+      continue;
+    }
+    if (Object.keys(securitySchemes).length) {
+      spec.components = { ...spec.components, securitySchemes };
+    }
+    spec.paths = sortObject(spec.paths);
+    ensureUniqueOperationIds(spec.paths);
+    spec.servers = Array.from(origins, (url): ServerObject => ({ url }));
+    try {
+      postprocessSpec(spec, internalConfig);
+    } catch (error) {
+      transformationFailed = true;
+      diagnose({
+        level: "error",
+        code: "transformation-failed",
+        message: error instanceof Error ? error.message : "Spec customization failed.",
+      });
+      continue;
+    }
+    if (internalConfig.validate || internalConfig.strict) {
+      const validationDiagnostics = await validateSpec(spec);
+      for (const diagnostic of validationDiagnostics) {
+        diagnose(diagnostic);
+      }
+      if (validationDiagnostics.some((diagnostic) => diagnostic.level === "error")) {
+        continue;
+      }
+    }
+    specs.push({ spec, yamlSpec: YAML.dump(spec), domain: labeledDomain });
   }
-
-  return specs;
+  report.specs = specs.length;
+  report.operations = specs.reduce(
+    (count, { spec }) =>
+      count +
+      Object.values(spec.paths ?? {}).reduce(
+        (n, path) => n + Object.values(path ?? {}).filter(isOperationObject).length,
+        0,
+      ),
+    0,
+  );
+  if (!specs.length) {
+    diagnose({
+      level: "warning",
+      code: "no-specs",
+      message: "No OpenAPI operations were generated from the supplied captures.",
+    });
+  }
+  if (config?.includeReport) {
+    for (const spec of specs) {
+      spec.report = report;
+    }
+  }
+  finishReport();
+  if (
+    transformationFailed ||
+    (internalConfig.strict && report.diagnostics.some((d) => d.level !== "info")) ||
+    (internalConfig.validate && report.diagnostics.some((d) => d.level === "error"))
+  ) {
+    throw new ConversionError(report);
+  }
+  return { specs, report };
 };
-const generateSpec = async <T extends Har>(har: T, config?: HarToOpenAPIConfig): Promise<HarToOpenAPISpec> => {
-  const specs = await generateSpecs(har, config);
+
+const generateSpecs = async <T extends Har>(
+  har: T | readonly T[],
+  config?: HarToOpenAPIConfig,
+): Promise<HarToOpenAPISpec[]> => {
+  return (await generateSpecsWithReport(har, config)).specs;
+};
+
+const generateSpec = async <T extends Har>(
+  har: T | readonly T[],
+  config?: HarToOpenAPIConfig,
+): Promise<HarToOpenAPISpec> => {
+  const { specs, report } = await generateSpecsWithReport(har, config);
   if (specs.length) {
     return specs[0];
   }
   const spec = createApiSpec(getConfig(config).openapiVersion);
   spec.info.title = "HarToOpenApi - no valid specs found";
-  return { spec, yamlSpec: YAML.dump(spec), domain: undefined };
+  return { spec, yamlSpec: YAML.dump(spec), domain: undefined, ...(config?.includeReport ? { report } : {}) };
 };
 
-export { generateSpec, generateSpecs };
-export type { HarToOpenAPIConfig, HarToOpenAPISpec } from "./types.js";
+export { generateSpec, generateSpecs, generateSpecsWithReport, ConversionError };
+export type {
+  CaptureSource,
+  ConversionDiagnostic,
+  ConversionReport,
+  HarToOpenAPIConfig,
+  HarToOpenAPISpec,
+  OpenApiOverlay,
+  RedactionConfig,
+} from "./types.js";

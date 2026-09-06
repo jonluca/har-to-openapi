@@ -1,9 +1,15 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import type { Har } from "har-format";
-import YAML from "js-yaml";
-import { generateSpec, generateSpecs } from "./index.js";
-import type { HarToOpenAPIConfig, HarToOpenAPISpec } from "./types.js";
+import * as YAML from "js-yaml";
+import { ConversionError, generateSpec, generateSpecs } from "./index.js";
+import type {
+  ConversionDiagnostic,
+  ConversionReport,
+  HarToOpenAPIConfig,
+  HarToOpenAPISpec,
+  OpenApiOverlay,
+} from "./types.js";
 
 type CliFormat = "json" | "yaml";
 
@@ -21,10 +27,12 @@ interface CliDependencies {
 interface ParsedCliArgs {
   configPath?: string;
   format: CliFormat;
-  inputPath?: string;
+  inputPaths: string[];
   multiSpec: boolean;
+  overlayPath?: string;
   outputDir?: string;
   outputPath?: string;
+  reportPath?: string;
   overrides: Partial<HarToOpenAPIConfig>;
   showHelp: boolean;
 }
@@ -38,6 +46,12 @@ const BOOLEAN_FLAG_MAP = {
   "guess-authentication-headers": "guessAuthenticationHeaders",
   "include-non-json-example-responses": "includeNonJsonExampleResponses",
   "infer-parameter-types": "inferParameterTypes",
+  "infer-array-parameters": "inferArrayParameters",
+  "parse-bracket-parameters": "parseBracketParameters",
+  "include-inference-evidence": "includeInferenceEvidence",
+  "reusable-schemas": "reusableSchemas",
+  strict: "strict",
+  validate: "validate",
   "log-errors": "logErrors",
   "relaxed-content-type-json-parse": "relaxedContentTypeJsonParse",
   "relaxed-methods": "relaxedMethods",
@@ -53,6 +67,8 @@ const LIST_FLAG_MAP = {
 
 const NUMBER_FLAG_MAP = {
   "min-length-for-numeric-path": "minLengthForNumericPath",
+  "max-examples": "maxExamples",
+  "max-example-bytes": "maxExampleBytes",
 } as const satisfies Record<string, keyof HarToOpenAPIConfig>;
 
 const STRING_FLAG_MAP = {
@@ -62,9 +78,9 @@ const STRING_FLAG_MAP = {
   "openapi-version": "openapiVersion",
 } as const satisfies Record<string, keyof HarToOpenAPIConfig>;
 
-const HELP_TEXT = `Usage: har-to-openapi [input.har|-] [options]
+const HELP_TEXT = `Usage: har-to-openapi [input.har ...|-] [options]
 
-Convert a HAR file to an OpenAPI document without changing the current library API.
+Merge HAR captures and convert them to OpenAPI documents.
 
 Options:
   -h, --help                                     Show this help output
@@ -72,7 +88,20 @@ Options:
   -o, --output <file>                            Write a single generated spec to a file
       --output-dir <dir>                         Write multi-spec output files into a directory
       --config <file>                            Load HarToOpenAPIConfig from a JSON or YAML file
+      --overlay <file>                           Apply an OpenAPI Overlay 1.0 JSON or YAML file
+      --report <file|->                          Write a JSON conversion report (- uses stderr)
       --multi-spec                               Generate one spec per detected domain
+      --reusable-schemas                         Extract shared object schemas into components.schemas
+      --examples <single|multiple|none>          Example mode (default: single)
+      --max-examples <number>                    Maximum examples per location (default: 5)
+      --max-example-bytes <number>               Maximum bytes per example (multiple default: 16384)
+      --infer-array-parameters                   Infer arrays from repeated query and form fields (default)
+      --no-infer-array-parameters                Disable repeated-parameter array inference
+      --parse-bracket-parameters                 Parse one-level query objects and [] array names
+      --requiredness <legacy|optional|observed>   Field/body requiredness policy (default: legacy)
+      --include-inference-evidence               Include sample counts and field-presence evidence
+      --validate                                 Validate generated OpenAPI documents
+      --strict                                   Validate and fail on warnings, errors, or no output
       --include-domains <list>                   Only include exact hostnames
       --exclude-domains <list>                   Skip exact hostnames
       --force-all-requests-in-same-spec          Collapse all requests into one spec
@@ -107,12 +136,15 @@ Options:
       --security-headers <list>                  Comma-separated security header names
       --min-length-for-numeric-path <number>     Minimum length before numeric path parts become params
 
-Advanced options like tags, urlFilter, and pathReplace can be passed through --config.
-Config files can be JSON or YAML.
+Advanced options like schemaNames, redact, tags, urlFilter, and pathReplace use --config.
+Config and overlay files can be JSON or YAML. Boolean flags also accept --no- prefixes.
+Pass multiple file paths (including shell-expanded globs) to merge captures; use '-' once for stdin.
 
 Examples:
   har-to-openapi capture.har > openapi.yaml
   har-to-openapi capture.har --format json --output openapi.json
+  har-to-openapi captures/*.har --reusable-schemas --output openapi.yaml
+  har-to-openapi capture.har --overlay customizations.yaml --strict --report report.json
   har-to-openapi test/data/base-path.har --multi-spec --output-dir generated
   cat capture.har | har-to-openapi --config har-to-openapi.config.json
 `;
@@ -179,7 +211,7 @@ const parseNumberList = (value: string) => {
 
 const parseNumericValue = (value: string) => {
   const parsed = Number(value);
-  if (Number.isNaN(parsed)) {
+  if (!Number.isFinite(parsed)) {
     throw new Error(`Expected a number, received "${value}".`);
   }
   return parsed;
@@ -193,9 +225,9 @@ const parseOpenApiVersion = (value: string) => {
   throw new Error(`Unsupported OpenAPI version "${value}". Use "3.0.0" or "3.1.0".`);
 };
 
-const takeNextValue = (argv: string[], index: number, flag: string) => {
+const takeNextValue = (argv: string[], index: number, flag: string, allowStdinMarker = false) => {
   const next = argv[index + 1];
-  if (!next || next.startsWith("-")) {
+  if (!next || (next.startsWith("-") && !(allowStdinMarker && next === "-"))) {
     throw new Error(`Missing value for ${flag}.`);
   }
   return next;
@@ -204,6 +236,7 @@ const takeNextValue = (argv: string[], index: number, flag: string) => {
 const parseCliArgs = (argv: string[]): ParsedCliArgs => {
   const parsed: ParsedCliArgs = {
     format: "yaml",
+    inputPaths: [],
     multiSpec: false,
     overrides: {},
     showHelp: false,
@@ -213,6 +246,10 @@ const parseCliArgs = (argv: string[]): ParsedCliArgs => {
     const argument = argv[index];
 
     switch (argument) {
+      case "--":
+        parsed.inputPaths.push(...argv.slice(index + 1));
+        index = argv.length;
+        continue;
       case "-h":
       case "--help":
         parsed.showHelp = true;
@@ -235,6 +272,32 @@ const parseCliArgs = (argv: string[]): ParsedCliArgs => {
         parsed.configPath = takeNextValue(argv, index, argument);
         index += 1;
         continue;
+      case "--overlay":
+        parsed.overlayPath = takeNextValue(argv, index, argument);
+        index += 1;
+        continue;
+      case "--report":
+        parsed.reportPath = takeNextValue(argv, index, argument, true);
+        index += 1;
+        continue;
+      case "--examples": {
+        const value = takeNextValue(argv, index, argument);
+        if (value !== "single" && value !== "multiple" && value !== "none") {
+          throw new Error(`Unsupported examples mode "${value}". Use "single", "multiple", or "none".`);
+        }
+        parsed.overrides.examples = value;
+        index += 1;
+        continue;
+      }
+      case "--requiredness": {
+        const value = takeNextValue(argv, index, argument);
+        if (value !== "legacy" && value !== "optional" && value !== "observed") {
+          throw new Error(`Unsupported requiredness policy "${value}". Use "legacy", "optional", or "observed".`);
+        }
+        parsed.overrides.requiredness = value;
+        index += 1;
+        continue;
+      }
       case "--multi-spec":
         parsed.multiSpec = true;
         continue;
@@ -287,7 +350,11 @@ const parseCliArgs = (argv: string[]): ParsedCliArgs => {
 
       if (flag in NUMBER_FLAG_MAP) {
         const configKey = NUMBER_FLAG_MAP[flag as keyof typeof NUMBER_FLAG_MAP];
-        parsed.overrides[configKey] = parseNumericValue(takeNextValue(argv, index, argument));
+        const value = parseNumericValue(takeNextValue(argv, index, argument));
+        if (configKey !== "minLengthForNumericPath" && (!Number.isInteger(value) || value < 1)) {
+          throw new Error(`Expected a positive integer for ${argument}.`);
+        }
+        parsed.overrides[configKey] = value;
         index += 1;
         continue;
       }
@@ -307,11 +374,11 @@ const parseCliArgs = (argv: string[]): ParsedCliArgs => {
       throw new Error(`Unknown option "${argument}".`);
     }
 
-    if (parsed.inputPath) {
-      throw new Error(`Received multiple input paths. Use one HAR file path or stdin.`);
-    }
+    parsed.inputPaths.push(argument);
+  }
 
-    parsed.inputPath = argument;
+  if (parsed.inputPaths.filter((inputPath) => inputPath === "-").length > 1) {
+    throw new Error(`Stdin can only be used once. Pass at most one '-' input.`);
   }
 
   if (parsed.outputPath && parsed.outputDir) {
@@ -325,49 +392,53 @@ const parseCliArgs = (argv: string[]): ParsedCliArgs => {
   return parsed;
 };
 
-const loadConfig = async (
-  configPath: string | undefined,
-  dependencies: CliDependencies,
-): Promise<Partial<HarToOpenAPIConfig>> => {
-  if (!configPath) {
-    return {};
-  }
-
-  const resolvedPath = resolveFromCwd(dependencies.cwd, configPath);
+const loadObjectFile = async (filePath: string, dependencies: CliDependencies): Promise<Record<string, unknown>> => {
+  const resolvedPath = resolveFromCwd(dependencies.cwd, filePath);
   const rawConfig = await dependencies.readTextFile(resolvedPath);
   let parsedConfig: unknown;
 
   try {
     parsedConfig = JSON.parse(rawConfig) as unknown;
   } catch {
-    parsedConfig = YAML.load(rawConfig);
+    parsedConfig = YAML.load(rawConfig, { schema: YAML.CORE_SCHEMA.withTags(YAML.mergeTag) });
   }
 
   if (!parsedConfig || typeof parsedConfig !== "object" || Array.isArray(parsedConfig)) {
-    throw new Error(`Expected ${configPath} to contain a JSON or YAML object.`);
+    throw new Error(`Expected ${filePath} to contain a JSON or YAML object.`);
   }
 
-  return parsedConfig as Partial<HarToOpenAPIConfig>;
+  return parsedConfig as Record<string, unknown>;
 };
 
-const loadHar = async (inputPath: string | undefined, dependencies: CliDependencies): Promise<Har> => {
-  if (inputPath === "-") {
-    const input = await dependencies.readStdin();
-    return JSON.parse(input) as Har;
+const loadHar = async (
+  inputPath: string,
+  inputIndex: number,
+  dependencies: CliDependencies,
+): Promise<{ har: Har } | { diagnostic: ConversionDiagnostic }> => {
+  const source = { inputIndex, sourceName: inputPath === "-" ? "stdin" : inputPath };
+  let input: string;
+  try {
+    input =
+      inputPath === "-"
+        ? await dependencies.readStdin()
+        : await dependencies.readTextFile(resolveFromCwd(dependencies.cwd, inputPath));
+  } catch {
+    return {
+      diagnostic: { level: "error", code: "input-read-failed", message: "Input capture could not be read.", source },
+    };
   }
-
-  if (inputPath) {
-    const resolvedPath = resolveFromCwd(dependencies.cwd, inputPath);
-    const input = await dependencies.readTextFile(resolvedPath);
-    return JSON.parse(input) as Har;
+  try {
+    return { har: JSON.parse(input) as Har };
+  } catch {
+    return {
+      diagnostic: {
+        level: "error",
+        code: "invalid-har-json",
+        message: "Input capture does not contain valid JSON.",
+        source,
+      },
+    };
   }
-
-  if (!dependencies.stdinIsTTY) {
-    const input = await dependencies.readStdin();
-    return JSON.parse(input) as Har;
-  }
-
-  throw new Error(`Missing HAR input path. Pass a file path or pipe HAR JSON over stdin.`);
 };
 
 const withTrailingNewline = (value: string) => {
@@ -397,24 +468,93 @@ const getSpecFilename = (spec: HarToOpenAPISpec, index: number, format: CliForma
 
 export const runCli = async (argv = process.argv.slice(2), overrides?: Partial<CliDependencies>): Promise<number> => {
   const dependencies = getDependencies(overrides);
+  let reportPath: string | undefined;
+  let report: ConversionReport | undefined;
+  let reportWritten = false;
+
+  const writeReport = async () => {
+    if (!reportPath || !report || reportWritten) {
+      return;
+    }
+    const contents = withTrailingNewline(JSON.stringify(report, null, 2));
+    if (reportPath === "-") {
+      dependencies.stderr(contents);
+    } else {
+      await dependencies.writeTextFile(resolveFromCwd(dependencies.cwd, reportPath), contents);
+    }
+    reportWritten = true;
+  };
 
   try {
     const parsedArgs = parseCliArgs(argv);
+    reportPath = parsedArgs.reportPath;
 
     if (parsedArgs.showHelp) {
       dependencies.stdout(HELP_TEXT);
       return 0;
     }
 
-    const har = await loadHar(parsedArgs.inputPath, dependencies);
-    const fileConfig = await loadConfig(parsedArgs.configPath, dependencies);
-    const config: Partial<HarToOpenAPIConfig> = { ...fileConfig, ...parsedArgs.overrides };
+    if (parsedArgs.inputPaths.length === 0) {
+      if (dependencies.stdinIsTTY) {
+        throw new Error(`Missing HAR input path. Pass file paths or pipe HAR JSON over stdin.`);
+      }
+      parsedArgs.inputPaths.push("-");
+    }
+    if (
+      reportPath &&
+      parsedArgs.outputPath &&
+      resolveFromCwd(dependencies.cwd, reportPath) === resolveFromCwd(dependencies.cwd, parsedArgs.outputPath)
+    ) {
+      throw new Error(`--report and --output must use different file paths.`);
+    }
+
+    const loadedInputs = await Promise.all(
+      parsedArgs.inputPaths.map((inputPath, inputIndex) => loadHar(inputPath, inputIndex, dependencies)),
+    );
+    const inputDiagnostics = loadedInputs.flatMap((input) => ("diagnostic" in input ? [input.diagnostic] : []));
+    if (inputDiagnostics.length) {
+      report = {
+        inputCount: parsedArgs.inputPaths.length,
+        totalEntries: 0,
+        processedEntries: 0,
+        filteredEntries: 0,
+        failedEntries: 0,
+        operations: 0,
+        specs: 0,
+        diagnostics: inputDiagnostics,
+      };
+      throw new ConversionError(report);
+    }
+    const captures = loadedInputs.flatMap((input) => ("har" in input ? [input.har] : []));
+    const fileConfig = parsedArgs.configPath ? await loadObjectFile(parsedArgs.configPath, dependencies) : {};
+    const config: Partial<HarToOpenAPIConfig> = {
+      ...fileConfig,
+      ...parsedArgs.overrides,
+      sourceNames: parsedArgs.inputPaths.map((inputPath) => (inputPath === "-" ? "stdin" : inputPath)),
+      onReport: (conversionReport) => {
+        report = conversionReport;
+      },
+    };
+    if (parsedArgs.overlayPath) {
+      config.overlay = (await loadObjectFile(parsedArgs.overlayPath, dependencies)) as unknown as OpenApiOverlay;
+    }
 
     if (parsedArgs.multiSpec) {
-      const specs = await generateSpecs(har, config);
+      const specs = await generateSpecs(captures, config);
 
       if (parsedArgs.outputDir) {
         const resolvedOutputDir = resolveFromCwd(dependencies.cwd, parsedArgs.outputDir);
+        const resolvedReportPath = reportPath && resolveFromCwd(dependencies.cwd, reportPath);
+        if (
+          resolvedReportPath &&
+          specs.some(
+            (spec, index) =>
+              path.join(resolvedOutputDir, getSpecFilename(spec, index, parsedArgs.format)) === resolvedReportPath,
+          )
+        ) {
+          reportPath = undefined;
+          throw new Error(`--report must not overwrite a generated spec file.`);
+        }
         await dependencies.ensureDir(resolvedOutputDir);
 
         await Promise.all(
@@ -438,10 +578,12 @@ export const runCli = async (argv = process.argv.slice(2), overrides?: Partial<C
         dependencies.stdout(withTrailingNewline(yamlOutput));
       }
 
+      await writeReport();
       return 0;
     }
 
-    const spec = await generateSpec(har, config);
+    const spec = await generateSpec(captures, config);
+    await writeReport();
     const output = renderSpec(spec, parsedArgs.format);
 
     if (parsedArgs.outputPath) {
@@ -453,6 +595,12 @@ export const runCli = async (argv = process.argv.slice(2), overrides?: Partial<C
 
     return 0;
   } catch (error) {
+    try {
+      await writeReport();
+    } catch (reportError) {
+      const reportMessage = reportError instanceof Error ? reportError.message : String(reportError);
+      dependencies.stderr(`Could not write conversion report: ${reportMessage}\n`);
+    }
     const message = error instanceof Error ? error.message : String(error);
     dependencies.stderr(`${message}\n`);
     return 1;

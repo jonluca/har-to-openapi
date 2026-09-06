@@ -8,17 +8,39 @@ import { typedParamsHar } from "./test-utils.js";
 const harWithUrls = (urls: string[]): Har => {
   const fixture = typedParamsHar();
   const template = fixture.log.entries[0];
-  fixture.log.entries = urls.map((url, index) => {
+  fixture.log.entries = urls.map((url) => {
     const entry = structuredClone(template);
     entry.request.url = url;
     entry.request.queryString = Array.from(new URL(url).searchParams, ([name, value]) => ({ name, value }));
-    entry.index = index;
     return entry;
   });
   return fixture;
 };
 
 describe("Confirmed bug regressions", () => {
+  test("preserves YAML config merge keys and plain string values", async ({ expect }) => {
+    const stdout = vi.fn();
+    const stderr = vi.fn();
+    const exitCode = await runCli(["capture.har", "--config", "config.yaml", "--format", "json"], {
+      cwd: "/workspace",
+      stdinIsTTY: true,
+      readTextFile: async (filePath) =>
+        filePath.endsWith("config.yaml")
+          ? "<<:\n  infoTitle: yes\n  infoVersion: 2.0.0\ninfoDescription: From YAML config\n"
+          : JSON.stringify(typedParamsHar()),
+      stdout,
+      stderr,
+    });
+
+    expect(exitCode).toBe(0);
+    expect(stderr).not.toHaveBeenCalled();
+    expect(JSON.parse(stdout.mock.calls[0][0]).info).toEqual({
+      title: "yes",
+      version: "2.0.0",
+      description: "From YAML config",
+    });
+  });
+
   test("does not decode already-decoded percent query values or discard their responses", async ({ expect }) => {
     const har = harWithUrls(["https://api.example.com/search?marker=%25"]);
     const output = await generateSpec(har);

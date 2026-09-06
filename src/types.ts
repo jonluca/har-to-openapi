@@ -1,7 +1,87 @@
 import type { OpenApiSpec } from "@loopback/openapi-v3-types";
 import type { Entry } from "har-format";
 
+export interface CaptureSource {
+  /** Zero-based index of the input capture. */
+  inputIndex: number;
+  /** Zero-based entry index; omitted for input-level read or JSON parse errors. */
+  entryIndex?: number;
+  sourceName?: string;
+}
+
+export interface ConversionDiagnostic {
+  level: "info" | "warning" | "error";
+  code: string;
+  message: string;
+  source?: CaptureSource;
+  path?: string;
+  method?: string;
+  status?: number;
+  mimeType?: string;
+}
+
+export interface ConversionReport {
+  inputCount: number;
+  totalEntries: number;
+  processedEntries: number;
+  filteredEntries: number;
+  failedEntries: number;
+  operations: number;
+  specs: number;
+  diagnostics: ConversionDiagnostic[];
+}
+
+export interface OpenApiOverlay {
+  overlay: "1.0.0";
+  info: { title: string; version: string };
+  extends?: string;
+  actions: Array<{ target: string; update?: unknown; remove?: boolean; description?: string }>;
+}
+
+export interface RedactionConfig {
+  headers?: string[];
+  queryParameters?: string[];
+  cookies?: string[];
+  /** Case-insensitive property names, matched recursively within JSON examples. */
+  bodyProperties?: string[];
+  /** JSON Pointers relative to an example; '*' matches any property or array index. */
+  bodyPointers?: string[];
+  replacement?: string;
+}
+
 export interface HarToOpenAPIConfig {
+  /** Extract named, reusable object schemas into components.schemas. Default false. */
+  reusableSchemas?: boolean;
+  /** JSON Pointer to an inline schema -> component name. Enables extraction for named schemas. */
+  schemaNames?: Record<string, string>;
+  /** Persistent customizations applied after component extraction. */
+  overlay?: OpenApiOverlay;
+  /** Captured example policy. Default 'single' preserves existing behavior. */
+  examples?: "single" | "multiple" | "none";
+  /** Maximum distinct examples per media type. Default 5. */
+  maxExamples?: number;
+  /** Maximum UTF-8 JSON bytes per example. Multiple mode defaults to 16384; single is unlimited unless set. */
+  maxExampleBytes?: number;
+  redact?: RedactionConfig;
+  /** Infer arrays from repeated query/form keys within a single request. Default true. */
+  inferArrayParameters?: boolean;
+  /** Parse bracket notation in query parameters. Default false. */
+  parseBracketParameters?: boolean;
+  /** 'legacy' preserves existing behavior; 'observed' uses presence in every sample. */
+  requiredness?: "legacy" | "optional" | "observed";
+  /** Include sample counts and presence ratios in x-har-observations extensions. */
+  includeInferenceEvidence?: boolean;
+  /** Validate the generated OpenAPI document. Default false. */
+  validate?: boolean;
+  /** Validate and throw ConversionError on warnings, errors, or empty output. */
+  strict?: boolean;
+  /** Optional names corresponding to input captures, included in diagnostics. */
+  sourceNames?: string[];
+  /** Include the aggregate report on each returned result. Default false. */
+  includeReport?: boolean;
+  /** Receives the aggregate report even for empty output and strict failures. */
+  onReport?: (report: ConversionReport) => void;
+  onDiagnostic?: (diagnostic: ConversionDiagnostic) => void;
   /** generated OpenAPI document version
    * @defaultValue `"3.0.0"` */
   openapiVersion?: "3.0.0" | "3.1.0";
@@ -119,4 +199,5 @@ export interface HarToOpenAPISpec {
   spec: OpenApiSpec;
   yamlSpec: string;
   domain: string | undefined;
+  report?: ConversionReport;
 }

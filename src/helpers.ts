@@ -13,10 +13,16 @@ import { convert as toOpenApiSchema } from "@openapi-contrib/json-schema-to-open
 import { camelCase, startCase } from "lodash-es";
 import { URLSearchParams } from "url";
 import { quicktypeJSON } from "./quicktype.js";
-import type { InternalConfig } from "./types.js";
+import type { CaptureSource, InternalConfig } from "./types.js";
 import { isLikelyAuthCookieName, shouldFilterHeader } from "./utils/headers.js";
 import { getCookieSecurityName, getTypenameFromPath } from "./utils/string.js";
-import { coerceExampleValue, inferScalarSchema, mergeScalarSchemas } from "./utils/inference.js";
+import { inferScalarSchema, mergeScalarSchemas } from "./utils/inference.js";
+import { applyObservations, stableStringify } from "./utils/observations.js";
+import {
+  coerceParameterExample,
+  mergeParameterSchemas,
+  observeQueryParameters,
+} from "./utils/structured-parameters.js";
 
 interface ParsedMimeType {
   type: string;
@@ -52,27 +58,24 @@ interface FormSample {
   fields: FormFieldObservation[];
 }
 
-interface BodySample {
+export interface BodySample {
   postData: PostData | Content;
   headers?: Header[];
+  source?: CaptureSource;
+  status?: number;
 }
 
-type FinalizedBodyContentState =
-  | {
-      kind: "json";
-      sampleCount: number;
-      example: unknown;
-    }
-  | {
-      kind: "form";
-      sampleCount: number;
-    }
-  | {
-      kind: "raw";
-      schema: SchemaObject;
-      example: unknown;
-      omitExample?: boolean;
-    };
+interface BodyContentState {
+  kind: "json" | "form" | "raw";
+  jsonSamples: unknown[];
+  rawSamples: string[];
+  rawSchemas: SchemaObject[];
+  formSamples: FormSample[];
+  examples: unknown[];
+  schema?: SchemaObject;
+  source?: BodySample["source"];
+  status?: number;
+}
 
 interface SecurityExtraction {
   requirement: SecurityRequirementObject;
@@ -197,7 +200,7 @@ const getFormFields = (postData: PostData | Content): FormFieldObservation[] => 
   return [];
 };
 
-const mergeFormSamples = (samples: FormSample[], inferParameterTypes: boolean): SchemaObject | undefined => {
+const mergeFormSamples = (samples: FormSample[], config: InternalConfig): SchemaObject | undefined => {
   if (!samples.length) {
     return undefined;
   }
@@ -211,26 +214,31 @@ const mergeFormSamples = (samples: FormSample[], inferParameterTypes: boolean): 
   >();
 
   for (const sample of samples) {
-    const seenInSample = new Set<string>();
+    const sampleFields = new Map<string, FormFieldObservation[]>();
     for (const field of sample.fields) {
-      const existing = fieldsByName.get(field.name) ?? { schema: undefined, count: 0 };
-      const nextSchema = field.isBinary
-        ? ({ type: "string", format: "binary" } as SchemaObject)
-        : inferScalarSchema(field.value, inferParameterTypes);
-      existing.schema = mergeScalarSchemas(existing.schema, nextSchema);
-      if (!seenInSample.has(field.name)) {
-        existing.count += 1;
-        seenInSample.add(field.name);
-      }
-      fieldsByName.set(field.name, existing);
+      sampleFields.set(field.name, [...(sampleFields.get(field.name) ?? []), field]);
+    }
+    for (const [name, fields] of sampleFields) {
+      const existing = fieldsByName.get(name) ?? { schema: undefined, count: 0 };
+      const itemSchema = fields.reduce<SchemaObject | undefined>((schema, field) => {
+        const next = field.isBinary
+          ? ({ type: "string", format: "binary" } as SchemaObject)
+          : inferScalarSchema(field.value, config.inferParameterTypes);
+        return mergeScalarSchemas(schema, next);
+      }, undefined) ?? { type: "string" };
+      const nextSchema: SchemaObject =
+        (config.inferArrayParameters ?? true) && fields.length > 1 ? { type: "array", items: itemSchema } : itemSchema;
+      existing.schema = mergeParameterSchemas(existing.schema, nextSchema);
+      existing.count += 1;
+      fieldsByName.set(name, existing);
     }
   }
 
-  const properties: NonNullable<SchemaObject["properties"]> = {};
+  const properties: NonNullable<SchemaObject["properties"]> = Object.create(null);
   const required: string[] = [];
   for (const [fieldName, fieldInfo] of fieldsByName.entries()) {
     properties[fieldName] = fieldInfo.schema ?? { type: "string" };
-    if (fieldInfo.count === samples.length) {
+    if (config.requiredness !== "optional" && fieldInfo.count === samples.length) {
       required.push(fieldName);
     }
   }
@@ -242,10 +250,30 @@ const mergeFormSamples = (samples: FormSample[], inferParameterTypes: boolean): 
   if (required.length) {
     schema.required = required;
   }
+  if (config.includeInferenceEvidence) {
+    (schema as Record<string, unknown>)["x-har-observations"] = {
+      sampleCount: samples.length,
+      fields: Object.fromEntries(
+        [...fieldsByName].map(([name, field]) => [
+          name,
+          {
+            presentCount: field.count,
+            presenceRatio: field.count / samples.length,
+          },
+        ]),
+      ),
+    };
+  }
   return schema;
 };
 
-const buildJsonSchema = async (samples: string[], urlPath: string, method: string, suffix: "request" | "response") => {
+const buildJsonSchema = async (
+  samples: string[],
+  urlPath: string,
+  method: string,
+  suffix: "request" | "response",
+  openapiVersion: "3.0.0" | "3.1.0",
+) => {
   const options = {
     cloneSchema: true,
     dereference: true,
@@ -256,7 +284,7 @@ const buildJsonSchema = async (samples: string[], urlPath: string, method: strin
     },
   } as Parameters<typeof toOpenApiSchema>[1];
   const typeName = camelCase([getTypenameFromPath(urlPath), method, suffix].join(" "));
-  const cacheKey = JSON.stringify([typeName, samples]);
+  const cacheKey = JSON.stringify([typeName, samples, openapiVersion]);
   const cachedSchema = jsonSchemaCache.get(cacheKey);
   if (cachedSchema) {
     return cachedSchema;
@@ -268,6 +296,12 @@ const buildJsonSchema = async (samples: string[], urlPath: string, method: strin
 
   const nextSchema = (async () => {
     const jsonSchema = await quicktypeJSON("schema", typeName, samples);
+    if (openapiVersion === "3.1.0") {
+      // Quicktype's inferred subset is compatible with OpenAPI 3.1's JSON
+      // Schema dialect. Keep null types instead of converting to 3.0 nullable.
+      delete jsonSchema.$schema;
+      return jsonSchema as SchemaObject;
+    }
     return toOpenApiSchema(jsonSchema, options);
   })().catch((error) => {
     jsonSchemaCache.delete(cacheKey);
@@ -276,6 +310,26 @@ const buildJsonSchema = async (samples: string[], urlPath: string, method: strin
 
   jsonSchemaCache.set(cacheKey, nextSchema);
   return nextSchema;
+};
+
+const removeEmptyRequired = (schema: SchemaObject): void => {
+  if (schema.required?.length === 0) {
+    delete schema.required;
+  }
+  const children = [
+    ...Object.values(schema.properties ?? {}),
+    schema.items,
+    schema.additionalProperties,
+    schema.not,
+    ...(schema.anyOf ?? []),
+    ...(schema.oneOf ?? []),
+    ...(schema.allOf ?? []),
+  ];
+  for (const child of children) {
+    if (child && typeof child === "object" && !("$ref" in child)) {
+      removeEmptyRequired(child);
+    }
+  }
 };
 
 const getEmptyMultipartFallbackSchema = (): SchemaObject => {
@@ -291,148 +345,209 @@ const getEmptyMultipartFallbackSchema = (): SchemaObject => {
   };
 };
 
+const getBodyExamples = (values: unknown[], config: InternalConfig) => {
+  if (config.examples === "none" || !values.length) {
+    return {};
+  }
+  if (config.examples !== "multiple") {
+    return values.at(-1) === undefined ? {} : { example: values.at(-1) };
+  }
+  const unique = new Map<string, unknown>();
+  for (const value of values) {
+    if (value === undefined) {
+      continue;
+    }
+    const serialized = stableStringify(value);
+    if (Buffer.byteLength(serialized) <= (config.maxExampleBytes ?? 16_384)) {
+      unique.set(serialized, JSON.parse(serialized));
+    }
+  }
+  const selected = [...unique]
+    .sort(([left], [right]) => (left < right ? -1 : left > right ? 1 : 0))
+    .slice(0, config.maxExamples ?? 5);
+  if (!selected.length) {
+    return {};
+  }
+  return {
+    examples: Object.fromEntries(selected.map(([, value], index) => [`sample_${index + 1}`, { value }])),
+  };
+};
+
+const formExample = (sample: FormSample, schema: SchemaObject) => {
+  const grouped = new Map<string, string[]>();
+  for (const field of sample.fields) {
+    // Binary file bytes and local filenames are not useful example values.
+    if (!field.isBinary) {
+      grouped.set(field.name, [...(grouped.get(field.name) ?? []), field.value]);
+    }
+  }
+  return Object.fromEntries(
+    [...grouped].map(([name, values]) => {
+      const fieldSchema = schema.properties?.[name] as SchemaObject | undefined;
+      return [name, coerceParameterExample(fieldSchema?.type === "array" ? values : values.at(-1), fieldSchema ?? {})];
+    }),
+  );
+};
+
 const buildBodyContentFromSamples = async (
   samples: BodySample[],
   details: { urlPath: string; method: string; suffix: "request" | "response" },
   config: InternalConfig,
 ): Promise<NonNullable<RequestBodyObject["content"]> | undefined> => {
-  const jsonSamples: string[] = [];
-  const formSamples: FormSample[] = [];
-  const contentStates = new Map<string, FinalizedBodyContentState>();
-
+  const contentStates = new Map<string, BodyContentState>();
   for (const sample of samples) {
     const mimeTypeValue = getMimeType(sample.postData, sample.headers, config);
+    const text = getDecodedText(sample.postData);
+    const hasFields = "params" in sample.postData && Boolean(sample.postData.params?.length);
+    const bodyAllowed =
+      details.suffix !== "response" ||
+      (details.method.toLowerCase() !== "head" &&
+        sample.status !== 204 &&
+        sample.status !== 304 &&
+        !(sample.status !== undefined && sample.status >= 100 && sample.status < 200));
+    if (
+      !bodyAllowed ||
+      (details.suffix === "response" && text === "" && "size" in sample.postData && sample.postData.size === 0)
+    ) {
+      continue;
+    }
+    if (bodyAllowed && text === undefined && !hasFields && "size" in sample.postData && sample.postData.size > 0) {
+      config.onDiagnostic?.({
+        level: "warning",
+        code: "body-missing",
+        message: "A body was transferred but its contents were not captured.",
+        source: sample.source,
+        path: details.urlPath,
+        method: details.method,
+        status: sample.status,
+        mimeType: mimeTypeValue,
+      });
+    }
     if (!mimeTypeValue) {
       continue;
     }
-
     const mimeType = parseMimeType(mimeTypeValue);
     const mimeEssence = mimeType.essence;
-    const text = getDecodedText(sample.postData);
-    const isBase64Encoded = "encoding" in sample.postData && (<any>sample.postData).encoding === "base64";
-    const baseSchemaFallback = getBaseSchemaFallback(mimeType, isBase64Encoded);
-    const baseExample = config.includeNonJsonExampleResponses ? text : undefined;
+    const isBase64Encoded = "encoding" in sample.postData && sample.postData.encoding === "base64";
+    const state =
+      contentStates.get(mimeEssence) ??
+      ({
+        kind: "raw",
+        jsonSamples: [],
+        rawSamples: [],
+        rawSchemas: [],
+        formSamples: [],
+        examples: [],
+      } as BodyContentState);
+    state.source = sample.source;
+    state.status = sample.status;
 
     if (isFormLikeMimeType(mimeType)) {
       const fields = getFormFields(sample.postData);
       if (fields.length) {
-        formSamples.push({
-          kind: "form",
-          fields,
-        });
-        contentStates.set(mimeEssence, {
-          kind: "form",
-          sampleCount: formSamples.length,
-        });
+        state.formSamples.push({ kind: "form", fields });
+        state.kind = "form";
+        contentStates.set(mimeEssence, state);
       } else if (!config.mimeTypes || config.mimeTypes.includes(mimeEssence)) {
-        contentStates.set(mimeEssence, {
-          kind: "raw",
-          schema: getEmptyMultipartFallbackSchema(),
-          example: undefined,
-          omitExample: true,
-        });
+        state.kind = "raw";
+        state.schema = getEmptyMultipartFallbackSchema();
+        contentStates.set(mimeEssence, state);
       }
       continue;
     }
-
     if (text === undefined) {
       continue;
     }
-
-    const decodedText = text;
-    const setJsonState = () => {
-      const data = JSON.parse(decodedText);
-      jsonSamples.push(JSON.stringify(data));
-      contentStates.set(mimeEssence, {
-        kind: "json",
-        sampleCount: jsonSamples.length,
-        example: data,
-      });
-    };
-
-    if (mimeType.isXmlLike) {
-      contentStates.set(mimeEssence, {
-        kind: "raw",
-        schema: { type: "string" },
-        example: baseExample,
-      });
-      continue;
-    }
-
-    if (isBinaryMimeType(mimeType)) {
-      if (config.relaxedContentTypeJsonParse) {
-        try {
-          setJsonState();
-          continue;
-        } catch {
-          // fall through to binary handling below
-        }
-      }
-
-      contentStates.set(mimeEssence, {
-        kind: "raw",
-        schema: baseSchemaFallback,
-        example: baseExample,
-      });
-      continue;
-    }
-
-    const shouldParseAsJson = mimeType.isJsonLike || config.relaxedContentTypeJsonParse;
+    const shouldParseAsJson = !mimeType.isXmlLike && (mimeType.isJsonLike || config.relaxedContentTypeJsonParse);
     if (shouldParseAsJson) {
       try {
-        setJsonState();
+        const data: unknown = JSON.parse(text);
+        state.kind = "json";
+        state.jsonSamples.push(data);
+        state.examples.push(data);
+        contentStates.set(mimeEssence, state);
         continue;
       } catch {
-        // fall through to string fallback below
+        if (mimeType.isJsonLike) {
+          config.onDiagnostic?.({
+            level: "warning",
+            code: "schema-fallback",
+            message: "Declared JSON could not be parsed; using a string schema.",
+            source: sample.source,
+            path: details.urlPath,
+            method: details.method,
+            status: sample.status,
+            mimeType: mimeEssence,
+          });
+        }
       }
     }
-
-    contentStates.set(mimeEssence, {
-      kind: "raw",
-      schema: baseSchemaFallback,
-      example: baseExample,
-    });
-  }
-
-  if (!contentStates.size) {
-    return undefined;
+    state.kind = "raw";
+    state.schema = mimeType.isXmlLike ? { type: "string" } : getBaseSchemaFallback(mimeType, isBase64Encoded);
+    state.rawSchemas.push(state.schema);
+    state.rawSamples.push(text);
+    state.examples.push(config.includeNonJsonExampleResponses ? text : undefined);
+    contentStates.set(mimeEssence, state);
   }
 
   const content: NonNullable<RequestBodyObject["content"]> = {};
-  for (const [mimeEssence, state] of contentStates.entries()) {
-    if (state.kind === "json") {
-      content[mimeEssence] = {
-        schema: await buildJsonSchema(
-          jsonSamples.slice(0, state.sampleCount),
+  for (const [mimeEssence, state] of contentStates) {
+    if (state.jsonSamples.length) {
+      let schema: SchemaObject;
+      try {
+        const inferred = await buildJsonSchema(
+          state.jsonSamples.map((sample) => JSON.stringify(sample)),
           details.urlPath,
           details.method,
           details.suffix,
-        ),
-        example: state.example,
-      };
-      continue;
-    }
-
-    if (state.kind === "form") {
-      const schema = mergeFormSamples(formSamples.slice(0, state.sampleCount), config.inferParameterTypes);
+          config.openapiVersion ?? "3.0.0",
+        );
+        schema = structuredClone(inferred);
+        if (config.validate || config.strict) {
+          removeEmptyRequired(schema);
+        }
+        if (state.rawSchemas.length) {
+          const rawSchemas = [...new Map(state.rawSchemas.map((raw) => [stableStringify(raw), raw])).values()];
+          schema = { anyOf: [schema, ...rawSchemas] };
+        }
+        applyObservations(
+          schema,
+          [...state.jsonSamples, ...state.rawSamples],
+          config.requiredness ?? "legacy",
+          config.includeInferenceEvidence ?? false,
+        );
+      } catch {
+        config.onDiagnostic?.({
+          level: "error",
+          code: "schema-inference-failed",
+          message: "Schema inference failed for captured JSON.",
+          source: state.source,
+          path: details.urlPath,
+          method: details.method,
+          status: state.status,
+          mimeType: mimeEssence,
+        });
+        schema = {};
+      }
+      content[mimeEssence] = { schema, ...getBodyExamples(state.examples, config) };
+    } else if (state.formSamples.length) {
+      const schema = mergeFormSamples(state.formSamples, config);
       if (schema) {
         content[mimeEssence] = {
           schema,
+          // Legacy output has never included form examples.
+          ...(config.examples === "multiple"
+            ? getBodyExamples(
+                state.formSamples.map((sample) => formExample(sample, schema)),
+                config,
+              )
+            : {}),
         };
       }
-      continue;
+    } else {
+      content[mimeEssence] = { schema: state.schema ?? { type: "string" }, ...getBodyExamples(state.examples, config) };
     }
-
-    content[mimeEssence] = state.omitExample
-      ? {
-          schema: state.schema,
-        }
-      : {
-          schema: state.schema,
-          example: state.example,
-        };
   }
-
   return Object.keys(content).length ? content : undefined;
 };
 
@@ -477,13 +592,13 @@ export const buildRequestBodyFromSamples = async (
   }
 
   return {
-    required: true,
+    required: config.requiredness !== "optional",
     content,
   };
 };
 
 export const buildResponseBodyFromSamples = async (
-  responses: Response[],
+  responses: Array<Response & { source?: BodySample["source"] }>,
   details: { urlPath: string; method: string },
   config: InternalConfig,
 ): Promise<ResponseObject | undefined> => {
@@ -491,6 +606,8 @@ export const buildResponseBodyFromSamples = async (
     responses.map((response) => ({
       postData: response.content,
       headers: response.headers,
+      source: response.source,
+      status: response.status,
     })),
     {
       ...details,
@@ -615,45 +732,91 @@ export const addRequestHeaders = (specMethod: OperationObject, headers: Header[]
   });
 };
 
+const blockedBracketRootsByOperation = new WeakMap<OperationObject, Set<string>>();
+
 export const addQueryStringParams = (
   specMethod: OperationObject,
   harParams: QueryString[],
-  config: Pick<InternalConfig, "inferParameterTypes">,
+  config: Pick<InternalConfig, "inferParameterTypes" | "inferArrayParameters" | "parseBracketParameters" | "examples">,
 ) => {
   const parameters = (specMethod.parameters ??= []);
-  harParams?.forEach((param) => {
-    // The caller normalizes URL query values before they reach this helper.
-    // Decoding again corrupts literal percent escapes and can throw for values
-    // such as "%", causing the entire HAR entry to be discarded.
-    const decodedValue = param.value;
-    const schema = inferScalarSchema(decodedValue, config.inferParameterTypes);
-    const example = coerceExampleValue(decodedValue, schema);
+  const blockedRoots = blockedBracketRootsByOperation.get(specMethod) ?? new Set<string>();
+  let observations = observeQueryParameters(
+    harParams ?? [],
+    config.inferParameterTypes,
+    config.inferArrayParameters ?? true,
+    config.parseBracketParameters ?? false,
+    blockedRoots,
+  );
+  if (config.parseBracketParameters) {
+    for (const parameter of parameters.slice()) {
+      if (!("in" in parameter) || parameter.in !== "query") {
+        continue;
+      }
+      const sameName = observations.find((item) => item.name === parameter.name);
+      const hasLiteralBracket = observations.some((item) => item.name.startsWith(`${parameter.name}[`));
+      const existingObject = parameter.style === "deepObject";
+      const nextObject = sameName?.style === "deepObject";
+      if ((existingObject && ((sameName && !nextObject) || hasLiteralBracket)) || (!existingObject && nextObject)) {
+        blockedRoots.add(parameter.name);
+        if (existingObject && parameter.schema && !("$ref" in parameter.schema)) {
+          const previousExample = parameter.example as Record<string, unknown> | undefined;
+          const restored = Object.entries(parameter.schema.properties ?? {}).map(
+            ([name, schema]) =>
+              ({
+                in: "query",
+                name: `${parameter.name}[${name}]`,
+                description: `${parameter.name}[${name}]`,
+                schema,
+                ...(previousExample && Object.hasOwn(previousExample, name) ? { example: previousExample[name] } : {}),
+              }) as ParameterObject,
+          );
+          parameters.splice(parameters.indexOf(parameter), 1, ...restored);
+        }
+      }
+    }
+    blockedBracketRootsByOperation.set(specMethod, blockedRoots);
+    observations = observeQueryParameters(
+      harParams ?? [],
+      config.inferParameterTypes,
+      config.inferArrayParameters ?? true,
+      true,
+      blockedRoots,
+    );
+    // A literal bracket spelling means this root could not be represented as
+    // a deepObject. Keep that decision for subsequent samples as well.
+    for (const observation of observations) {
+      const root = /^([^[]+)\[/.exec(observation.name)?.[1];
+      if (root) {
+        blockedRoots.add(root);
+      }
+    }
+  }
+  for (const observation of observations) {
     const existing = parameters.find(
-      (parameter) => "in" in parameter && parameter.in === "query" && parameter.name === param.name,
+      (parameter) => "in" in parameter && parameter.in === "query" && parameter.name === observation.name,
     );
     if (existing && "schema" in existing) {
-      existing.schema = mergeScalarSchemas(existing.schema as SchemaObject | undefined, schema);
-      existing.example = coerceExampleValue(decodedValue, existing.schema as SchemaObject);
-      if (existing.schema?.type !== "string" || !existing.schema.format) {
-        existing.schema = {
-          ...(existing.schema as SchemaObject),
-          default: coerceExampleValue(decodedValue, existing.schema as SchemaObject),
-        };
+      existing.schema = mergeParameterSchemas(existing.schema as SchemaObject | undefined, observation.schema);
+      if (config.examples !== "none") {
+        existing.example = coerceParameterExample(observation.example, existing.schema as SchemaObject);
+        existing.schema = { ...existing.schema, default: existing.example } as SchemaObject;
       }
-      return;
+      if (observation.style) {
+        existing.style = observation.style;
+        existing.explode = observation.explode;
+      }
+      continue;
     }
-
     parameters.push({
-      schema: {
-        ...schema,
-        default: example,
-      },
+      schema: { ...observation.schema, ...(config.examples === "none" ? {} : { default: observation.example }) },
       in: "query",
-      name: param.name,
-      description: param.name,
-      example,
+      name: observation.name,
+      description: observation.name,
+      ...(config.examples === "none" ? {} : { example: observation.example }),
+      ...(observation.style ? { style: observation.style, explode: observation.explode } : {}),
     });
-  });
+  }
 };
 
 export const getSecurity = (

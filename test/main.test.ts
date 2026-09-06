@@ -26,6 +26,6 @@ describe("Body and header tests", async () => {
   test(`works on large hars`, async ({ expect }) => {
     const dataTwo = await generateSpec(largeHarBody, { logErrors: true });
     expect(dataTwo).toBeDefined();
-    expect(console.error).toHaveBeenCalled();
+    expect(console.error).not.toHaveBeenCalled();
   });
 });
