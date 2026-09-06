@@ -1,3 +1,4 @@
+import path from "node:path";
 import type { Har } from "har-format";
 import { describe, expect, test, vi } from "vitest";
 import { runCli } from "../src/cli.js";
@@ -26,17 +27,19 @@ const capture = (url: string, body: unknown = { id: 1 }): Har =>
     },
   }) as unknown as Har;
 
+const workspace = path.resolve("/workspace");
+
 const harness = (files: Record<string, Har | string>, stdin?: Har) => {
   const written = new Map<string, string>();
   const stdout = vi.fn();
   const stderr = vi.fn();
   const readStdin = vi.fn(async () => JSON.stringify(stdin));
   const dependencies = {
-    cwd: "/workspace",
+    cwd: workspace,
     stdinIsTTY: stdin === undefined,
     readStdin,
     readTextFile: async (filePath: string) => {
-      const value = files[filePath.replace("/workspace/", "")];
+      const value = files[path.relative(workspace, filePath).split(path.sep).join("/")];
       if (value === undefined) throw new Error(`File not found: ${filePath}`);
       return typeof value === "string" ? value : JSON.stringify(value);
     },
@@ -64,7 +67,7 @@ describe("CLI generation features", () => {
     const schema = spec.paths["/users"].get.responses[200].content["application/json"].schema;
     expect(schema.properties).toHaveProperty("id");
     expect(schema.properties).toHaveProperty("name");
-    expect(JSON.parse(io.written.get("/workspace/report.json")!)).toMatchObject({
+    expect(JSON.parse(io.written.get(path.join(workspace, "report.json"))!)).toMatchObject({
       inputCount: 2,
       totalEntries: 2,
       processedEntries: 2,
@@ -176,7 +179,7 @@ actions:
 
     expect(exitCode).toBe(1);
     expect(io.stdout).not.toHaveBeenCalled();
-    const report = JSON.parse(io.written.get("/workspace/failed.json")!);
+    const report = JSON.parse(io.written.get(path.join(workspace, "failed.json"))!);
     expect(report.diagnostics).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
@@ -192,7 +195,10 @@ actions:
     const io = harness({ "empty.har": empty });
     expect(await runCli(["empty.har", "--multi-spec", "--strict", "--report", "empty.json"], io.dependencies)).toBe(1);
     expect(io.stdout).not.toHaveBeenCalled();
-    expect(JSON.parse(io.written.get("/workspace/empty.json")!)).toMatchObject({ totalEntries: 0, specs: 0 });
+    expect(JSON.parse(io.written.get(path.join(workspace, "empty.json"))!)).toMatchObject({
+      totalEntries: 0,
+      specs: 0,
+    });
   });
 
   test("reports malformed and unreadable inputs without exposing captured content", async () => {
@@ -204,7 +210,7 @@ actions:
       await runCli(["valid.har", "broken.har", "missing.har", "--strict", "--report", "inputs.json"], io.dependencies),
     ).toBe(1);
     expect(io.stdout).not.toHaveBeenCalled();
-    const reportContents = io.written.get("/workspace/inputs.json")!;
+    const reportContents = io.written.get(path.join(workspace, "inputs.json"))!;
     expect(JSON.parse(reportContents)).toMatchObject({
       inputCount: 3,
       totalEntries: 0,
@@ -236,7 +242,7 @@ actions:
       ),
     ).toBe(1);
     expect(io.stdout).not.toHaveBeenCalled();
-    expect(JSON.parse(io.written.get("/workspace/invalid.json")!).diagnostics).toEqual(
+    expect(JSON.parse(io.written.get(path.join(workspace, "invalid.json"))!).diagnostics).toEqual(
       expect.arrayContaining([expect.objectContaining({ level: "error" })]),
     );
   });
