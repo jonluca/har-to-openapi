@@ -126,6 +126,7 @@ export const STANDARD_HEADERS = [
   "pragma",
   "prefer",
   "preference-applied",
+  "priority",
   "profileobject",
   "protocol",
   "protocol-info",
