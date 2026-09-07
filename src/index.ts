@@ -46,6 +46,8 @@ const checkPathFromFilter = async (urlPath: string, harEntry: Entry, filter: Har
     return urlPath.includes(filter);
   }
   if (filter instanceof RegExp) {
+    // Global and sticky expressions otherwise resume at the previous match.
+    filter.lastIndex = 0;
     return filter.test(urlPath);
   }
   if (typeof filter === "function") {
@@ -494,8 +496,15 @@ const generateSpecsWithReport = async <T extends Har>(
         mergePathParameters(path, pathParams);
         path[method] ??= addMethod(method, urlObj, internalConfig);
         const operation = path[method] as OperationObject;
+        if (internalConfig.addServersToPaths) {
+          operation.servers ??= [];
+          if (!operation.servers.some((server) => server.url === sourceUrl.origin)) {
+            operation.servers.push({ url: sourceUrl.origin });
+          }
+        }
         const status = item.response?.status;
-        if (Number.isInteger(status) && status >= 100 && status <= 599) {
+        const hasValidResponse = Number.isInteger(status) && status >= 100 && status <= 599;
+        if (hasValidResponse) {
           operation.responses[status] ??= addResponse(status, method);
         } else {
           diagnose({
@@ -552,7 +561,7 @@ const generateSpecsWithReport = async <T extends Har>(
           samples.push({ postData: item.request.postData, headers: requestHeaders, source });
           requestBodySamples.set(operation, samples);
         }
-        if (status && useBodies && item.response) {
+        if (hasValidResponse && useBodies && item.response) {
           const samplesByStatus = responseBodySamples.get(operation) ?? new Map<number, CapturedResponse[]>();
           const samples = samplesByStatus.get(status) ?? [];
           // Response content is optional in real-world partial HAR exports.

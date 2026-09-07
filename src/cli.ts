@@ -1,5 +1,6 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { StringDecoder } from "node:string_decoder";
 import type { Har } from "har-format";
 import * as YAML from "js-yaml";
 import { ConversionError, generateSpec, generateSpecs } from "./index.js";
@@ -151,12 +152,13 @@ Examples:
 
 const readStream = async (stream: NodeJS.ReadStream) => {
   let output = "";
+  const decoder = new StringDecoder("utf8");
 
   for await (const chunk of stream) {
-    output += chunk.toString();
+    output += typeof chunk === "string" ? chunk : decoder.write(chunk);
   }
 
-  return output;
+  return output + decoder.end();
 };
 
 const defaultDependencies: CliDependencies = {
@@ -307,10 +309,10 @@ const parseCliArgs = (argv: string[]): ParsedCliArgs => {
 
     if (argument.startsWith("--no-")) {
       const flag = argument.slice("--no-".length) as keyof typeof BOOLEAN_FLAG_MAP;
-      const configKey = BOOLEAN_FLAG_MAP[flag];
-      if (!configKey) {
+      if (!Object.hasOwn(BOOLEAN_FLAG_MAP, flag)) {
         throw new Error(`Unknown option "${argument}".`);
       }
+      const configKey = BOOLEAN_FLAG_MAP[flag];
       parsed.overrides[configKey] = false;
       continue;
     }
@@ -318,13 +320,13 @@ const parseCliArgs = (argv: string[]): ParsedCliArgs => {
     if (argument.startsWith("--")) {
       const flag = argument.slice("--".length);
 
-      if (flag in BOOLEAN_FLAG_MAP) {
+      if (Object.hasOwn(BOOLEAN_FLAG_MAP, flag)) {
         const configKey = BOOLEAN_FLAG_MAP[flag as keyof typeof BOOLEAN_FLAG_MAP];
         parsed.overrides[configKey] = true;
         continue;
       }
 
-      if (flag in LIST_FLAG_MAP) {
+      if (Object.hasOwn(LIST_FLAG_MAP, flag)) {
         const configKey = LIST_FLAG_MAP[flag as keyof typeof LIST_FLAG_MAP];
         const value = takeNextValue(argv, index, argument);
         switch (configKey) {
@@ -348,7 +350,7 @@ const parseCliArgs = (argv: string[]): ParsedCliArgs => {
         continue;
       }
 
-      if (flag in NUMBER_FLAG_MAP) {
+      if (Object.hasOwn(NUMBER_FLAG_MAP, flag)) {
         const configKey = NUMBER_FLAG_MAP[flag as keyof typeof NUMBER_FLAG_MAP];
         const value = parseNumericValue(takeNextValue(argv, index, argument));
         if (configKey !== "minLengthForNumericPath" && (!Number.isInteger(value) || value < 1)) {
@@ -359,7 +361,7 @@ const parseCliArgs = (argv: string[]): ParsedCliArgs => {
         continue;
       }
 
-      if (flag in STRING_FLAG_MAP) {
+      if (Object.hasOwn(STRING_FLAG_MAP, flag)) {
         const configKey = STRING_FLAG_MAP[flag as keyof typeof STRING_FLAG_MAP];
         const value = takeNextValue(argv, index, argument);
         if (configKey === "openapiVersion") {
@@ -387,6 +389,10 @@ const parseCliArgs = (argv: string[]): ParsedCliArgs => {
 
   if (parsed.multiSpec && parsed.outputPath) {
     throw new Error(`--multi-spec cannot be combined with --output. Use --output-dir or stdout.`);
+  }
+
+  if (parsed.outputDir && !parsed.multiSpec) {
+    throw new Error(`--output-dir requires --multi-spec. Use --output for a single spec.`);
   }
 
   return parsed;

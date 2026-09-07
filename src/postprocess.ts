@@ -18,6 +18,35 @@ const pointerTokens = (pointer: string): string[] => {
         .split("/")
         .map((token) => token.replace(/~1/g, "/").replace(/~0/g, "~"));
 };
+const resolveLocalReference = (spec: ObjectNode, reference: string): unknown => {
+  if (!reference.startsWith("#")) {
+    return undefined;
+  }
+  try {
+    let target: unknown = spec;
+    for (const token of pointerTokens(decodeURIComponent(reference.slice(1)))) {
+      if (target === null || typeof target !== "object" || !own(target, token)) {
+        return undefined;
+      }
+      target = (target as ObjectNode)[token];
+    }
+    return target;
+  } catch {
+    return undefined;
+  }
+};
+const resolveReferenceObject = (spec: ObjectNode, value: unknown): unknown => {
+  const visited = new Set<object>();
+  while (isObject(value) && typeof value.$ref === "string" && !visited.has(value)) {
+    visited.add(value);
+    const target = resolveLocalReference(spec, value.$ref);
+    if (!isObject(target)) {
+      break;
+    }
+    value = target;
+  }
+  return value;
+};
 const canonical = (value: unknown): string =>
   JSON.stringify(value, (_key, child) =>
     isObject(child)
@@ -141,21 +170,7 @@ const resourceName = (path: string) => {
 };
 
 const visitDocument = (spec: ObjectNode, visitors: DocumentVisitors, redact?: RedactionConfig) => {
-  const resolve = (value: unknown): unknown => {
-    const visited = new Set<object>();
-    while (isObject(value) && typeof value.$ref === "string" && value.$ref.startsWith("#/") && !visited.has(value)) {
-      visited.add(value);
-      let target: unknown = spec;
-      for (const token of pointerTokens(value.$ref.slice(1))) {
-        target = isObject(target) && own(target, token) ? target[token] : undefined;
-      }
-      if (!isObject(target)) {
-        break;
-      }
-      value = target;
-    }
-    return value;
-  };
+  const resolve = (value: unknown): unknown => resolveReferenceObject(spec, value);
   const headers = new Set(redact?.headers?.map((name) => name.toLowerCase()));
   const queries = new Set(redact?.queryParameters);
   const cookies = new Set(redact?.cookies);
@@ -178,12 +193,8 @@ const visitDocument = (spec: ObjectNode, visitors: DocumentVisitors, redact?: Re
       visitors.schema?.(location);
       visitors.samples?.(location.schema, { ...dataContext, schema: true });
       // Redaction must also reach examples inside reusable schemas in the body's context.
-      if (visitors.samples && typeof location.schema.$ref === "string" && location.schema.$ref.startsWith("#/")) {
-        const tokens = pointerTokens(location.schema.$ref.slice(1));
-        let target: unknown = spec;
-        for (const token of tokens) {
-          target = isObject(target) && own(target, token) ? target[token] : undefined;
-        }
+      if (visitors.samples && typeof location.schema.$ref === "string") {
+        const target = resolveLocalReference(spec, location.schema.$ref);
         if (isObject(target)) {
           walk({ ...location, schema: target }, dataContext, nextStack);
         }
@@ -298,15 +309,16 @@ const visitDocument = (spec: ObjectNode, visitors: DocumentVisitors, redact?: Re
       }
       if (isObject(operation.callbacks)) {
         for (const [callbackName, callback] of Object.entries(operation.callbacks)) {
-          if (isObject(callback)) {
-            for (const [expression, callbackPath] of Object.entries(callback)) {
-              visitPath(
-                callbackPath,
-                `${operationPointer}/callbacks/${escapePointer(callbackName)}/${escapePointer(expression)}`,
-                callbackName,
-              );
-            }
-          }
+          visitCallback(callback, `${operationPointer}/callbacks/${escapePointer(callbackName)}`, callbackName);
+        }
+      }
+    }
+  };
+  const visitCallback = (callback: unknown, pointer: string, name: string) => {
+    if (isObject(callback)) {
+      for (const [expression, callbackPath] of Object.entries(callback)) {
+        if (expression !== "$ref" && !expression.startsWith("x-")) {
+          visitPath(callbackPath, `${pointer}/${escapePointer(expression)}`, name);
         }
       }
     }
@@ -347,6 +359,9 @@ const visitDocument = (spec: ObjectNode, visitors: DocumentVisitors, redact?: Re
     }
     for (const [name, item] of Object.entries(components.pathItems ?? {})) {
       visitPath(item, `/components/pathItems/${escapePointer(name)}`, name);
+    }
+    for (const [name, callback] of Object.entries(components.callbacks ?? {})) {
+      visitCallback(callback, `/components/callbacks/${escapePointer(name)}`, name);
     }
   }
 };
@@ -750,13 +765,7 @@ const applyExamplePolicy = (spec: ObjectNode, config: HarToOpenAPIConfig, captur
         if (!isObject(example)) {
           continue;
         }
-        let valueHolder = example;
-        if (typeof example.$ref === "string" && example.$ref.startsWith("#/components/examples/")) {
-          const name = pointerTokens(example.$ref.slice(1))[2];
-          if (isObject(spec.components?.examples?.[name])) {
-            valueHolder = spec.components.examples[name];
-          }
-        }
+        const valueHolder = resolveReferenceObject(spec, example) as ObjectNode;
         if (own(valueHolder, "value")) {
           valueHolder.value = sanitize(valueHolder.value, context);
           const signature = canonical(valueHolder.value);

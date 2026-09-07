@@ -48,7 +48,7 @@ export const getTypenameFromPath = (path: string) => {
   return uniq(partsToKeep).join(" ");
 };
 export const parameterizeUrl = (path: string, minLengthForNumericPath = 3, inferParameterTypes = true) => {
-  const parts = path.split("/").filter(Boolean);
+  const parts = path.replace(/^\//, "").split("/");
   const parameterizedParts = [];
   const parameters: ParameterObject[] = [];
   const addParameter = (id: string, part: string, schema: SchemaObject) => {
@@ -67,6 +67,11 @@ export const parameterizeUrl = (path: string, minLengthForNumericPath = 3, infer
     parameterizedParts.push(`{${name}}`);
   };
   for (const part of parts) {
+    // Empty segments and trailing slashes are significant parts of a URL path.
+    if (!part.length) {
+      parameterizedParts.push(part);
+      continue;
+    }
     if (isUuidLike(part)) {
       addParameter("uuid", part, inferScalarSchema(part, inferParameterTypes));
       continue;

@@ -96,7 +96,7 @@ export const inferScalarSchema = (rawValue: string, inferParameterTypes = true):
   }
 
   if (isNumberLike(value) && !hasLeadingZeroes(value)) {
-    return { type: "number" };
+    return Number.isFinite(Number(value)) ? { type: "number" } : { type: "string" };
   }
 
   return { type: "string" };

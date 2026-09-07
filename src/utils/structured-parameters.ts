@@ -44,7 +44,7 @@ export const coerceParameterExample = (value: unknown, schema: SchemaObject): un
 interface ParameterObservation {
   name: string;
   schema: SchemaObject;
-  example: unknown;
+  rawExample: unknown;
   style?: "deepObject" | "form";
   explode?: boolean;
 }
@@ -71,7 +71,9 @@ export const observeQueryParameters = (
     observations.push({
       name,
       schema,
-      example: coerceParameterExample(isArray ? values : values.at(-1), schema),
+      // Coerce only after merging all schemas, so widening to string preserves
+      // spellings such as 1e3, +12, and TRUE from the capture.
+      rawExample: isArray ? values : values.at(-1),
       ...(isArray ? ({ style: "form", explode: true } as const) : {}),
     });
   }
@@ -104,7 +106,7 @@ export const observeQueryParameters = (
         // verbatim, whereas dropping it would change tags[]=a into tags=a.
         name: original.name,
         schema,
-        example: [original.example].flat(),
+        rawExample: [original.rawExample].flat(),
         style: "form",
         explode: true,
       });
@@ -119,11 +121,11 @@ export const observeQueryParameters = (
       continue;
     }
     const properties = Object.fromEntries(group.map((item, index) => [fields[index]!, item.schema]));
-    const example = Object.fromEntries(group.map((item, index) => [fields[index]!, item.example]));
+    const rawExample = Object.fromEntries(group.map((item, index) => [fields[index]!, item.rawExample]));
     replacements.set(group[0].name, {
       name: root,
       schema: { type: "object", properties },
-      example,
+      rawExample,
       style: "deepObject",
       explode: true,
     });

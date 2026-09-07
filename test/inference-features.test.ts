@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import type { OpenApiSpec, OperationObject } from "@loopback/openapi-v3-types";
+import type { OpenApiSpec, OperationObject, ReferenceObject, SchemaObject } from "@loopback/openapi-v3-types";
 import type { Content, Har, Response } from "har-format";
 import { addQueryStringParams, buildRequestBodyFromSamples, buildResponseBodyFromSamples } from "../src/helpers.js";
 import type { BodySample } from "../src/helpers.js";
@@ -20,18 +20,25 @@ const json = (value: unknown, mimeType = "application/json"): BodySample => ({
 const body = async (samples: BodySample[], overrides: Partial<InternalConfig> = {}) =>
   (await buildRequestBodyFromSamples(samples, details, config(overrides)))!;
 const operation = () => ({ responses: {}, parameters: [] }) as OperationObject;
+const inlineSchema = (value: SchemaObject | ReferenceObject | undefined): SchemaObject => {
+  expect(value).toBeDefined();
+  expect(value).not.toHaveProperty("$ref");
+  return value as SchemaObject;
+};
+const propertySchema = (value: SchemaObject | ReferenceObject | undefined, name: string): SchemaObject =>
+  inlineSchema(inlineSchema(value).properties?.[name]);
 
 describe("capture-based inference features", () => {
   test("keeps native null types in OpenAPI 3.1 and validates nested legacy optional schemas", async () => {
     const samples = [json({ value: null, nested: { name: "one" } }), json({ value: "text", nested: { name: "two" } })];
     for (const openapiVersion of ["3.0.0", "3.1.0"] as const) {
       const requestBody = await body(samples, { openapiVersion, validate: true });
-      const schema = requestBody.content["application/json"].schema;
+      const schema = inlineSchema(requestBody.content["application/json"].schema);
       expect(schema.required).toBeUndefined();
-      expect(schema.properties.nested.required).toBeUndefined();
+      expect(propertySchema(schema, "nested").required).toBeUndefined();
       if (openapiVersion === "3.1.0") {
         expect(schema.$schema).toBeUndefined();
-        expect(schema.properties.value.anyOf).toContainEqual({ type: "null" });
+        expect(propertySchema(schema, "value").anyOf).toContainEqual({ type: "null" });
         expect(JSON.stringify(schema)).not.toContain('"nullable"');
       } else {
         expect(JSON.stringify(schema)).toContain('"nullable":true');
@@ -46,10 +53,9 @@ describe("capture-based inference features", () => {
       expect(await validateSpec(spec)).toEqual([]);
     }
     const withEvidence = await body(samples, { openapiVersion: "3.1.0", includeInferenceEvidence: true });
-    const nullableSchema = withEvidence.content["application/json"].schema.properties.value;
-    expect(nullableSchema.anyOf.find((schema: any) => schema.type === "null")["x-har-observations"].sampleCount).toBe(
-      1,
-    );
+    const nullableSchema = propertySchema(withEvidence.content["application/json"].schema, "value");
+    const nullSchema = inlineSchema(nullableSchema.anyOf?.find((schema) => "type" in schema && schema.type === "null"));
+    expect(nullSchema["x-har-observations"].sampleCount).toBe(1);
   });
 
   test("isolates JSON and form observations by media type", async () => {
@@ -59,9 +65,11 @@ describe("capture-based inference features", () => {
       { postData: { mimeType: "application/x-www-form-urlencoded", text: "first=true" } },
       { postData: { mimeType: "multipart/form-data", params: [{ name: "second", value: "42" }] } },
     ]);
-    expect(result.content["application/json"].schema.properties).toHaveProperty("standard");
-    expect(result.content["application/problem+json"].schema.properties).not.toHaveProperty("standard");
-    expect(result.content["multipart/form-data"].schema.properties).toEqual({ second: { type: "integer" } });
+    expect(inlineSchema(result.content["application/json"].schema).properties).toHaveProperty("standard");
+    expect(inlineSchema(result.content["application/problem+json"].schema).properties).not.toHaveProperty("standard");
+    expect(inlineSchema(result.content["multipart/form-data"].schema).properties).toEqual({
+      second: { type: "integer" },
+    });
   });
 
   test("deduplicates and names bounded body examples independently of capture order", async () => {
@@ -71,8 +79,9 @@ describe("capture-based inference features", () => {
     const reversed = (await body([...samples].reverse(), settings)).content["application/json"];
     expect(first.example).toBeUndefined();
     expect(first.examples).toEqual(reversed.examples);
-    expect(Object.keys(first.examples)).toEqual(["sample_1", "sample_2"]);
-    expect(Object.values(first.examples).map((item: any) => item.value)).toEqual([{ a: 1, b: 2 }, { a: 2 }]);
+    expect(first.examples).toBeDefined();
+    expect(Object.keys(first.examples!)).toEqual(["sample_1", "sample_2"]);
+    expect(Object.values(first.examples!).map((item: any) => item.value)).toEqual([{ a: 1, b: 2 }, { a: 2 }]);
   });
 
   test("preserves latest single example and omits all body examples when disabled", async () => {
@@ -81,17 +90,17 @@ describe("capture-based inference features", () => {
     const hidden = (await body(samples, { examples: "none" })).content["application/json"];
     expect(hidden.example).toBeUndefined();
     expect(hidden.examples).toBeUndefined();
-    expect(hidden.schema.properties.value).toBeDefined();
+    expect(propertySchema(hidden.schema, "value")).toBeDefined();
   });
 
   test("retains heterogeneous JSON and malformed samples independent of capture order", async () => {
     const samples = [json({ id: 1 }), { postData: { mimeType: "application/json", text: "invalid-json" } }];
-    const first = (await body(samples)).content["application/json"].schema;
+    const first = inlineSchema((await body(samples)).content["application/json"].schema);
     const reverse = (await body([...samples].reverse())).content["application/json"].schema;
     expect(first).toEqual(reverse);
     expect(first.anyOf).toHaveLength(2);
-    expect(first.anyOf[0].properties.id).toBeDefined();
-    expect(first.anyOf[1].type).toBe("string");
+    expect(propertySchema(first.anyOf![0], "id")).toBeDefined();
+    expect(inlineSchema(first.anyOf![1]).type).toBe("string");
   });
 
   test("records nested observations and opt-in requiredness without contaminating cached schemas", async () => {
@@ -99,12 +108,13 @@ describe("capture-based inference features", () => {
       json({ id: 1, profile: { name: "one", nickname: "a" }, items: [{ id: 1 }] }),
       json({ id: 2, profile: { name: "two" }, items: [{ id: 2, extra: true }], extra: true }),
     ];
-    const observed = (await body(samples, { requiredness: "observed", includeInferenceEvidence: true })).content[
-      "application/json"
-    ].schema;
+    const observed = inlineSchema(
+      (await body(samples, { requiredness: "observed", includeInferenceEvidence: true })).content["application/json"]
+        .schema,
+    );
     expect(observed.required).toEqual(["id", "items", "profile"]);
-    expect(observed.properties.profile.required).toEqual(["name"]);
-    expect(observed.properties.items.items.required).toEqual(["id"]);
+    expect(propertySchema(observed, "profile").required).toEqual(["name"]);
+    expect(inlineSchema(propertySchema(observed, "items").items).required).toEqual(["id"]);
     expect(observed["x-har-observations"]).toEqual({
       sampleCount: 2,
       fields: {
@@ -114,7 +124,7 @@ describe("capture-based inference features", () => {
         profile: { presentCount: 2, presenceRatio: 1 },
       },
     });
-    const legacy = (await body(samples)).content["application/json"].schema;
+    const legacy = inlineSchema((await body(samples)).content["application/json"].schema);
     expect(legacy.required ?? []).toEqual([]);
     expect(legacy["x-har-observations"]).toBeUndefined();
   });
@@ -228,13 +238,16 @@ describe("capture-based inference features", () => {
     ];
     const result = await body(samples, { examples: "multiple", includeInferenceEvidence: true });
     const content = result.content["application/x-www-form-urlencoded"];
-    expect(content.schema.properties.tag).toEqual({ type: "array", items: { type: "string" } });
-    expect(content.schema.required).toEqual(["tag"]);
-    expect(content.schema["x-har-observations"].fields.active).toEqual({ presentCount: 1, presenceRatio: 0.5 });
-    expect(content.examples.sample_1.value).toEqual({ tag: ["a", "b"], active: true });
+    expect(propertySchema(content.schema, "tag")).toEqual({ type: "array", items: { type: "string" } });
+    expect(inlineSchema(content.schema).required).toEqual(["tag"]);
+    expect(inlineSchema(content.schema)["x-har-observations"].fields.active).toEqual({
+      presentCount: 1,
+      presenceRatio: 0.5,
+    });
+    expect(content.examples?.sample_1).toEqual({ value: { tag: ["a", "b"], active: true } });
     const optional = await body(samples, { requiredness: "optional" });
     expect(optional.required).toBe(false);
-    expect(optional.content["application/x-www-form-urlencoded"].schema.required).toBeUndefined();
+    expect(inlineSchema(optional.content["application/x-www-form-urlencoded"].schema).required).toBeUndefined();
   });
 
   test("counts restored bracket aliases across all captured requests", async () => {
@@ -247,7 +260,7 @@ describe("capture-based inference features", () => {
             response: { status: 200, headers: [], content: { mimeType: "application/json", size: 2, text: "{}" } },
           })),
         },
-      }) as Har;
+      }) as unknown as Har;
     const settings = {
       parseBracketParameters: true,
       requiredness: "observed" as const,
@@ -286,7 +299,7 @@ describe("capture-based inference features", () => {
       },
     ];
     const result = await buildResponseBodyFromSamples(
-      responses as Array<Response & { source: typeof source }>,
+      responses as unknown as Array<Response & { source: typeof source }>,
       details,
       config({ onDiagnostic: (item) => diagnostics.push(item) }),
     );
@@ -300,7 +313,7 @@ describe("capture-based inference features", () => {
     const diagnostics: ConversionDiagnostic[] = [];
     const settings = config({ onDiagnostic: (item) => diagnostics.push(item) });
     const response = (status: number) =>
-      ({ status, headers: [], content: { mimeType: "application/json", size: 42 } }) as Response;
+      ({ status, headers: [], content: { mimeType: "application/json", size: 42 } }) as unknown as Response;
     await buildResponseBodyFromSamples([response(204), response(304)], details, settings);
     await buildResponseBodyFromSamples([response(200)], { ...details, method: "HEAD" }, settings);
     expect(diagnostics).toEqual([]);
@@ -324,7 +337,7 @@ describe("capture-based inference features", () => {
           },
         })),
       },
-    } as Har;
+    } as unknown as Har;
     const result = await generateSpec(capture, { strict: true, includeReport: true });
     expect(result.report!.diagnostics).toEqual([]);
     for (const [{ method, status }, index] of cases.map((item, index) => [item, index] as const)) {
@@ -337,6 +350,6 @@ describe("capture-based inference features", () => {
       { ...details, method: "HEAD" },
       config(),
     );
-    expect(request!.content["application/json"].schema.properties.input).toBeDefined();
+    expect(propertySchema(request!.content["application/json"].schema, "input")).toBeDefined();
   });
 });

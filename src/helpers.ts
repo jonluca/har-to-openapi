@@ -184,7 +184,7 @@ const mapFormText = (text: string) => {
   return fields;
 };
 
-const getFormFields = (postData: PostData | Content): FormFieldObservation[] => {
+const getFormFields = (postData: PostData | Content, text: string | undefined): FormFieldObservation[] => {
   if ("params" in postData && postData.params?.length) {
     return postData.params.map((param) => ({
       name: param.name,
@@ -193,8 +193,8 @@ const getFormFields = (postData: PostData | Content): FormFieldObservation[] => 
     }));
   }
 
-  if ("text" in postData && typeof postData.text === "string") {
-    return mapFormText(postData.text);
+  if (text !== undefined) {
+    return mapFormText(text);
   }
 
   return [];
@@ -443,8 +443,10 @@ const buildBodyContentFromSamples = async (
     state.status = sample.status;
 
     if (isFormLikeMimeType(mimeType)) {
-      const fields = getFormFields(sample.postData);
-      if (fields.length) {
+      const fields = getFormFields(sample.postData, text);
+      const hasCapturedFields =
+        text !== undefined || ("params" in sample.postData && Array.isArray(sample.postData.params));
+      if (hasCapturedFields) {
         state.formSamples.push({ kind: "form", fields });
         state.kind = "form";
         contentStates.set(mimeEssence, state);
@@ -799,7 +801,7 @@ export const addQueryStringParams = (
     if (existing && "schema" in existing) {
       existing.schema = mergeParameterSchemas(existing.schema as SchemaObject | undefined, observation.schema);
       if (config.examples !== "none") {
-        existing.example = coerceParameterExample(observation.example, existing.schema as SchemaObject);
+        existing.example = coerceParameterExample(observation.rawExample, existing.schema as SchemaObject);
         existing.schema = { ...existing.schema, default: existing.example } as SchemaObject;
       }
       if (observation.style) {
@@ -808,12 +810,13 @@ export const addQueryStringParams = (
       }
       continue;
     }
+    const example = coerceParameterExample(observation.rawExample, observation.schema);
     parameters.push({
-      schema: { ...observation.schema, ...(config.examples === "none" ? {} : { default: observation.example }) },
+      schema: { ...observation.schema, ...(config.examples === "none" ? {} : { default: example }) },
       in: "query",
       name: observation.name,
       description: observation.name,
-      ...(config.examples === "none" ? {} : { example: observation.example }),
+      ...(config.examples === "none" ? {} : { example }),
       ...(observation.style ? { style: observation.style, explode: observation.explode } : {}),
     });
   }

@@ -21,7 +21,7 @@ const entry = (url: string, body: unknown = { id: 1 }, method = "GET", requestBo
       cookies: [],
       content: { mimeType: "application/json", text: JSON.stringify(body), size: 12 },
     },
-  }) as Entry;
+  }) as unknown as Entry;
 const capture = (...entries: Entry[]): Har => ({ log: { entries } }) as Har;
 
 describe("Capture merging and conversion reports", () => {

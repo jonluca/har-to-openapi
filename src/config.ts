@@ -66,6 +66,26 @@ export const validateConfig = (config: HarToOpenAPIConfig = {}) => {
     }
   }
   if (
+    config.urlFilter !== undefined &&
+    typeof config.urlFilter !== "string" &&
+    typeof config.urlFilter !== "function" &&
+    !(config.urlFilter instanceof RegExp)
+  ) {
+    throw new Error("urlFilter must be a string, RegExp, or function.");
+  }
+  if (
+    config.tags !== undefined &&
+    typeof config.tags !== "function" &&
+    (!Array.isArray(config.tags) ||
+      config.tags.some(
+        (tag) =>
+          typeof tag !== "string" &&
+          (!Array.isArray(tag) || tag.length < 1 || tag.length > 2 || tag.some((value) => typeof value !== "string")),
+      ))
+  ) {
+    throw new Error("tags must be a function or an array of strings or one- or two-string tuples.");
+  }
+  if (
     config.ignoreBodiesForStatusCodes !== undefined &&
     (!Array.isArray(config.ignoreBodiesForStatusCodes) ||
       config.ignoreBodiesForStatusCodes.some((value) => !Number.isInteger(value) || value < 0 || value > 599))

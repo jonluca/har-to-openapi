@@ -517,6 +517,9 @@ exports[`Spec generator > Returns one spec for a har with two domains and forceA
               {
                 "url": "http://example.com",
               },
+              {
+                "url": "http://exampletwo.com",
+              },
             ],
             "summary": "Get Login",
           },
@@ -564,6 +567,7 @@ paths:
       responses: {}
       servers:
         - url: http://example.com
+        - url: http://exampletwo.com
       summary: Get Login
 servers:
   - url: http://example.com

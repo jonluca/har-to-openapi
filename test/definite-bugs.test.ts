@@ -87,7 +87,7 @@ describe("definite bug regressions", () => {
     );
     const parameters = result.spec.paths["/items"].get.parameters ?? [];
 
-    expect(parameters.some((parameter) => "name" in parameter && parameter.name === "Priority")).toBe(false);
+    expect(parameters.some((parameter: { name?: string }) => parameter.name === "Priority")).toBe(false);
   });
 
   test("writes IPv6 domains to distinct reversible filenames", async () => {
